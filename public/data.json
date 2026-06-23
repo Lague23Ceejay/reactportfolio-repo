@@ -1,0 +1,24 @@
+{
+  "hero": {
+    "name": "Christian John K. Lague",
+    "title": "Senior Full Stack Developer",
+    "tagline": "Building responsive, modern, and interactive digital ecosystems.",
+    "profileImage": ""
+  },
+  "about": {
+    "bio": "Passionate developer focusing on scalable web apps and smooth user experiences.",
+    "skills": ["React", "TypeScript", "Tailwind CSS", "Node.js", "Zustand"]
+  },
+  "projects": [],
+  "gallery": [],
+  "contact": {
+    "email": "your.email@example.com",
+    "github": "https://github.com",
+    "linkedin": "https://linkedin.com",
+    "websiteUrl": "https://vercel.app"
+  },
+  "settings": {
+    "theme": "dark",
+    "pinHash": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08" 
+  }
+}

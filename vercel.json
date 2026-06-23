@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/save-content",
+      "destination": "/api/save-content.ts"
+    }
+  ]
+}
