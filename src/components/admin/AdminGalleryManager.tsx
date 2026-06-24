@@ -1,4 +1,5 @@
 import { usePortfolioStore } from '../../store/portfolioStore';
+import { QRCodeSVG } from 'qrcode.react';
 
 export function AdminGalleryManager() {
   const { draft, updateDraft } = usePortfolioStore();
@@ -96,64 +97,73 @@ export function AdminGalleryManager() {
       </div>
 
       {/* Critical Engine Settings & PIN Rotation Security Block */}
-      <div className="space-y-6 pt-8 pb-4 border-t border-zinc-800/60">
-        <div>
-          <h3 className="text-sm font-mono font-semibold text-red-400 uppercase tracking-wider">System Terminal Parameters</h3>
-          <p className="text-xs text-zinc-500 font-light mt-0.5">Modify workspace environment parameters and rotate console security keys.</p>
-        </div>
+<div className="space-y-6 pt-8 pb-4 border-t border-zinc-800/60">
+  <div>
+    <h3 className="text-sm font-mono font-semibold text-red-400 uppercase tracking-wider">System Terminal Parameters</h3>
+    <p className="text-xs text-zinc-500 font-light mt-0.5">Modify workspace environment parameters, rotate keys, and export brand tokens.</p>
+  </div>
 
-        <div className="p-5 bg-zinc-950/60 border border-zinc-900 rounded-2xl grid sm:grid-cols-2 gap-6 items-start">
-          <div className="space-y-4">
-            <div className="space-y-1">
-              <label className="text-[11px] font-mono text-zinc-500">Public Production Domain Target URL</label>
-              <input 
-                type="url" 
-                value={draft.contact.websiteUrl} 
-                onChange={(e) => updateDraft(d => { d.contact.websiteUrl = e.target.value; })}
-                className="w-full bg-zinc-900 border border-zinc-800 p-2.5 rounded-xl text-xs font-mono text-zinc-300 outline-none focus:border-emerald-500/30"
-                placeholder="https://vercel.app"
-              />
-            </div>
-          </div>
-
-          <div className="p-4 bg-zinc-900/40 border border-zinc-800/80 rounded-xl space-y-3">
-            <div className="space-y-1">
-              <label className="text-[11px] font-mono text-zinc-400 block font-medium">Rotate Console Access PIN Code</label>
-            </div>
-            
-            <div className="flex gap-2">
-              <input 
-                type="password"
-                id="newConsolePinInput"
-                maxLength={4}
-                placeholder="••••"
-                className="bg-zinc-950 border border-zinc-800 text-center tracking-widest p-2 rounded-xl text-sm font-mono text-emerald-400 outline-none focus:border-emerald-500/40 w-24"
-                onChange={(e) => { e.target.value = e.target.value.replace(/\D/g, ''); }}
-              />
-              <button
-                type="button"
-                onClick={async () => {
-                  const inputEl = document.getElementById('newConsolePinInput') as HTMLInputElement;
-                  const newPin = inputEl?.value;
-                  if (!newPin || newPin.length !== 4) return alert('Must contain exactly 4 numeric characters.');
-                  
-                  const encoder = new TextEncoder();
-                  const binaryData = encoder.encode(newPin);
-                  const derivedBuffer = await crypto.subtle.digest('SHA-256', binaryData);
-                  const updatedHexHash = Array.from(new Uint8Array(derivedBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
-
-                  updateDraft(d => { d.settings.pinHash = updatedHexHash; });
-                  inputEl.value = '';
-                  alert('Cryptographic hash rotated successfully.');
-                }}
-                className="flex-1 px-3 py-2 bg-zinc-800 hover:bg-zinc-700 hover:text-white border border-zinc-700/80 text-zinc-300 text-xs font-mono rounded-xl transition-all"
-              >
-                Compute New Hash
-              </button>
-            </div>
-          </div>
-        </div>
+  <div className="p-5 bg-zinc-950/60 border border-zinc-900 rounded-2xl grid sm:grid-cols-2 gap-6 items-center">
+    
+    {/* Left Column: Input Target Links + Live Download Tool */}
+    <div className="space-y-4">
+      <div className="space-y-1">
+        <label className="text-[11px] font-mono text-zinc-500">Public Production Domain Target URL</label>
+        <input 
+          type="url" 
+          value={draft.contact.websiteUrl} 
+          onChange={(e) => updateDraft(d => { d.contact.websiteUrl = e.target.value; })}
+          className="w-full bg-zinc-900 border border-zinc-800 p-2.5 rounded-xl text-xs font-mono text-zinc-300 outline-none focus:border-emerald-500/30"
+          placeholder="https://vercel.app"
+        />
       </div>
+
+      {/* Dynamic Exporter Engine Integration Button Trigger */}
+      <button
+        type="button"
+        onClick={() => {
+          const svgElement = document.getElementById('adminExportableQRCodeSVG');
+          if (!svgElement) return;
+          
+          // Parse raw XML stream fragments to data URI schemas
+          const svgData = new XMLSerializer().serializeToString(svgElement);
+          const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+          const svgUrl = URL.createObjectURL(svgBlob);
+          
+          // Push automated anchor trigger to downstream download queues
+          const downloadAnchor = document.createElement('a');
+          downloadAnchor.href = svgUrl;
+          downloadAnchor.download = 'portfolio-branding-qr.svg';
+          document.body.appendChild(downloadAnchor);
+          downloadAnchor.click();
+          document.body.removeChild(downloadAnchor);
+          URL.revokeObjectURL(svgUrl);
+        }}
+        className="w-full py-2 bg-emerald-500/10 hover:bg-emerald-500 text-emerald-400 hover:text-zinc-950 font-mono font-semibold border border-emerald-500/20 rounded-xl text-xs transition-all duration-300"
+      >
+        ↓ Save Brand QR Asset (.SVG)
+      </button>
+    </div>
+
+    {/* Right Column: Encapsulated Hidden Vector Canvas Generator Rendering Node */}
+    <div className="flex flex-col items-center justify-center p-4 bg-zinc-900/30 border border-zinc-800/60 rounded-xl gap-2 text-center">
+      <div className="p-3 bg-white rounded-xl shadow-inner inline-block">
+        <QRCodeSVG 
+          id="adminExportableQRCodeSVG"
+          value={draft.contact.websiteUrl || window.location.origin} 
+          size={110} 
+          bgColor="#ffffff" 
+          fgColor="#09090b" 
+          level="H" 
+        />
+      </div>
+      <p className="text-[10px] font-mono text-zinc-500 leading-normal max-w-[180px]">
+        Generates cleanly based on website settings variables. Vector-scaled for clean sharing grids.
+      </p>
+    </div>
+
+  </div>
+</div>
     </>
   );
 }
