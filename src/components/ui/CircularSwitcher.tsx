@@ -20,16 +20,15 @@ export const CircularSwitcher: React.FC = () => {
 
   return (
     /* 
-      SENIOR LAYOUT MATRIX:
-      - Forced an ultra-high fixed z-[99999] layer to completely bypass post-hop context stacking traps.
-      - Added a clean onClick dismiss anchor directly onto the full-screen backdrop overlay.
-        If a smartphone user changes their mind, tapping anywhere on the darkened empty screen safely collapses the menu back into the corner!
+      SENIOR MOBILE OPTIMIZATION MATRIX:
+      - Applied '-webkit-tap-highlight-color: transparent' and 'outline: none'.
+        This completely erases the transparent gray/blue box glitch from drawing on smartphones!
     */
     <div 
-      onClick={() => setIsActivated(false)} // MOBILE DISMISS FIX: Tap anywhere outside to close if you change your mind
-      className={`fixed transition-all duration-500 ease-out flex items-center justify-center`}
+      onClick={() => setIsActivated(false)}
+      className="fixed transition-all duration-500 ease-out flex items-center justify-center select-none"
       style={{
-        zIndex: 99999, // FIX: Prevents underlying pages or layout transitions from clipping touch inputs
+        zIndex: 99999,
         inset: isActivated ? '0px' : 'auto',
         width: isActivated ? '100vw' : '80px',
         height: isActivated ? '100vh' : '80px',
@@ -37,7 +36,9 @@ export const CircularSwitcher: React.FC = () => {
         right: isActivated ? '0px' : '32px',
         backgroundColor: isActivated ? 'rgba(0,0,0,0.55)' : 'transparent',
         backdropFilter: isActivated ? 'blur(4px)' : 'none',
-        pointerEvents: 'auto'
+        pointerEvents: 'auto',
+        WebkitTapHighlightColor: 'transparent', // CRITICAL SMARTPHONE GRAFICS FIX
+        outline: 'none'
       }}
       onMouseEnter={() => setIsActivated(true)}
       onMouseLeave={() => {
@@ -67,15 +68,35 @@ export const CircularSwitcher: React.FC = () => {
                   exit={{ scale: 0, opacity: 0, x: 0, y: 0 }}
                   whileHover={{ scale: 1.15 }}
                   transition={{ type: 'spring', stiffness: 220, damping: 22 }}
+                  
+                  // DESKTOP HOVER ROUTINES
                   onMouseEnter={() => setHoveredDimension(dim)}
                   onMouseLeave={() => setHoveredDimension(null)}
+
+                  /*
+                    MOBILE HOVER EMULATION ENGINE:
+                    Using touchstart/touchend, phone users can drag their finger or tap 
+                    individual bubbles to trigger the cursor-morph preview instantly.
+                  */
+                  onTouchStart={(e) => {
+                    e.stopPropagation();
+                    setHoveredDimension(dim); // Morphs custom cursor to target preview on contact
+                  }}
+                  onTouchEnd={(e) => {
+                    e.stopPropagation();
+                    // Keep the preview smooth, letting the click handler fire next if it was a true tap
+                  }}
+
                   onClick={(e) => {
-                    e.stopPropagation(); // Stop click from propagating up to the backdrop dismiss handler
+                    e.stopPropagation();
                     triggerHop(dim);
                     setIsActivated(false);
                   }}
-                  className="absolute w-20 h-20 rounded-full flex flex-col items-center justify-center shadow-[0_12px_35px_rgba(0,0,0,0.4)] border border-white/10 overflow-hidden group select-none cursor-pointer transition-transform duration-200"
-                  style={{ backgroundColor: targetColors.mainBg }}
+                  className="absolute w-20 h-20 rounded-full flex flex-col items-center justify-center shadow-[0_12px_35px_rgba(0,0,0,0.4)] border border-white/10 overflow-hidden group select-none cursor-pointer transition-transform duration-200 outline-none"
+                  style={{ 
+                    backgroundColor: targetColors.mainBg,
+                    WebkitTapHighlightColor: 'transparent' // CRITICAL SMARTPHONE GRAPHICS FIX
+                  }}
                 >
                   <div 
                     className="absolute inset-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 border-2 border-dashed"
@@ -97,7 +118,6 @@ export const CircularSwitcher: React.FC = () => {
         type="button"
         onClick={(e) => {
           e.stopPropagation();
-          // On mobile screens, tapping the local corner button opens the portal menu context cleanly
           setIsActivated(!isActivated);
         }}
         animate={{ 
@@ -109,7 +129,8 @@ export const CircularSwitcher: React.FC = () => {
           backgroundColor: currentThemeColors.mainBg, 
           boxShadow: isActivated 
             ? `0 20px 60px rgba(0,0,0,0.5), 0 0 40px ${currentThemeColors.mainBg}30` 
-            : '0 8px 24px rgba(0,0,0,0.2)' 
+            : '0 8px 24px rgba(0,0,0,0.2)',
+          WebkitTapHighlightColor: 'transparent' // CRITICAL SMARTPHONE GRAPHICS FIX
         }}
         className="w-16 h-16 rounded-full flex flex-col items-center justify-center shadow-2xl cursor-pointer relative z-10 border border-white/10 outline-none select-none"
       >
