@@ -8,6 +8,7 @@ import { Contact } from './components/sections/Contact';
 import { AdminOverlay } from './components/admin/AdminOverlay';
 import { AnimatedBackground } from './components/ui/AnimatedBackground';
 import { ScrollReveal } from './components/ui/ScrollReveal';
+import { Footer } from './components/layout/Footer';
 
 // 1. Import your newly created Navbar component here
 import { Navbar } from './components/layout/Navbar';

@@ -44,3 +44,13 @@
   -webkit-font-smoothing: antialiased;
   display: inline-block !important;
 }
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--color-zinc-800);
+  border-radius: 9999px;
+}

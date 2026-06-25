@@ -1,4 +1,6 @@
 import { usePortfolioStore } from '../../store/portfolioStore';
+
+// FIX: Added clear named imports for your CardSwap layout primitives
 import { CardSwap, Card, renderIconSVG } from '../ui/CardSwapDeck';
 
 export function About() {
@@ -9,18 +11,18 @@ export function About() {
     <section className="space-y-8 py-10" id="about">
       <div className="flex items-center gap-4">
         <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-100">About Me</h2>
-        <div className="h-[1px] bg-zinc-800 flex-1" />
+        {/* FIX: Optimized h-[1px] shorthand configuration parameter */}
+        <div className="h-px bg-zinc-800 flex-1" />
       </div>
       
       <div className="grid md:grid-cols-5 gap-12 items-center">
-        {/* Rich Text Bio Narrative */}
         <div 
           dangerouslySetInnerHTML={{ __html: data.bio }}
           className="md:col-span-3 text-zinc-400 leading-relaxed text-base sm:text-lg font-light space-y-4"
         />
         
-        {/* Pure ReactBits GSAP Card Stack Assembly */}
-        <div className="md:col-span-2 flex items-center justify-center min-h-[260px] relative pt-10">
+        {/* FIX: Optimized min-h-[260px] shorthand configuration parameter */}
+        <div className="md:col-span-2 flex items-center justify-center min-h-65 relative pt-10">
           <CardSwap width={220} height={260} delay={3800} easing="elastic">
             {data.skills.map((skill, idx) => (
               <Card key={idx} className="flex flex-col items-center justify-center gap-4 text-center select-none">
