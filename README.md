@@ -64,6 +64,14 @@ The app includes:
 - Animated page reveal and background effects
 - Responsive layout with modern dark theme styling
 
+## Recent Updates
+
+- `Projects.tsx` (src/components/sections/Projects.tsx): Replaced the previous static card wrapper with the new `SpotlightCard` interactive wrapper. `SpotlightCard` provides an ambient radial spotlight that follows the mouse, hover/focus opacity states, and polished visual transitions. The project card still renders stack badges, a multi-color progress bar, and optional live/source links, but now within an interactive, focusable shell.
+
+- `CardSwapDeck.tsx` (src/components/ui/CardSwapDeck.tsx): Reworked the card deck to use a GSAP-powered `CardSwap` engine instead of the earlier simplified `framer-motion` placeholder. Added a `Card` wrapper component and a `renderIconSVG` mapping that renders inline SVGs and `react-icons` components (for crisp, offline-safe vector icons). This improves animation control, visual fidelity, and removes CDN reliance for iconography.
+
+- `SpotlightCard.tsx` (src/components/ui/SpotlightCard.tsx): New UI component implementing a mouse-follow radial spotlight and ambient glow for interactive cards. Exposes a `spotlightColor` prop for theming and manages hover/focus opacity and pointer events to keep interactions smooth and accessible.
+
 ## Project Structure
 
 ```text
@@ -100,6 +108,7 @@ The app includes:
 │   │       ├── CardSwapDeck.tsx
 │   │       ├── MagnetEffect.tsx
 │   │       └── ScrollReveal.tsx
+│   │       └── SpotlightCard.tsx
 │   ├── hooks/
 │   │   └── usePortfolioData.ts
 │   ├── store/

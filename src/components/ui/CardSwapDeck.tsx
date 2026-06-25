@@ -3,7 +3,6 @@ import type { ReactElement, ReactNode, RefObject } from 'react';
 import { SpotlightCard } from './SpotlightCard';
 import gsap from 'gsap';
 
-// FIX: Swapped SiCss3 over to the correct SiCss3 export member token
 import { 
   SiReact, 
   SiTypescript, 
@@ -32,18 +31,25 @@ export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   customClass?: string;
 }
 
-// FIX: Implemented transform-3d, will-change-transform, and backface-hidden shorthands
-export const Card = forwardRef<HTMLDivElement, CardProps>(({ customClass, children, ...rest }, ref) => (
-  <div
-    ref={ref}
-    {...rest}
-    className={`absolute top-1/2 left-1/2 transform-3d will-change-transform backface-hidden ${customClass ?? ''} ${rest.className ?? ''}`.trim()}
-  >
-    <SpotlightCard className="p-6 flex flex-col items-center justify-center gap-4 text-center select-none w-full h-full bg-zinc-950/95 border border-zinc-800/60 shadow-2xl">
-      {children}
-    </SpotlightCard>
-  </div>
-));
+export const Card = forwardRef<HTMLDivElement, CardProps>(({ customClass, children, ...rest }, ref) => {
+  return (
+    <div
+      ref={ref}
+      {...rest}
+      className={`absolute top-1/2 left-1/2 transform-3d will-change-transform backface-hidden ${customClass ?? ''} ${rest.className ?? ''}`.trim()}
+    >
+      {/* 
+        SENIOR DEV FIX: Ensured the SpotlightCard utilizes a dedicated flex layout 
+        with full width to isolate, align, and stretch elements beautifully.
+      */}
+      <SpotlightCard className="p-6 flex flex-col items-center justify-between text-center select-none w-full h-full bg-zinc-950/95 border border-zinc-800/60 shadow-2xl">
+        <div className="flex flex-col items-center justify-center w-full flex-1 gap-2">
+          {children}
+        </div>
+      </SpotlightCard>
+    </div>
+  );
+});
 Card.displayName = 'Card';
 
 type CardRef = RefObject<HTMLDivElement | null>;
@@ -74,29 +80,33 @@ const placeNow = (el: HTMLElement, slot: Slot, skew: number) =>
     force3D: true
   });
 
-// Automated lookup map translates your admin input keywords directly to accurate brand vector components
+// SENIOR DEV FIX: Upgraded all icons from text-3xl to text-4xl (+20% size enhancement) 
+// and applied a explicit centered block utility to ensure zero layout-drifting.
 export const renderIconSVG = (code: string) => {
   const clean = (code || '').toLowerCase().trim();
+  const iconClass = "text-4xl block mx-auto transition-transform duration-300 hover:scale-105";
   
-  if (clean === 'react') return <SiReact className="text-3xl text-[#61DAFB]" />;
-  if (clean === 'ts' || clean === 'typescript') return <SiTypescript className="text-3xl text-[#3178C6] rounded-md" />;
-  if (clean === 'tailwind' || clean === 'tailwindcss') return <SiTailwindcss className="text-3xl text-[#06B6D4]" />;
-  if (clean === 'js' || clean === 'javascript') return <SiJavascript className="text-3xl text-[#F7DF1E] rounded-sm" />;
-  if (clean === 'node' || clean === 'nodejs') return <SiNodedotjs className="text-3xl text-[#339933]" />;
-  if (clean === 'html' || clean === 'html5') return <SiHtml5 className="text-3xl text-[#E34F26]" />;
-  if (clean === 'css' || clean === 'css3') return <SiCss className="text-3xl text-[#1572B6]" />;
-  if (clean === 'git') return <SiGit className="text-3xl text-[#F05032]" />;
+  if (clean === 'react') return <div className="w-full flex items-center justify-center mt-2"><SiReact className={`${iconClass} text-[#61DAFB]`} /></div>;
+  if (clean === 'ts' || clean === 'typescript') return <div className="w-full flex items-center justify-center mt-2"><SiTypescript className={`${iconClass} text-[#3178C6] rounded-md`} /></div>;
+  if (clean === 'tailwind' || clean === 'tailwindcss') return <div className="w-full flex items-center justify-center mt-2"><SiTailwindcss className={`${iconClass} text-[#06B6D4]`} /></div>;
+  if (clean === 'js' || clean === 'javascript') return <div className="w-full flex items-center justify-center mt-2"><SiJavascript className={`${iconClass} text-[#F7DF1E] rounded-sm`} /></div>;
+  if (clean === 'node' || clean === 'nodejs') return <div className="w-full flex items-center justify-center mt-2"><SiNodedotjs className={`${iconClass} text-[#339933]`} /></div>;
+  if (clean === 'html' || clean === 'html5') return <div className="w-full flex items-center justify-center mt-2"><SiHtml5 className={`${iconClass} text-[#E34F26]`} /></div>;
+  if (clean === 'css' || clean === 'css3') return <div className="w-full flex items-center justify-center mt-2"><SiCss className={`${iconClass} text-[#1572B6]`} /></div>;
+  if (clean === 'git') return <div className="w-full flex items-center justify-center mt-2"><SiGit className={`${iconClass} text-[#F05032]`} /></div>;
 
   return (
-    <div className="w-8 h-8 bg-zinc-900 border border-zinc-800 text-zinc-500 rounded font-mono font-bold flex items-center justify-center text-[10px] select-none uppercase">
-      {clean.substring(0, 4)}
+    <div className="w-full flex items-center justify-center mt-2">
+      <div className="w-10 h-10 bg-zinc-900 border border-zinc-800 text-zinc-500 rounded font-mono font-bold flex items-center justify-center text-[11px] select-none uppercase">
+        {clean.substring(0, 4)}
+      </div>
     </div>
   );
 };
 
 export const CardSwap: React.FC<CardSwapProps> = ({
-  width = 220,
-  height = 260,
+  width = 242,
+  height = 286,
   cardDistance = 15,
   verticalDistance = 15,
   delay = 3500,
@@ -155,7 +165,7 @@ export const CardSwap: React.FC<CardSwapProps> = ({
       tlRef.current = tl;
 
       tl.to(elFront, {
-        y: '+=400',
+        x: '+=400',
         opacity: 0,
         duration: config.durDrop,
         ease: config.ease

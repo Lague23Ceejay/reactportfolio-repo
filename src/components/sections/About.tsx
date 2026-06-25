@@ -26,12 +26,12 @@ export function About() {
           <CardSwap width={220} height={260} delay={3800} easing="elastic">
             {data.skills.map((skill, idx) => (
               <Card key={idx} className="flex flex-col items-center justify-center gap-4 text-center select-none">
-                <div className="w-14 h-14 bg-zinc-900 border border-zinc-800/80 rounded-xl flex items-center justify-center shadow-inner">
-                  {renderIconSVG(skill.iconCode)}
-                </div>
                 <div className="space-y-1">
                   <h4 className="text-xs font-mono font-bold text-zinc-200 tracking-tight">{skill.name}</h4>
                   <p className="text-[9px] font-mono text-emerald-500 uppercase tracking-widest font-medium">Core Stack</p>
+                </div>
+                <div className="w-14 h-14 bg-zinc-900 border border-zinc-800/80 rounded-xl flex items-center justify-center shadow-inner">
+                  {renderIconSVG(skill.iconCode)}
                 </div>
               </Card>
             ))}
