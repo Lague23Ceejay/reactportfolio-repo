@@ -1,5 +1,6 @@
 import React, { Children, cloneElement, forwardRef, isValidElement, useEffect, useMemo, useRef } from 'react';
 import type { ReactElement, ReactNode, RefObject } from 'react';
+import { SpotlightCard } from './SpotlightCard';
 import gsap from 'gsap';
 
 // FIX: Swapped SiCss3 over to the correct SiCss3 export member token
@@ -32,12 +33,16 @@ export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 // FIX: Implemented transform-3d, will-change-transform, and backface-hidden shorthands
-export const Card = forwardRef<HTMLDivElement, CardProps>(({ customClass, ...rest }, ref) => (
+export const Card = forwardRef<HTMLDivElement, CardProps>(({ customClass, children, ...rest }, ref) => (
   <div
     ref={ref}
     {...rest}
-    className={`absolute top-1/2 left-1/2 rounded-xl border border-zinc-800 bg-zinc-950/95 p-6 flex flex-col items-center justify-center gap-4 shadow-2xl shadow-black/80 transform-3d will-change-transform backface-hidden ${customClass ?? ''} ${rest.className ?? ''}`.trim()}
-  />
+    className={`absolute top-1/2 left-1/2 transform-3d will-change-transform backface-hidden ${customClass ?? ''} ${rest.className ?? ''}`.trim()}
+  >
+    <SpotlightCard className="p-6 flex flex-col items-center justify-center gap-4 text-center select-none w-full h-full bg-zinc-950/95 border border-zinc-800/60 shadow-2xl">
+      {children}
+    </SpotlightCard>
+  </div>
 ));
 Card.displayName = 'Card';
 

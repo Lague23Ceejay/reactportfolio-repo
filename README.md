@@ -1,75 +1,141 @@
-# React + TypeScript + Vite
+﻿# React Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern portfolio website built with React, TypeScript, Vite, Tailwind CSS, and a lightweight CMS-style admin interface.
 
-Currently, two official plugins are available:
+## Project Overview
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+This repository is a portfolio application with dynamic content loaded from `public/data.json`, a live admin editor, and animated UI components.
 
-## React Compiler
+The app includes:
+- Hero, About, Projects, Gallery, and Contact sections
+- A global admin overlay for managing portfolio content in real time
+- A dynamic data sync API for saving edits to GitHub via Vercel serverless functions
+- Smooth animated interactions with GSAP and framer-motion
+- A responsive Tailwind CSS-based design
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Tech Stack
 
-## Expanding the ESLint configuration
+- React 18
+- TypeScript 5
+- Vite 5
+- Tailwind CSS 4
+- Zustand for state management
+- GSAP for card stack animations
+- Framer Motion for animation utilities
+- React Icons for vector iconography
+- @vercel/node for serverless API handler
+- Octokit for GitHub content sync
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Dependencies
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### Runtime dependencies
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- `@octokit/rest` ^21.0.0
+- `@vercel/node` ^3.0.0
+- `framer-motion` ^11.0.0
+- `gsap` ^3.12.5
+- `qrcode.react` ^4.0.0
+- `react` ^18.3.1
+- `react-dom` ^18.3.1
+- `react-icons` ^5.6.0
+- `zustand` ^4.5.5
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Development dependencies
 
+- `@tailwindcss/vite` ^4.0.0
+- `@types/node` ^20.11.0
+- `@types/react` ^18.3.3
+- `@types/react-dom` ^18.3.0
+- `@vitejs/plugin-react` ^4.3.1
+- `autoprefixer` ^10.4.19
+- `postcss` ^8.4.38
+- `tailwindcss` ^4.0.0
+- `typescript` ^5.2.2
+- `vite` ^5.4.0
+
+## Features
+
+- Dynamic content loading from `public/data.json`
+- Admin draft editing using Zustand state store
+- Portfolio project management UI with add/remove/update controls
+- Inline CSS/Tailwind-powered card animation deck
+- URL, Git link, and framework input fields for project entries
+- Serverless save endpoint for GitHub content updates
+- Animated page reveal and background effects
+- Responsive layout with modern dark theme styling
+
+## Project Structure
+
+```text
+/
+├── api/
+│   └── save-content.ts         # Vercel serverless API to sync content via GitHub
+├── public/
+│   ├── data.json              # Portfolio data source loaded at runtime
+│   ├── favicon.svg
+│   └── icons.svg
+├── src/
+│   ├── App.tsx                # Main app shell with sections and overlay
+│   ├── main.tsx               # React bootstrapping entry point
+│   ├── index.css              # Global CSS import
+│   ├── App.css                # Optional app-specific styles
+│   ├── assets/                # Static asset directory
+│   ├── components/
+│   │   ├── admin/
+│   │   │   ├── AdminAboutManager.tsx
+│   │   │   ├── AdminGalleryManager.tsx
+│   │   │   ├── AdminOverlay.tsx
+│   │   │   └── AdminProjectsManager.tsx
+│   │   ├── layout/
+│   │   │   ├── Footer.tsx
+│   │   │   └── Navbar.tsx
+│   │   ├── sections/
+│   │   │   ├── About.tsx
+│   │   │   ├── Contact.tsx
+│   │   │   ├── Gallery.tsx
+│   │   │   ├── Hero.tsx
+│   │   │   └── Projects.tsx
+│   │   └── ui/
+│   │       ├── AnimatedBackground.tsx
+│   │       ├── CardSwapDeck.tsx
+│   │       ├── MagnetEffect.tsx
+│   │       └── ScrollReveal.tsx
+│   ├── hooks/
+│   │   └── usePortfolioData.ts
+│   ├── store/
+│   │   └── portfolioStore.ts
+│   └── types/
+│       └── portfolio.ts
+├── eslint.config.js
+├── package.json
+├── tsconfig.json
+├── tsconfig.app.json
+├── tsconfig.node.json
+├── vite.config.ts
+└── vercel.json
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Local Development
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+npm install
+npm run dev
 ```
+
+## Build
+
+```bash
+npm run build
+```
+
+## Deployment
+
+- Built for Vercel with a serverless API endpoint under `api/save-content.ts`
+- Uses `public/data.json` as the live portfolio data source
+- GitHub sync via `@octokit/rest` and `GITHUB_TOKEN` environment variable
+
+## Notes
+
+- The admin overlay edits a draft state in Zustand and writes changes back to `public/data.json`
+- The app uses a data fetch hook to refresh content on each page load with cache-busting query params
+- The project is designed with a dark, responsive portfolio aesthetic and interactive section transitions

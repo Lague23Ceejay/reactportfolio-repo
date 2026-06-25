@@ -1,4 +1,5 @@
 import { usePortfolioStore } from '../../store/portfolioStore';
+import { SpotlightCard } from '../ui/SpotlightCard';
 
 export function Projects() {
   const projects = usePortfolioStore((state) => state.data?.projects || []);
@@ -12,8 +13,6 @@ export function Projects() {
       
       <div className="grid sm:grid-cols-2 gap-6">
         {projects.map((project) => {
-          
-          // Parse your admin slider tokens (e.g. "React:80") into readable rendering arrays
           const stackItems = (project.stack || []).map(s => {
             const [name, val] = s.split(':');
             return { name: name || 'Tech', value: parseInt(val || '0', 10) };
@@ -24,8 +23,11 @@ export function Projects() {
             : 0;
 
           return (
-            <div key={project.id} className="group bg-zinc-900/40 border border-zinc-800/80 hover:border-emerald-500/30 transition-all duration-300 p-6 rounded-2xl flex flex-col justify-between space-y-6 shadow-lg">
-              
+            // WRAPPER: Replaced the standard div card shell with an interactive Spotlight Card
+            <SpotlightCard 
+              key={project.id} 
+              className="group transition-colors duration-300 p-6 flex flex-col justify-between space-y-6 shadow-lg hover:border-emerald-500/30"
+            >
               <div className="space-y-3">
                 <div className="flex items-start justify-between gap-4">
                   <div className="space-y-1.5">
@@ -52,7 +54,6 @@ export function Projects() {
                 </p>
               </div>
 
-              {/* Technical Skill List + Real-time Multi-Color Bar Visualizer */}
               <div className="space-y-3 pt-2">
                 {stackItems.length > 0 && (
                   <>
@@ -64,7 +65,6 @@ export function Projects() {
                       ))}
                     </div>
                     
-                    {/* Nested Stacked Multi-Color Progress Indicator Bar */}
                     <div className="space-y-1.5">
                       <div className="h-1.5 w-full bg-zinc-950 rounded-full overflow-hidden flex border border-zinc-900">
                         {stackItems.map((item, barIdx) => {
@@ -89,7 +89,6 @@ export function Projects() {
                   </>
                 )}
 
-                {/* Absolute Links Layer Exporter */}
                 {(project.deploymentUrl || project.sourceCodeUrl) && (
                   <div className="flex gap-4 pt-3 border-t border-zinc-900/60 text-xs font-mono font-medium">
                     {project.deploymentUrl && (
@@ -115,8 +114,7 @@ export function Projects() {
                   </div>
                 )}
               </div>
-
-            </div>
+            </SpotlightCard>
           );
         })}
       </div>
