@@ -1,19 +1,43 @@
 {
   "hero": {
     "name": "Christian John K. Lague",
-    "title": "Senior Full Stack Developer",
+    "title": "Bachelor of Science in Information Systems",
     "tagline": "Building responsive, modern, and interactive digital ecosystems.",
     "profileImage": ""
   },
-    "about": {
+  "about": {
     "bio": "Passionate developer focusing on scalable web apps and smooth user experiences.",
     "skills": [
-      { "name": "React Frame Core", "iconCode": "react" },
-      { "name": "TypeScript Typing", "iconCode": "typescript" },
-      { "name": "Tailwind Grid Layouts", "iconCode": "tailwindcss" }
+      {
+        "name": "React Frame Core",
+        "iconCode": "react"
+      },
+      {
+        "name": "TypeScript Typing",
+        "iconCode": "typescript"
+      },
+      {
+        "name": "Tailwind Grid Layouts",
+        "iconCode": "tailwindcss"
+      }
     ]
   },
-  "projects": [],
+  "projects": [
+    {
+      "id": "06ef1b25-38dc-4ce1-a450-4474279dcb2b",
+      "title": "New Development Build",
+      "description": "In-progress system architecture description summary.",
+      "stack": [
+        "React:40",
+        "TypeScript:37",
+        "Tailwind:50"
+      ],
+      "liveUrl": "Development",
+      "githubUrl": "Personal",
+      "featured": false,
+      "deploymentUrl": "reactportfolio-repo.vercel.app"
+    }
+  ],
   "gallery": [],
   "contact": {
     "email": "your.email@example.com",
@@ -23,6 +47,6 @@
   },
   "settings": {
     "theme": "dark",
-    "pinHash": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08" 
+    "pinHash": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"
   }
 }
