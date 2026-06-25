@@ -25,18 +25,50 @@ export function AdminGraduationManager() {
     });
   };
 
+    /* 
+    SENIOR DEV HOOK: CELEBRATION PICTURE CANVAS ENGINE COMPRESSOR
+    Downscales your graduation banner imagery dynamically inside the browser 
+    before transmission to honor the 4.5MB Vercel serverless rule safely.
+  */
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onloadend = () => {
-      if (typeof reader.result === 'string') {
-        handleFieldUpdate('gcashUrl', reader.result);
-      }
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+        const MAX_DIM = 1000;
+
+        if (width > height) {
+          if (width > MAX_DIM) {
+            height = Math.round((height * MAX_DIM) / width);
+            width = MAX_DIM;
+          }
+        } else {
+          if (height > MAX_DIM) {
+            width = Math.round((width * MAX_DIM) / height);
+            height = MAX_DIM;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        ctx.drawImage(img, 0, 0, width, height);
+        const compressedBase64 = canvas.toDataURL('image/jpeg', 0.70);
+        handleFieldUpdate('gcashUrl', compressedBase64);
+      };
+      img.src = event.target?.result as string;
     };
     reader.readAsDataURL(file);
   };
+
 
   return (
     <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 space-y-6 text-zinc-100">

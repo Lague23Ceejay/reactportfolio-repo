@@ -12,13 +12,55 @@ export function AdminGalleryManager() {
     new Set(draft.gallery.map(item => item.category).filter(Boolean))
   );
 
+    /* 
+    SENIOR DEV HOOK: ASYNCHRONOUS GRAPHICS COMPRESSOR ENGINE
+    Intercepts large raw camera photos, clips maximum resolution dimension frames to 1000px, 
+    and compresses JPEG quality vectors down to 0.7. This shrinks a 6MB raw upload down 
+    to a featherweight ~150KB string, completely bypassing Vercel's 413 serverless limits!
+  */
   const processImageUpload = (e: React.ChangeEvent<HTMLInputElement>, callback: (base64: string) => void) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
     const reader = new FileReader();
-    reader.onloadend = () => callback(reader.result as string);
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+        const MAX_DIM = 1000; // Optimal web container bounding scale limit
+
+        // Maintain aspect ratios cleanly during mathematical downsizing
+        if (width > height) {
+          if (width > MAX_DIM) {
+            height = Math.round((height * MAX_DIM) / width);
+            width = MAX_DIM;
+          }
+        } else {
+          if (height > MAX_DIM) {
+            width = Math.round((width * MAX_DIM) / height);
+            height = MAX_DIM;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        // Draw downscaled frame vectors smoothly inside the canvas context
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // Export highly compressed light web data layers directly to the callback pipeline
+        const compressedBase64 = canvas.toDataURL('image/jpeg', 0.70);
+        callback(compressedBase64);
+      };
+      img.src = event.target?.result as string;
+    };
     reader.readAsDataURL(file);
   };
+
 
   return (
     <div className="space-y-6 pt-4 animate-fadeIn">
