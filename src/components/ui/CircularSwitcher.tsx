@@ -20,17 +20,13 @@ export const CircularSwitcher: React.FC = () => {
 
   return (
     /* 
-      SENIOR LAYOUT MATRIX:
-      - Desktop view: Stays locked in the bottom-right corner to prevent mouse tracking glitches.
-      - Mobile view: Centered layout activates ONLY when open to keep smartphone targets comfortable.
+      SENIOR LAYOUT SYNCHRONIZATION:
+      - Both desktop and phone layouts are locked into the bottom-right corner.
+      - Removed the full-screen dimming overlay completely to keep the mobile experience lightweight.
+      - Pointer highlight kills prevent box artifacts from appearing on phone view taps.
     */
     <div 
-      onClick={() => setIsActivated(false)}
-      className={`fixed flex items-center justify-center select-none touch-none transition-all duration-500 ease-out ${
-        isActivated 
-          ? 'inset-0 w-screen h-screen bg-black/55 backdrop-blur-sm md:bg-transparent md:backdrop-blur-none md:inset-auto md:bottom-8 md:right-8 md:w-24 md:h-24' 
-          : 'bottom-8 right-8 w-20 h-20'
-      }`}
+      className="fixed bottom-8 right-8 w-20 h-20 flex items-center justify-center select-none"
       style={{
         zIndex: 99999,
         pointerEvents: 'auto',
@@ -42,18 +38,20 @@ export const CircularSwitcher: React.FC = () => {
         setIsActivated(false);
         setHoveredDimension(null);
       }}
+      // Mobile tap toggle helper ensures the menu functions reliably on phone screens
+      onClick={(e) => {
+        e.stopPropagation();
+        setIsActivated(!isActivated);
+      }}
     >
       {/* RADIALLY DISTRIBUTED SWITCHER DOTS */}
       <AnimatePresence>
         {isActivated && (
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-auto md:w-full md:h-full">
+          <div className="absolute inset-0 w-full h-full flex items-center justify-center pointer-events-auto">
             {dimensions.map((dim, i) => {
+              // Calculate tight, clustered corner spacing angles
               const angle = (i * 2 * Math.PI) / dimensions.length - Math.PI / 2;
-              
-              // CROSS-DEVICE RADIAL TUNING:
-              // Gives mobile buttons room in the center, and clusters tightly on desktop corners
-              const radius = typeof window !== 'undefined' && window.innerWidth < 768 ? 115 : 68;
-              
+              const radius = 68; // Compact radial sweep optimized for the corner anchor
               const targetColors = switcherColorMap[dim];
 
               return (
@@ -84,15 +82,15 @@ export const CircularSwitcher: React.FC = () => {
                     triggerHop(dim);
                     setIsActivated(false);
                   }}
-                  className="absolute w-16 h-16 md:w-14 md:h-14 rounded-full flex flex-col items-center justify-center shadow-2xl border border-white/10 overflow-hidden group select-none cursor-pointer transition-transform duration-200 outline-none"
+                  className="absolute w-14 h-14 rounded-full flex flex-col items-center justify-center shadow-2xl border border-white/10 overflow-hidden group select-none cursor-pointer transition-transform duration-200 outline-none"
                   style={{ 
                     backgroundColor: targetColors.mainBg,
                     WebkitTapHighlightColor: 'transparent',
                     outline: 'none'
                   }}
                 >
-                  <FiLayers className="text-lg md:text-sm mb-0.5" style={{ color: targetColors.iconColor }} />
-                  <span className="text-[9px] md:text-[8px] font-extrabold tracking-wider uppercase font-sans" style={{ color: targetColors.iconColor }}>
+                  <FiLayers className="text-sm mb-0.5" style={{ color: targetColors.iconColor }} />
+                  <span className="text-[8px] font-extrabold tracking-wider uppercase font-sans" style={{ color: targetColors.iconColor }}>
                     {targetColors.label}
                   </span>
                 </motion.button>
@@ -105,33 +103,22 @@ export const CircularSwitcher: React.FC = () => {
       {/* CORE TRIGGER ACTUATOR HEAD */}
       <motion.button
         type="button"
-        onClick={(e) => {
-          e.stopPropagation();
-          setIsActivated(!isActivated);
-        }}
-        /*
-          CROSS-DEVICE ANIMATION MATRIX:
-          Framer-motion spring dynamics stay perfectly still on desktop view, 
-          but glide gracefully to the center on mobile screens.
-        */
         animate={{ 
-          scale: isActivated ? 1.15 : 1.0,
-          rotate: isActivated ? 45 : 0,
-          x: isActivated && typeof window !== 'undefined' && window.innerWidth < 768 ? 0 : 0,
-          y: isActivated && typeof window !== 'undefined' && window.innerWidth < 768 ? 0 : 0
+          scale: isActivated ? 1.12 : 1.0,
+          rotate: isActivated ? 45 : 0 
         }}
         transition={{ type: 'spring', stiffness: 220, damping: 24 }}
         style={{ 
           backgroundColor: currentThemeColors.mainBg, 
           boxShadow: isActivated 
-            ? `0 15px 45px rgba(0,0,0,0.4), 0 0 30px ${currentThemeColors.mainBg}20` 
+            ? `0 12px 35px rgba(0,0,0,0.35), 0 0 25px ${currentThemeColors.mainBg}20` 
             : '0 6px 20px rgba(0,0,0,0.15)',
           WebkitTapHighlightColor: 'transparent',
           outline: 'none'
         }}
-        className="w-16 h-16 md:w-14 md:h-14 rounded-full flex flex-col items-center justify-center shadow-2xl cursor-pointer relative z-10 border border-white/10 outline-none select-none"
+        className="w-14 h-14 rounded-full flex flex-col items-center justify-center shadow-2xl cursor-pointer relative z-10 border border-white/10 outline-none select-none"
       >
-        <FiLayers className="text-xl md:text-lg" style={{ color: currentThemeColors.iconColor }} />
+        <FiLayers className="text-lg" style={{ color: currentThemeColors.iconColor }} />
       </motion.button>
     </div>
   );
