@@ -34,7 +34,7 @@ export function Navbar() {
     },
     arctic: {
       headerScrolled: 'bg-[#0a0514]/80 backdrop-blur-md border-b border-[#B069DB]/40 shadow-[0_4px_20px_rgba(176,105,219,0.15)]',
-      headerUnscrolled: 'bg-transparent',
+      headerUnscrolled: 'bg-[#6E00B3]',
       logo: 'hover:text-cyan-400 text-slate-100',
       logoDot: 'text-[#B069DB]',
       linksDefault: 'text-slate-400 hover:text-cyan-400',
@@ -44,7 +44,7 @@ export function Navbar() {
     },
     creamy: {
       headerScrolled: 'bg-[#FFFFC5] border-b border-stone-200/50 shadow-[0_4px_25px_rgba(255,238,140,0.5)] text-stone-900',
-      headerUnscrolled: 'bg-[#F2FAFF]', 
+      headerUnscrolled: 'bg-[#FFFFC5]', 
       logo: 'hover:text-stone-900 text-stone-800',
       logoDot: 'text-rose-500',
       linksDefault: 'text-stone-600 hover:text-stone-900',
