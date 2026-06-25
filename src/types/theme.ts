@@ -10,11 +10,14 @@ export interface ThemePack {
   cardClass: string;
   fontClass: string;
   cursor: {
-    type: 'line' | 'dot' | 'target'; // Supported variants
+    type: 'line' | 'target' | 'dot';
     color: string;
     glow: string;
     trail: boolean;
   };
   motionSpeed: number;
   ease: string;
+  // SENIOR DEV TYPE OVERRIDES: Clear the 'does not exist on type ThemePack' error
+  textPrimary: string;
+  textSecondary: string;
 }

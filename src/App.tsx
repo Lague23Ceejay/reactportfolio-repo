@@ -43,40 +43,39 @@ export default function App() {
 
   return (
     /* 
-      SENIOR DEV HOOK: Dimensional layout wrapper layer.
+      SENIOR DEV HOOK: Active dimensional layout wrapper layer container view.
       The transition handling guarantees background tones and typography weights shift dynamically.
     */
     <div className={`relative min-h-screen overflow-x-hidden transition-all duration-500 ease-in-out ${pack.bgClass} ${pack.fontClass}`}>
       
-      {/* 
-        SENIOR DEV FIX: Explicit absolute stacking layout layer.
-        By placing this wrapper at z-10 on top of the bgClass but below the z-20 content tree,
-        the particles are guaranteed to shine through cleanly without getting hidden.
+     {/* 
+        SENIOR CELESTIAL CONFIGURATION:
+        - particleBaseSize set to 12.0 so stars pop elegantly to the naked eye.
+        - sizeRandomness set to 3.5 to create distinct organic size variations (micro specks to full moons).
+        - particleHoverFactor set to 1.5 for a controlled, immersive parallax tilt rate.
       */}
       {currentDimension === 'cosmic' && (
-        <div className="absolute inset-0 w-full h-full pointer-events-none z-10 overflow-hidden opacity-90">
-          <Particles
-            particleColors={["#10b981", "#34d399", "#ffffff", "#059669"]}
-            particleCount={360}         // High-density space star counts
-            particleSpread={12}         // Spatial coordinate depth limit
-            speed={0.12}                // Slower majestic drifting velocity
-            particleBaseSize={22}       // CRITICAL SENIOR FIX: Sized down into crisp, tiny little balls
-            sizeRandomness={0.85}       // Mix of pinpricks and bright spheres
-            moveParticlesOnHover={true} // Enabled mouse interactive physics tracking
-            particleHoverFactor={1.4}   // Interactive cursor parallax response
-            alphaParticles={true}       // Activates smooth alpha transparency blending
-            disableRotation={false}
-            pixelRatio={1}              // Forces clean explicit WebGL pixel mapping
-          />
-        </div>
+        <Particles
+          particleColors={["#ffffff", "#ffffff", "#f8fafc", "#cbd5e1"]}
+          particleCount={160}         // Perfectly balances starry distribution density
+          particleSpread={15}         // Deep-space frame layout size
+          speed={0.03}                // Majestic, slow-motion orbital drift
+          particleBaseSize={12}       // FIX: Upscaled base to reveal stars cleanly to the naked eye
+          sizeRandomness={3.5}        // FIX: High variation to generate distinct mixed sizing nodes
+          moveParticlesOnHover={true} // Camera tracking parallax active
+          particleHoverFactor={1.5}   // Controlled slide speed in the opposite direction
+          alphaParticles={true}       // Crisp round anti-aliasing edges
+          disableRotation={false}     // Keeps background rotation alive
+          pixelRatio={1}
+        />
       )}
 
       {/* 
-        SENIOR DEV FIX: Pushed the layout stack up to relative z-20 
-        so that text and section elements float neatly over the WebGL background layer.
+        SENIOR DEV FIX: Pushed content matrix up to transparent layering z-10 index.
+        This isolates your section graphics without clipping the fixed viewport canvas background.
       */}
       <div 
-        className="w-full min-h-screen transition-all transform-3d will-change-[transform,filter,opacity] relative z-20"
+        className="w-full min-h-screen transition-all transform-3d will-change-[transform,filter,opacity] relative z-10"
         style={{ 
           // Applies your speed modifier (Cosmic = snappy, Creamy = floaty, Arctic = ultra-fast)
           transitionDuration: `${pack.motionSpeed * 600}ms`,

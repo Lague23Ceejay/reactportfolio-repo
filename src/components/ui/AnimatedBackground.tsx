@@ -7,6 +7,7 @@ interface Particle {
   vy: number;
   radius: number;
   alpha: number;
+  color: string; // SENIOR DEV FIX: Added semantic color assignment to map palette arrays
 }
 
 export function AnimatedBackground() {
@@ -20,7 +21,12 @@ export function AnimatedBackground() {
 
     let animationFrameId: number;
     let particles: Particle[] = [];
-    const particleCount = 60; // Locked down for high-FPS performance mapping
+    const particleCount = 70; // Optimized distribution layer density
+
+    // NEON-WAVE PALETTE MATRIX:
+    // Captures the exact combination from your reference image:
+    // Electric Cyan, Hot Synth-Orange, and your explicit Orchid Purple (#B069DB)
+    const neonPalette = ["#22d3ee", "#ff6b35", "#B069DB", "#ff9f1c", "#b069db"];
 
     const resizeCanvas = () => {
       canvas.width = window.innerWidth;
@@ -33,10 +39,11 @@ export function AnimatedBackground() {
         particles.push({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
-          vx: (Math.random() - 0.5) * 0.3, // Subtle slow drift velocity
-          vy: (Math.random() - 0.5) * 0.3,
-          radius: Math.random() * 2 + 1,
-          alpha: Math.random() * 0.5 + 0.1,
+          vx: (Math.random() - 0.5) * 0.4, // Fluid, low-latency drift speed
+          vy: (Math.random() - 0.5) * 0.4,
+          radius: Math.random() * 2.5 + 1.5, // Varied, clear sizes visible to the naked eye
+          alpha: Math.random() * 0.6 + 0.2, // Vibrant base opacity mappings
+          color: neonPalette[Math.floor(Math.random() * neonPalette.length)]
         });
       }
     };
@@ -44,27 +51,38 @@ export function AnimatedBackground() {
     const drawLoop = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
-      // Draw background space tint gradient ambient
+      // SENIOR DEV BACKGROUND GRADIENT RE-CALIBRATION:
+      // Swapped out legacy gray tones for a deep cyber-twilight radial mask.
+      // This dark backing lets the neon colors pop with a realistic glowing depth!
       const gradient = ctx.createRadialGradient(
         canvas.width / 2, canvas.height / 2, 10,
         canvas.width / 2, canvas.height / 2, Math.max(canvas.width, canvas.height)
       );
-      gradient.addColorStop(0, '#09090b'); // zinc-950 base
-      gradient.addColorStop(1, '#020204'); 
+      gradient.addColorStop(0, '#04010a'); // Deep magenta-tinted black core
+      gradient.addColorStop(1, '#010003'); // Fades out to a pure pitch-black space frame
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Render drifting particles
+      // Render glowing drifting neon particles
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
+        
+        ctx.save(); // Isolate the neon bloom matrix settings
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
         
-        // Dynamically applies emerald tint profile matching configuration styles
-        ctx.fillStyle = `rgba(52, 211, 153, ${p.alpha})`; 
+        // ACTIVE ACCENT PROFILING GLOW FX:
+        // Converts the canvas coordinate point into a high-intensity neon emitter,
+        // bleeding orchid purple, hot orange, and cyan light rings onto your webpage base.
+        ctx.shadowBlur = 18;
+        ctx.shadowColor = p.color;
+        
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = p.alpha;
         ctx.fill();
+        ctx.restore(); // Terminate state overrides to maintain high-FPS rendering stability
 
-        // Increment linear spatial position map variations
+        // Increment position maps
         p.x += p.vx;
         p.y += p.vy;
 
@@ -82,7 +100,7 @@ export function AnimatedBackground() {
     createParticles();
     drawLoop();
 
-    // Prevent severe single page application context memory leaks
+    // Prevent single-page application memory leaks
     return () => {
       window.removeEventListener('resize', resizeCanvas);
       cancelAnimationFrame(animationFrameId);

@@ -1,3 +1,7 @@
+/* 
+  SENIOR DEV FIX: Cleared Tailwind v4 migration errors.
+  Replaced legacy v3 @tailwind directives with a clean, single v4 import statement.
+*/
 @import "tailwindcss";
 
 @theme {
@@ -5,15 +9,13 @@
   --color-zinc-950: #09090b;
 }
 
-/* Global Reset Optimization Matrices */
-@layer base {
-  html {
-    scroll-behavior: smooth;
-    background-color: #09090b;
-  }
+/* Base resets apply directly in v4 (removed @layer base entirely) */
+html {
+  scroll-behavior: smooth;
+  background-color: #09090b;
 }
 
-/* Custom Utilities for Nesting Lists inside Console Box */
+/* Custom Scrollbar Utilities */
 .custom-scrollbar::-webkit-scrollbar {
   width: 4px;
 }
@@ -24,6 +26,7 @@
   background: #27272a;
   border-radius: 9999px;
 }
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }
@@ -32,10 +35,10 @@
 .animate-fadeIn {
   animation: fadeIn 0.3s cubic-bezier(0.21, 1.02, 0.43, 1.01) forwards;
 }
-/* Force Devicon vector shapes to render font glyph frames properly */
+
+/* Devicon Vector Alignment Override */
 .colored, [class^="devicon-"], [class*=" devicon-"] {
   font-family: "devicon" !important;
-  speak: none;
   font-style: normal !important;
   font-weight: normal !important;
   font-variant: normal !important;
@@ -43,14 +46,10 @@
   line-height: 1;
   -webkit-font-smoothing: antialiased;
   display: inline-block !important;
+  speak-as: none; /* Modern standard compliant alternative for old icon fonts */
 }
-.custom-scrollbar::-webkit-scrollbar {
-  width: 4px;
-}
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-}
+
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: var(--color-zinc-800);
+  background: #27272a;
   border-radius: 9999px;
 }
