@@ -43,12 +43,35 @@ export function AdminOverlay() {
     }
   };
 
-  const processImageUpload = (e: React.ChangeEvent<HTMLInputElement>, callback: (base64: string) => void) => {
+  const readImageFileAsDataURL = (file: File): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (typeof reader.result === 'string') {
+          resolve(reader.result);
+        } else {
+          reject(new Error('Failed to read image data.'));
+        }
+      };
+      reader.onerror = () => reject(reader.error ?? new Error('Image file read failed.'));
+      reader.readAsDataURL(file);
+    });
+
+  const processImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, callback: (base64: string) => void) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onloadend = () => callback(reader.result as string);
-    reader.readAsDataURL(file);
+
+    if (!file.type.startsWith('image/')) {
+      alert('Please select a valid image file.');
+      return;
+    }
+
+    try {
+      const dataUrl = await readImageFileAsDataURL(file);
+      callback(dataUrl);
+    } catch (err: any) {
+      alert(`Image reading failed: ${err?.message ?? 'Unknown error'}`);
+    }
   };
 
   const handleSaveChanges = async () => {

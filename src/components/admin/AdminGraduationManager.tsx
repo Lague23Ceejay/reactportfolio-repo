@@ -7,7 +7,7 @@ export function AdminGraduationManager() {
 
   if (!draft) return null;
   
-  const graduation = draft.graduation || {
+  const defaultGraduation = {
     isEnabled: true,
     badgeText: "Class of 2026 Launch Pad",
     title: "Welcome to My Digital Portal! 👋",
@@ -16,26 +16,42 @@ export function AdminGraduationManager() {
     gcashUrl: "" // This holds your base64 uploaded picture
   };
 
+  const graduation = draft.graduation ?? defaultGraduation;
+
   const handleFieldUpdate = (name: string, value: string | boolean) => {
     updateDraft((currentDraft) => {
       currentDraft.graduation = {
-        ...graduation,
-        [name]: value
+        ...(currentDraft.graduation ?? defaultGraduation),
+        [name]: value,
       };
     });
   };
 
-    /* 
-    SENIOR DEV HOOK: CELEBRATION PICTURE CANVAS ENGINE COMPRESSOR
-    Downscales your graduation banner imagery dynamically inside the browser 
-    before transmission to honor the 4.5MB Vercel serverless rule safely.
-  */
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const readImageFileAsDataURL = (file: File): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (typeof reader.result === 'string') {
+          resolve(reader.result);
+        } else {
+          reject(new Error('Failed to read image data.'));
+        }
+      };
+      reader.onerror = () => reject(reader.error ?? new Error('Image file read failed.'));
+      reader.readAsDataURL(file);
+    });
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = (event) => {
+    if (!file.type.startsWith('image/')) {
+      alert('Please select a valid image file.');
+      return;
+    }
+
+    try {
+      const dataUrl = await readImageFileAsDataURL(file);
       const img = new Image();
       img.onload = () => {
         const canvas = document.createElement('canvas');
@@ -48,25 +64,28 @@ export function AdminGraduationManager() {
             height = Math.round((height * MAX_DIM) / width);
             width = MAX_DIM;
           }
-        } else {
-          if (height > MAX_DIM) {
-            width = Math.round((width * MAX_DIM) / height);
-            height = MAX_DIM;
-          }
+        } else if (height > MAX_DIM) {
+          width = Math.round((width * MAX_DIM) / height);
+          height = MAX_DIM;
         }
 
         canvas.width = width;
         canvas.height = height;
         const ctx = canvas.getContext('2d');
-        if (!ctx) return;
+        if (!ctx) {
+          alert('Unable to process the image for upload.');
+          return;
+        }
 
         ctx.drawImage(img, 0, 0, width, height);
-        const compressedBase64 = canvas.toDataURL('image/jpeg', 0.70);
+        const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
         handleFieldUpdate('gcashUrl', compressedBase64);
       };
-      img.src = event.target?.result as string;
-    };
-    reader.readAsDataURL(file);
+      img.onerror = () => alert('Unable to load the selected image file.');
+      img.src = dataUrl;
+    } catch (err: any) {
+      alert(`Image processing failed: ${err?.message ?? 'Unknown error'}`);
+    }
   };
 
 

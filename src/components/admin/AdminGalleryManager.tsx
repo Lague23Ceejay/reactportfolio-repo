@@ -18,12 +18,31 @@ export function AdminGalleryManager() {
     and compresses JPEG quality vectors down to 0.7. This shrinks a 6MB raw upload down 
     to a featherweight ~150KB string, completely bypassing Vercel's 413 serverless limits!
   */
-  const processImageUpload = (e: React.ChangeEvent<HTMLInputElement>, callback: (base64: string) => void) => {
+  const readImageFileAsDataURL = (file: File): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (typeof reader.result === 'string') {
+          resolve(reader.result);
+        } else {
+          reject(new Error('Failed to read image data.'));
+        }
+      };
+      reader.onerror = () => reject(reader.error ?? new Error('Image file read failed.'));
+      reader.readAsDataURL(file);
+    });
+
+  const processImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, callback: (base64: string) => void) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = (event) => {
+    if (!file.type.startsWith('image/')) {
+      alert('Please select a valid image file.');
+      return;
+    }
+
+    try {
+      const dataUrl = await readImageFileAsDataURL(file);
       const img = new Image();
       img.onload = () => {
         const canvas = document.createElement('canvas');
@@ -31,34 +50,33 @@ export function AdminGalleryManager() {
         let height = img.height;
         const MAX_DIM = 1000; // Optimal web container bounding scale limit
 
-        // Maintain aspect ratios cleanly during mathematical downsizing
         if (width > height) {
           if (width > MAX_DIM) {
             height = Math.round((height * MAX_DIM) / width);
             width = MAX_DIM;
           }
-        } else {
-          if (height > MAX_DIM) {
-            width = Math.round((width * MAX_DIM) / height);
-            height = MAX_DIM;
-          }
+        } else if (height > MAX_DIM) {
+          width = Math.round((width * MAX_DIM) / height);
+          height = MAX_DIM;
         }
 
         canvas.width = width;
         canvas.height = height;
         const ctx = canvas.getContext('2d');
-        if (!ctx) return;
+        if (!ctx) {
+          alert('Unable to process the image for upload.');
+          return;
+        }
 
-        // Draw downscaled frame vectors smoothly inside the canvas context
         ctx.drawImage(img, 0, 0, width, height);
-
-        // Export highly compressed light web data layers directly to the callback pipeline
         const compressedBase64 = canvas.toDataURL('image/jpeg', 0.70);
         callback(compressedBase64);
       };
-      img.src = event.target?.result as string;
-    };
-    reader.readAsDataURL(file);
+      img.onerror = () => alert('Unable to load the selected image file.');
+      img.src = dataUrl;
+    } catch (err: any) {
+      alert(`Image processing failed: ${err?.message ?? 'Unknown error'}`);
+    }
   };
 
 
