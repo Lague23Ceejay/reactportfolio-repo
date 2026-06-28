@@ -3,55 +3,40 @@
 import { put } from '@vercel/blob';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
-/* ==========================================================================
-   1. RUNTIME SERVERLESS MIDDLEWARE PARSER CONFIGURATION
-   ========================================================================== */
 export const config = {
   api: {
-    // 🚀 CRITICAL OVERRIDE: Disabling internal body parsers completely.
-    // This stops Vercel from trying to parse the binary image stream into text,
-    // letting us read the incoming stream directly as raw hardware binary data chunks.
-    bodyParser: false,
+    bodyParser: false, // Reads raw binary data chunk streams directly
   },
 };
 
-/* ==========================================================================
-   2. CORE MEDIA INGESTION SERVERLESS ROUTE HANDLER
-   ========================================================================== */
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  // Enforce rigid request method safety validations
   if (req.method !== 'POST') {
     res.setHeader('Allow', ['POST']);
     return res.status(405).json({ error: `HTTP Method ${req.method} not allowed.` });
   }
 
   try {
-    // Extract our custom target header metadata values dropped from our useImageUpload hook
     const filename = (req.headers['x-filename'] as string) || `upload-${Date.now()}.webp`;
     const contentType = req.headers['content-type'] || 'image/webp';
 
     /* ==========================================================================
-       3. DIRECT DISTRIBUTED STORAGE STREAM MUTATION
+       🚀 MODIFIED: REMOVED MANUAL TOKEN BINDING KEY FOR OIDC COMPATIBILITY
        ========================================================================== */
-    // Pump the incoming raw binary stream directly into Vercel's storage backend.
-    // The put() function automatically consumes the VercelRequest object as a raw stream.
+    // The put utility automatically consumes the local Vercel OIDC Token variables
+    // dropped by your env pull tool without needing manual environment token assignments.
     const blobResult = await put(filename, req, {
-      access: 'public', // Ensures public URL paths are generated for your image tags
-      contentType: contentType, // Forces standard browser content delivery types
-      addRandomSuffix: true, // Prevents collisions by appending a hash identifier
-      // Injected automatically on Vercel production platforms. 
-      // Locally, it reads from your pulled .env file configurations.
-      token: process.env.BLOB_READ_WRITE_TOKEN, 
+      access: 'public',
+      contentType: contentType,
+      addRandomSuffix: true,
     });
 
-    // Respond with a clean 200 payload dropping our production CDN edge route string link
     return res.status(200).json(blobResult);
 
   } catch (error: any) {
-    console.error("Vercel Blob serverless ingestion subsystem exception:", error);
+    console.error("Vercel Blob serverless ingestion error:", error);
     return res.status(500).json({ 
-      error: "Internal Media Storage Exception Context", 
-      message: error?.message || "Unknown proxy pipeline fault." 
+      error: "Internal Media Storage Exception", 
+      message: error?.message || "OIDC pipeline streaming fault." 
     });
   }
 }
