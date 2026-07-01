@@ -3,7 +3,8 @@
     "name": "Christian John K. Lague",
     "title": "Bachelor of Science in Information Systems",
     "tagline": "Building responsive, modern, and interactive digital ecosystems.",
-    "profileImage": "https://w4huipym72sb25c6.public.blob.vercel-storage.com/1782642859889-1-11rt--1--WOQVZTiAV3fJegcNISEhtDZDG1Pjgd.webp"
+    "profileImage": "https://w4huipym72sb25c6.public.blob.vercel-storage.com/1782642859889-1-11rt--1--WOQVZTiAV3fJegcNISEhtDZDG1Pjgd.webp",
+    "profileImageSecondary": "https://w4huipym72sb25c6.public.blob.vercel-storage.com/1782880644316-1000150381-Hrf7zxrEcHfaTQu8pLCjBeC7xBkSxz.webp"
   },
   "about": {
     "bio": "Passionate developer focusing on scalable web apps and smooth user experiences.",
@@ -52,16 +53,16 @@
       "cosmic": "/audio/cosmic.mp3",
       "creamy": "/audio/creamy.mp3",
       "arctic": "/audio/arctic.mp3"
+    },
+    "graduation": {
+      "isEnabled": true,
+      "badgeText": "Class of 2026 Launch Pad",
+      "title": "Welcome to My Digital Portal! 👋",
+      "subtitle": "BS in Information Systems — Graduating Tomorrow!",
+      "message": "Technology is most powerful when it serves people. My goal is to build clean, efficient systems that simplify complex problems and make everyday digital experiences better.",
+      "gcashUrl": ""
+    }
   },
-  "graduation": {
-    "isEnabled": true,
-    "badgeText": "Class of 2026 Launch Pad",
-    "title": "Welcome to My Digital Portal! 👋",
-    "subtitle": "BS in Information Systems — Graduating Tomorrow!",
-    "message": "Technology is most powerful when it serves people. My goal is to build clean, efficient systems that simplify complex problems and make everyday digital experiences better.",
-    "gcashUrl": ""
-  }
-},
   "theme": {
     "currentDimension": "cosmic",
     "isTransitioning": false,
