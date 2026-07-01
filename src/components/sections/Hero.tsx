@@ -93,29 +93,22 @@ export function Hero() {
           className={`w-64 h-64 md:w-72 md:h-72 rounded-full border flex items-center justify-center text-center transition-all duration-500 relative z-10 overflow-hidden ${avatarBg}`}
         >
           {profileImage ? (
-            /* ==========================================================================
-               🚀 REFACTORED ELEMENT MOUNT: AUTOMATED STRUCTURAL STAGGER TRANSITION
-               ========================================================================== */
+            /* 🚀 REFACTORED ELEMENT MOUNT: AUTOMATED DUAL-IMAGE GLITCH CROSSFADER */
             <PixelImageTransition 
-              gridSize={10}                    // Matrix grid block density complexity setting
-              animationStepDuration={0.25}     // Snappy, fast-paced pixel fade timing scale
-              intervalDuration={1500}          // Loops and changes precisely every 1.5 seconds
-              aspectRatio="100%"
-              // Injects the current background canvas hex signature code to match active dimension spaces
-              pixelColor={currentDimension === 'creamy' ? '#8FD9FB' : currentDimension === 'arctic' ? '#030006' : '#09090b'}
+              intervalDuration={3000} // 🕒 Glitches and swaps exactly every 3 seconds!
               firstContent={
                 <img 
                   src={profileImage} 
-                  alt={`${name} Primary Profile`} 
-                  className="w-full h-full object-cover rounded-full select-none pointer-events-none" 
+                  alt="Primary Profile Avatar" 
+                  className="hidden" // Kept hidden, canvas reads the source url tracking references natively
                 />
               }
               secondContent={
                 data?.hero?.profileImageSecondary ? (
                   <img 
                     src={data.hero.profileImageSecondary} 
-                    alt={`${name} Secondary Profile`} 
-                    className="w-full h-full object-cover rounded-full select-none pointer-events-none" 
+                    alt="Secondary Profile Avatar" 
+                    className="hidden"
                   />
                 ) : undefined
               }

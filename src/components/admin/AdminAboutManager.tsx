@@ -1,3 +1,5 @@
+// src/components/admin/AdminAboutManager.tsx
+
 import { usePortfolioStore } from '../../store/portfolioStore';
 import { renderIconSVG } from '../ui/CardSwapDeck';
 
@@ -44,48 +46,69 @@ export function AdminAboutManager() {
             <span className="text-xs font-mono font-medium text-zinc-400">Technical Skill Vector Deck</span>
             <button
               type="button"
-              onClick={() => updateDraft(d => { d.about.skills.push({ name: "New Skill Title", iconCode: "react" }); })}
+              onClick={() => updateDraft(d => { d.about.skills.push({ name: "New Skill Title", iconCode: "react", description: "" }); })}
               className="text-[10px] font-mono bg-zinc-800 hover:bg-zinc-700 text-zinc-300 px-2 py-1 rounded border border-zinc-700/60 transition-colors cursor-pointer"
             >
               + Add Tech Badge
             </button>
           </div>
 
-          <div className="grid gap-3 max-h-[250px] overflow-y-auto pr-1 custom-scrollbar">
+          <div className="grid gap-3 max-h-[350px] overflow-y-auto pr-1 custom-scrollbar">
             {draft.about.skills.map((skill, sIdx) => (
-              <div key={sIdx} className="flex flex-col sm:flex-row sm:items-center gap-3 bg-zinc-900/40 border border-zinc-800/80 p-3 rounded-xl group relative">
-                <div className="w-10 h-10 bg-zinc-950 rounded-lg border border-zinc-800 flex items-center justify-center shrink-0">
-                  {renderIconSVG(skill.iconCode)}
-                </div>
+              <div key={sIdx} className="flex flex-col bg-zinc-900/40 border border-zinc-800/80 p-3 rounded-xl group relative gap-3">
                 
-                <div className="grid grid-cols-2 gap-3 flex-1">
-                  <div className="space-y-0.5">
-                    <label className="text-[9px] font-mono text-zinc-500 uppercase">Public Display Name</label>
-                    <input 
-                      type="text"
-                      value={skill.name}
-                      onChange={(e) => updateDraft(d => { d.about.skills[sIdx].name = e.target.value; })}
-                      className="w-full bg-zinc-950 border border-zinc-800/50 p-2 rounded-lg text-xs font-mono text-zinc-200 outline-none"
-                    />
+                {/* UPPER CONTROL PANEL ROW CONTAINER */}
+                <div className="flex items-center gap-3 w-full">
+                  <div className="w-10 h-10 bg-zinc-950 rounded-lg border border-zinc-800 flex items-center justify-center shrink-0">
+                    {renderIconSVG(skill.iconCode)}
                   </div>
-                  <div className="space-y-0.5">
-                    <label className="text-[9px] font-mono text-zinc-500 uppercase">Icon Code / Keyword</label>
-                    <input 
-                      type="text"
-                      value={skill.iconCode}
-                      onChange={(e) => updateDraft(d => { d.about.skills[sIdx].iconCode = e.target.value; })}
-                      className="w-full bg-zinc-950 border border-zinc-800/50 p-2 rounded-lg text-xs font-mono text-emerald-400 outline-none"
-                    />
+                  
+                  <div className="grid grid-cols-2 gap-3 flex-1">
+                    <div className="space-y-0.5">
+                      <label className="text-[9px] font-mono text-zinc-500 uppercase">Public Display Name</label>
+                      <input 
+                        type="text"
+                        value={skill.name}
+                        onChange={(e) => updateDraft(d => { d.about.skills[sIdx].name = e.target.value; })}
+                        className="w-full bg-zinc-950 border border-zinc-800/50 p-2 rounded-lg text-xs font-mono text-zinc-200 outline-none"
+                      />
+                    </div>
+                    <div className="space-y-0.5">
+                      <label className="text-[9px] font-mono text-zinc-500 uppercase">Icon Code / Keyword</label>
+                      <input 
+                        type="text"
+                        value={skill.iconCode}
+                        onChange={(e) => updateDraft(d => { d.about.skills[sIdx].iconCode = e.target.value; })}
+                        className="w-full bg-zinc-950 border border-zinc-800/50 p-2 rounded-lg text-xs font-mono text-emerald-400 outline-none"
+                      />
+                    </div>
                   </div>
+
+                  <button
+                    type="button"
+                    onClick={() => updateDraft(d => { d.about.skills.splice(sIdx, 1); })}
+                    className="text-zinc-600 hover:text-red-400 text-xs font-mono px-2 cursor-pointer shrink-0"
+                  >
+                    ✕
+                  </button>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={() => updateDraft(d => { d.about.skills.splice(sIdx, 1); })}
-                  className="text-zinc-600 hover:text-red-400 text-xs font-mono px-2 cursor-pointer"
-                >
-                  ✕
-                </button>
+                {/* ==========================================================================
+                   🚀 INTEGRATED: DYNAMIC DESCRIPTION PROFILE INPUT CARD
+                   ========================================================================== */}
+                <div className="space-y-0.5 w-full">
+                  <label className="text-[9px] font-mono text-zinc-500 uppercase block tracking-wider">
+                    Technology Summary / Profile Documentation Description
+                  </label>
+                  <textarea 
+                    rows={2}
+                    value={skill.description || ''} 
+                    placeholder="Provide context regarding your experience with this tech stack link loop..."
+                    onChange={(e) => updateDraft(d => { d.about.skills[sIdx].description = e.target.value; })} 
+                    className="w-full bg-zinc-950 p-2 border border-zinc-800/60 rounded-lg text-xs outline-none text-zinc-300 font-sans resize-none focus:border-emerald-500/20"
+                  />
+                </div>
+
               </div>
             ))}
           </div>

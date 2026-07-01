@@ -33,7 +33,7 @@ export interface GraduationData {
 export interface PortfolioData {
   hero: { name: string; title: string; tagline: string; profileImage: string; profileImageSecondary?: string; };
   graduation?: GraduationData;
-  about: { bio: string; skills: { name: string; iconCode: string }[] };
+  about: { bio: string; skills: { name: string; iconCode: string; description?: string; }[] };
   projects: ProjectItem[];
   gallery: GalleryItem[];
   contact: { email: string; github: string; linkedin: string; websiteUrl: string };
