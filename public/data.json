@@ -47,7 +47,11 @@
   },
   "settings": {
     "theme": "dark",
-    "pinHash": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"
+    "pinHash": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+    "audioTracks": {
+      "cosmic": "/audio/cosmic.mp3",
+      "creamy": "/audio/creamy.mp3",
+      "arctic": "/audio/arctic.mp3"
   },
   "graduation": {
     "isEnabled": true,
@@ -56,5 +60,11 @@
     "subtitle": "BS in Information Systems — Graduating Tomorrow!",
     "message": "Technology is most powerful when it serves people. My goal is to build clean, efficient systems that simplify complex problems and make everyday digital experiences better.",
     "gcashUrl": ""
+  }
+},
+  "theme": {
+    "currentDimension": "cosmic",
+    "isTransitioning": false,
+    "isAudioMuted": false
   }
 }

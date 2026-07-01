@@ -1,3 +1,5 @@
+// src/App.tsx
+
 import { usePortfolioData } from './hooks/usePortfolioData';
 import { usePortfolioStore } from './store/portfolioStore';
 import { Hero } from './components/sections/Hero';
@@ -11,14 +13,15 @@ import { ScrollReveal } from './components/ui/ScrollReveal';
 import { Footer } from './components/layout/Footer';
 import { Navbar } from './components/layout/Navbar';
 import { Particles } from './components/ui/Particles';
-
-// 🚀 SENIOR DEV MOUNT: New Celebratory Graduation Section Import
 import { GraduationFeature } from './components/sections/GraduationFeature';
 
 // DIMENSION HOP SYSTEM IMPORTS
 import { useThemeStore, dimensionPacks } from './store/themeStore';
 import { DimensionCursor } from './components/ui/DimensionCursor';
 import { CircularSwitcher } from './components/ui/CircularSwitcher';
+
+// 🚀 SENIOR DEV INJECTION: Import our dedicated hardware-accelerated canvas snow engine
+import { SnowParticles } from './components/ui/SnowParticles';
 
 export default function App() {
   usePortfolioData();
@@ -51,28 +54,35 @@ export default function App() {
     */
     <div className={`relative min-h-screen overflow-x-hidden transition-all duration-500 ease-in-out ${pack.bgClass} ${pack.fontClass}`}>
       
-     {/* 
-        SENIOR CELESTIAL CONFIGURATION:
-        - particleBaseSize set to 12.0 so stars pop elegantly to the naked eye.
-        - sizeRandomness set to 3.5 to create distinct organic size variations (micro specks to full moons).
-        - particleHoverFactor set to 1.5 for a controlled, immersive parallax tilt rate.
-      */}
+      {/* ==========================================================================
+         A. PORTAL BACKGROUND ANIMATION ENGINES
+         ========================================================================== */}
+      
+      {/* DIMENSION 1: COSMIC (Starfield Simulation Matrix) */}
       {currentDimension === 'cosmic' && (
         <Particles
           particleColors={["#ffffff", "#ffffff", "#f8fafc", "#cbd5e1"]}
-          particleCount={160}         // Perfectly balances starry distribution density
-          particleSpread={15}         // Deep-space frame layout size
-          speed={0.03}                // Majestic, slow-motion orbital drift
-          particleBaseSize={12}       // FIX: Upscaled base to reveal stars cleanly to the naked eye
-          sizeRandomness={3.5}        // FIX: High variation to generate distinct mixed sizing nodes
-          moveParticlesOnHover={true} // Camera tracking parallax active
-          particleHoverFactor={1.5}   // Controlled slide speed in the opposite direction
-          alphaParticles={true}       // Crisp round anti-aliasing edges
-          disableRotation={false}     // Keeps background rotation alive
+          particleCount={160}         
+          particleSpread={15}         
+          speed={0.03}                
+          particleBaseSize={12}       
+          sizeRandomness={3.5}        
+          moveParticlesOnHover={true} 
+          particleHoverFactor={1.5}   
+          alphaParticles={true}       
+          disableRotation={false}     
           pixelRatio={1}
         />
       )}
 
+      {/* 🚀 DIMENSION 2: CREAMY STUDIO (Hardware Accelerated Snow Particles)
+          This layer mounts and renders soft, drifting web-safe canvas flakes 
+          only when the visitor activates your pastel light mode studio portal. */}
+      {currentDimension === 'creamy' && <SnowParticles />}
+
+      {/* ==========================================================================
+         B. CORE CONTENT INTERFACE CONTAINER MATRIX
+         ========================================================================== */}
       {/* 
         SENIOR DEV FIX: Pushed content matrix up to transparent layering z-10 index.
         This isolates your section graphics without clipping the fixed viewport canvas background.
@@ -90,7 +100,7 @@ export default function App() {
       >
         <Navbar />
         
-        {/* The pixel matrix grid now mounts strictly inside the Neon Arctic view layout context */}
+        {/* DIMENSION 3: ARCTIC (The pixel grid matrix mounts strictly inside the Neon Arctic layout context) */}
         {currentDimension === 'arctic' && <AnimatedBackground />}
 
         <main className="relative z-10 max-w-6xl mx-auto px-4 space-y-40 py-32">
@@ -101,35 +111,35 @@ export default function App() {
             </div>
           </ScrollReveal>
           
-          {/* 🚀 GRADUATION SPECIAL ROW FEATURE MOUNT POINT */}
+          {/* GRADUATION SPECIAL FEATURE ROW BLOCK */}
           <ScrollReveal delay={0.15}>
             <div id="graduation">
               <GraduationFeature />
             </div>
           </ScrollReveal>
           
-          {/* Professional Bio Info */}
+          {/* Professional Bio Info Narrative Section */}
           <ScrollReveal delay={0.1}>
             <div id="about">
               <About />
             </div>
           </ScrollReveal>
           
-          {/* Selected Work Portfolios */}
+          {/* Selected Work Repositories and Progress Metrics */}
           <ScrollReveal>
             <div id="work">
               <Projects />
             </div>
           </ScrollReveal>
           
-          {/* Experimental Sandbox Galleries */}
+          {/* Experimental Sandbox Visual Asset Galleries */}
           <ScrollReveal>
             <div id="sandbox">
               <Gallery />
             </div>
           </ScrollReveal>
           
-          {/* Communication Links Row */}
+          {/* Communication and External Media Links Row */}
           <ScrollReveal>
             <div id="contact">
               <Contact />
@@ -140,7 +150,9 @@ export default function App() {
         <Footer />
       </div>
 
-      {/* Global Interactive HUD Elements Mount Point */}
+      {/* ==========================================================================
+         C. GLOBAL HEADS-UP DISPLAY & EXECUTIVE OPERATIVE OVERLAYS
+         ========================================================================== */}
       <CircularSwitcher />
       <DimensionCursor />
 

@@ -31,30 +31,21 @@ export interface GraduationData {
 }
 
 export interface PortfolioData {
-  hero: {
-    name: string;
-    title: string;
-    tagline: string;
-    profileImage: string;
-  };
-  graduation?: GraduationData; // 👈 Linked beautifully here!
-  about: {
-    bio: string;
-    skills: {
-      name: string;      
-      iconCode: string;  
-    }[];
-  };
+  hero: { name: string; title: string; tagline: string; profileImage: string };
+  graduation?: GraduationData;
+  about: { bio: string; skills: { name: string; iconCode: string }[] };
   projects: ProjectItem[];
   gallery: GalleryItem[];
-  contact: {
-    email: string;
-    github: string;
-    linkedin: string;
-    websiteUrl: string;
-  };
+  contact: { email: string; github: string; linkedin: string; websiteUrl: string };
   settings: {
     theme: string;
     pinHash: string;
+    audioTracks?: {
+      cosmic?: string;
+      creamy?: string;
+      arctic?: string;
+      [key: string]: string | undefined;
+    };
   };
 }
+

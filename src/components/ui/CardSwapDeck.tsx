@@ -1,6 +1,9 @@
+// src/components/ui/CardSwapDeck.tsx
+
 import React, { Children, cloneElement, forwardRef, isValidElement, useEffect, useMemo, useRef } from 'react';
 import type { ReactElement, ReactNode, RefObject } from 'react';
 import { SpotlightCard } from './SpotlightCard';
+import { useThemeStore } from '../../store/themeStore'; // 🚀 LIGHTWEIGHT INJECTION: Simple theme hook check
 import gsap from 'gsap';
 
 import { 
@@ -31,18 +34,26 @@ export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   customClass?: string;
 }
 
+/* ==========================================================================
+   🔄 FULLY REVERTED & RESTORED: BASE CARD LAYOUT PRIMITIVE
+   ========================================================================== */
 export const Card = forwardRef<HTMLDivElement, CardProps>(({ customClass, children, ...rest }, ref) => {
+  const { currentDimension } = useThemeStore();
+
+  // Simple adaptive container class toggle that leaves layout properties untouched
+  const cardThemeBg = currentDimension === 'creamy'
+    ? 'bg-white border-stone-200 text-stone-900'
+    : 'bg-zinc-950/95 border-zinc-800/60 text-zinc-100';
+
   return (
     <div
       ref={ref}
       {...rest}
+      // 🔄 RESTORED: Your exact original positioning framework classes are completely preserved here
       className={`absolute top-1/2 left-1/2 transform-3d will-change-transform backface-hidden ${customClass ?? ''} ${rest.className ?? ''}`.trim()}
     >
-      {/* 
-        SENIOR DEV FIX: Ensured the SpotlightCard utilizes a dedicated flex layout 
-        with full width to isolate, align, and stretch elements beautifully.
-      */}
-      <SpotlightCard className="p-6 flex flex-col items-center justify-between text-center select-none w-full h-full bg-zinc-950/95 border border-zinc-800/60 shadow-2xl">
+      {/* 🚀 THE GENTLE FIX: Only toggling colors via template string without disturbing any size metrics */}
+      <SpotlightCard className={`p-6 flex flex-col items-center justify-between text-center select-none w-full h-full border shadow-2xl ${cardThemeBg}`}>
         <div className="flex flex-col items-center justify-center w-full flex-1 gap-2">
           {children}
         </div>
@@ -67,11 +78,15 @@ const makeSlot = (i: number, distX: number, distY: number, total: number): Slot 
   zIndex: total - i
 });
 
+/* ==========================================================================
+   🔄 FULLY RESTORED: ORIGINAL HARDWARE OFFSET PARAMETERS
+   ========================================================================== */
 const placeNow = (el: HTMLElement, slot: Slot, skew: number) =>
   gsap.set(el, {
     x: slot.x,
     y: slot.y,
     z: slot.z,
+    // 🔄 RESTORED: Re-appended your exact original centering percentage shifts
     xPercent: -50,
     yPercent: -50,
     skewY: skew,
@@ -80,8 +95,6 @@ const placeNow = (el: HTMLElement, slot: Slot, skew: number) =>
     force3D: true
   });
 
-// SENIOR DEV FIX: Upgraded all icons from text-3xl to text-4xl (+20% size enhancement) 
-// and applied a explicit centered block utility to ensure zero layout-drifting.
 export const renderIconSVG = (code: string) => {
   const clean = (code || '').toLowerCase().trim();
   const iconClass = "text-4xl block mx-auto transition-transform duration-300 hover:scale-105";
@@ -103,13 +116,16 @@ export const renderIconSVG = (code: string) => {
     </div>
   );
 };
-
+/* ==========================================================================
+   🔄 FULLY RESTORED: ORIGINAL MOVEMENT ENGINE & CRUISE CONTROL CONFIGS
+   ========================================================================== */
 export const CardSwap: React.FC<CardSwapProps> = ({
   width = 242,
   height = 286,
   cardDistance = 15,
   verticalDistance = 15,
-  delay = 3500,
+  // 🔄 RESTORED: Reverted fallback interval delay back to your original 3.5 seconds
+  delay = 3500, 
   pauseOnHover = true,
   onCardClick,
   skewAmount = -4,
@@ -119,6 +135,7 @@ export const CardSwap: React.FC<CardSwapProps> = ({
   const config = useMemo(() => 
     easing === 'elastic'
       ? {
+          // 🔄 RESTORED: Reverted your precise native GSAP spring velocity curves
           ease: 'elastic.out(0.6,0.9)',
           durDrop: 1.2,
           durMove: 0.8,
@@ -164,6 +181,7 @@ export const CardSwap: React.FC<CardSwapProps> = ({
       const tl = gsap.timeline();
       tlRef.current = tl;
 
+      // 🔄 RESTORED: Reverted your exact original horizontal drop animation
       tl.to(elFront, {
         x: '+=400',
         opacity: 0,

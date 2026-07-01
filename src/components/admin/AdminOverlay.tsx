@@ -32,10 +32,35 @@ export function AdminOverlay() {
   useEffect(() => {
     // Listens explicitly for URL hash mutations to conditionally toggle administration view frames
     const handleHashChange = () => setIsOpen(window.location.hash === '#admin');
+    
+    // Initial evaluation trigger on component initialization mount
     handleHashChange();
+    
     window.addEventListener('hashchange', handleHashChange);
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
+
+   /* 🚀 SENIOR DEV INJECTION: ISOLATED BACKGROUND SCROLL LATCH 
+     Whenever the overlay container window mounts or closes (`isOpen`), this effect 
+     physically locks down the window viewport to block background scrolling leak bugs.
+  */
+  useEffect(() => {
+    // Select the root document body layer element node
+    const body = document.body;
+
+    if (isOpen) {
+      // 🔒 LOCK ACTION: Appends overflow tracking styles to freeze the viewport grid
+      body.classList.add('overflow-hidden');
+    } else {
+      // 🔓 UNLOCK ACTION: Strips out hidden properties to restore default page interactions safely
+      body.classList.remove('overflow-hidden');
+    }
+
+    // Clean up return hook safety trigger to restore default scroll behaviors if the component unmounts unexpectedly
+    return () => {
+      body.classList.remove('overflow-hidden');
+    };
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -286,9 +311,9 @@ export function AdminOverlay() {
                 <AdminGalleryManager />
               </div>
             )}
-            /* ==========================================================================
-               SUB-TAB F: SYSTEM CONTROLS & ENVIRONMENT VARIABLES PANEL
-               ========================================================================== */
+                       { /* ==========================================================================
+               SUB-TAB F: SYSTEM TERMINAL PARAMETERS MASTER CONFIGURATION
+               ========================================================================== */}
             {activeTab === 'settings' && (
               <div className="space-y-6 animate-fadeIn">
                 <div>
@@ -326,23 +351,19 @@ export function AdminOverlay() {
                     <button
                       type="button"
                       onClick={() => {
-                        // Extract target SVG block using precise DOM identity matching
                         const svgElement = document.getElementById('settingsExportableQRCodeSVG');
                         if (!svgElement) return alert('Exporter fault: System vector grid missing.');
                         
-                        // Parse active browser vector memory maps directly into pure XML text strings
                         const svgData = new XMLSerializer().serializeToString(svgElement);
                         const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
                         const svgUrl = URL.createObjectURL(svgBlob);
                         
-                        // Spawn an ephemeral anchor element onto the runtime stack to execute file delivery downloads
                         const downloadAnchor = document.createElement('a');
                         downloadAnchor.href = svgUrl;
                         downloadAnchor.download = 'portfolio-branding-qr.svg';
                         document.body.appendChild(downloadAnchor);
                         downloadAnchor.click();
                         
-                        // Drop element nodes from layout trees and clear garbage collection allocation references immediately
                         document.body.removeChild(downloadAnchor);
                         URL.revokeObjectURL(svgUrl);
                       }}
@@ -351,7 +372,7 @@ export function AdminOverlay() {
                       ↓ Download Shareable QR Asset (.SVG)
                     </button>
                   </div>
-                  {/* COLUMN 2: HARDWARE PREVIEW VISUALIZER & CYCLING PROTOCOLS */}
+                                      {/* COLUMN 2: HARDWARE PREVIEW VISUALIZER & DYNAMIC TRACK RECORDS */}
                   <div className="space-y-4">
                     <div className="p-4 bg-zinc-900/30 border border-zinc-800/60 rounded-xl flex flex-col items-center justify-center gap-3 text-center">
                       <div className="p-3 bg-white rounded-xl inline-block shadow-lg">
@@ -365,76 +386,157 @@ export function AdminOverlay() {
                         Dynamic scale asset grid hook. Click download to extract the crisp master file.
                       </p>
                     </div>
+                  </div>
 
-                    {/* DYNAMIC SECURITY INTERACTION ROTATOR CARD */}
-                    <div className="p-4 bg-zinc-900/40 border border-zinc-800/80 rounded-xl space-y-3">
-                      <div className="space-y-1">
-                        <label className="text-[11px] font-mono text-zinc-400 block font-medium">Rotate Console Access PIN Code</label>
-                        <p className="text-[10px] text-zinc-500 font-light leading-relaxed">Provide a new numerical 4-digit token key below to cycle the cryptographic signature.</p>
-                      </div>
+                  {/* DYNAMIC INTEGRATED AUDIO AMBIENT CMS ROW CONTROLLER */}
+                  <div className="p-4 bg-zinc-900/40 border border-zinc-800/80 rounded-xl space-y-4 sm:col-span-2">
+                    <div className="space-y-1">
+                      <label className="text-[11px] font-mono text-zinc-400 block font-bold uppercase tracking-wider text-emerald-400">
+                        🎵 Hot-Swappable Theme Ambient Jukebox
+                      </label>
+                      <p className="text-[10px] text-zinc-500 font-light leading-relaxed">
+                        Upload lightweight audio files (.mp3, .ogg) straight to your Vercel Storage CDN bucket to change the soundtrack assigned to each portal.
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                      {([
+                        { key: 'cosmic', title: '👤 Cosmic Track', color: 'text-emerald-400 border-emerald-500/10 hover:border-emerald-500/30' },
+                        { key: 'arctic', title: '❄️ Arctic Track', color: 'text-purple-400 border-purple-500/10 hover:border-purple-500/30' },
+                        { key: 'creamy', title: '🧁 Creamy Track', color: 'text-rose-400 border-rose-500/10 hover:border-rose-500/30' }
+                      ] as const).map((track) => {
+                        const currentTrackUrl = draft.settings?.audioTracks?.[track.key] || '';
+
+                        return (
+                          <div key={track.key} className="p-3 bg-zinc-950/60 border border-zinc-800/60 rounded-xl flex flex-col justify-between gap-3">
+                            <div className="space-y-1">
+                              <span className={`text-[10px] font-mono font-bold block ${track.color.split(' ')[0]}`}>
+                                {track.title}
+                              </span>
+                              <p className="text-[9px] text-zinc-500 font-mono truncate max-w-[200px]" title={currentTrackUrl}>
+                                Path: {currentTrackUrl ? currentTrackUrl.split('/').pop() : 'Default Asset Embedded'}
+                              </p>
+                            </div>
+
+                            <label className={`w-full py-1.5 bg-zinc-900 hover:bg-zinc-800 border text-center font-mono rounded-lg text-[10px] cursor-pointer transition-colors block ${track.color.split(' ').slice(1).join(' ')} ${isUploading ? 'opacity-40 pointer-events-none' : ''}`}>
+                              <span>{isUploading ? 'Streaming...' : 'Upload Audio File'}</span>
+                              <input
+                                type="file"
+                                accept="audio/*"
+                                className="hidden"
+                                disabled={isUploading}
+                                onChange={async (e) => {
+                                  const file = e.target.files?.[0];
+                                  if (!file) return;
+
+                                  if (file.size > 5 * 1024 * 1024) {
+                                    alert("Warning: Large audio file detected. For faster user load times, compress your tracks below 3MB before uploading.");
+                                  }
+
+                                  try {
+                                    setIsUploading(true);
+
+                                    const cleanName = file.name.replace(/[^a-zA-Z0-9.]/g, "-");
+                                    const filename = `audio-${track.key}-${Date.now()}-${cleanName}`;
+
+                                    const response = await fetch('/api/upload-image', {
+                                      method: 'POST',
+                                      headers: {
+                                        'x-filename': filename,
+                                        'Content-Type': file.type || 'audio/mpeg',
+                                      },
+                                      body: file,
+                                    });
+
+                                    if (!response.ok) throw new Error(`Media pipeline rejected file: ${response.status}`);
+                                    const uploadResult = await response.json();
+
+                                    updateDraft(d => {
+                                      if (!d.settings.audioTracks) {
+                                        d.settings.audioTracks = { cosmic: '', arctic: '', creamy: '' };
+                                      }
+                                      d.settings.audioTracks[track.key] = uploadResult.url;
+                                    });
+
+                                    alert('Audio track changed! Successfully deployed asset to server CDN.');
+
+                                  } catch (err: any) {
+                                    console.error("Audio CMS deployment runtime issue:", err);
+                                    alert(`Audio Upload Failure: ${err?.message || "Storage pipeline communication error"}`);
+                                  } finally {
+                                    setIsUploading(false);
+                                  }
+                                }}
+                              />
+                            </label>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                                        {/* CENTRAL SECURITY CONTROLS: CONSOLE ACCESS SIGNATURE ROTATOR CARD */}
+                  <div className="p-4 bg-zinc-900/40 border border-zinc-800/80 rounded-xl space-y-3 sm:col-span-2">
+                    <div className="space-y-1">
+                      <label className="text-[11px] font-mono text-zinc-400 block font-medium">Rotate Console Access PIN Code</label>
+                      <p className="text-[10px] text-zinc-500 font-light leading-relaxed">Provide a new numerical 4-digit token key below to cycle the cryptographic signature.</p>
+                    </div>
+                    
+                    <div className="flex gap-2">
+                      <input 
+                        type="password"
+                        id="newConsolePinInput"
+                        maxLength={4}
+                        placeholder="••••"
+                        className="bg-zinc-950 border border-zinc-800 text-center tracking-widest p-2 rounded-xl text-sm font-mono text-emerald-400 outline-none focus:border-emerald-500/40 w-24"
+                        onChange={(e) => {
+                          // Hardware event level interception to filter out alphanumeric characters on key presses
+                          e.target.value = e.target.value.replace(/\D/g, '');
+                        }}
+                      />
                       
-                      <div className="flex gap-2">
-                        {/* Numerical secure input with regex key filter abstraction */}
-                        <input 
-                          type="password"
-                          id="newConsolePinInput"
-                          maxLength={4}
-                          placeholder="••••"
-                          className="bg-zinc-950 border border-zinc-800 text-center tracking-widest p-2 rounded-xl text-sm font-mono text-emerald-400 outline-none focus:border-emerald-500/40 w-24"
-                          onChange={(e) => {
-                            // Strips away alphanumeric/special key combinations physically on hardware stroke events
-                            e.target.value = e.target.value.replace(/\D/g, '');
-                          }}
-                        />
-                        
-                        <button
-                          type="button"
-                          onClick={async () => {
-                            const inputEl = document.getElementById('newConsolePinInput') as HTMLInputElement;
-                            const newPin = inputEl?.value;
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          const inputEl = document.getElementById('newConsolePinInput') as HTMLInputElement;
+                          const newPin = inputEl?.value;
+                          
+                          // Reject the submission loop if parameters don't match the strict 4-digit criterion bounds
+                          if (!newPin || newPin.length !== 4) {
+                            alert('Validation Error: Tokens must contain exactly 4 numeric characters.');
+                            return;
+                          }
+
+                          if (!window.confirm('Are you sure you want to rotate the console parameter signature?')) return;
+
+                          try {
+                            const encoder = new TextEncoder();
+                            const binaryData = encoder.encode(newPin);
                             
-                            // Re-evaluate bounds check parameter size validations on click execution
-                            if (!newPin || newPin.length !== 4) {
-                              alert('Validation Error: Tokens must contain exactly 4 numeric characters.');
-                              return;
-                            }
+                            // Native browser runtime subtle digest hashing (SHA-256)
+                            const derivedBuffer = await crypto.subtle.digest('SHA-256', binaryData);
+                            const updatedHexHash = Array.from(new Uint8Array(derivedBuffer))
+                              .map(byte => byte.toString(16).padStart(2, '0'))
+                              .join('');
 
-                            if (!window.confirm('Are you sure you want to rotate the console parameter signature?')) return;
+                            // Inject the validated checksum straight back into your Zustand store active draft
+                            updateDraft(d => {
+                              d.settings.pinHash = updatedHexHash;
+                            });
 
-                            try {
-                              // Re-encode plain string configurations down to standard byte-arrays
-                              const encoder = new TextEncoder();
-                              const binaryData = encoder.encode(newPin);
-                              
-                              // Trigger cryptographic context computations natively via subtle cryptography runtimes
-                              const derivedBuffer = await crypto.subtle.digest('SHA-256', binaryData);
-                              
-                              // FIXED: Clean integer base-16 radix argument for standard hex conversion
-                              const updatedHexHash = Array.from(new Uint8Array(derivedBuffer))
-                                .map(byte => byte.toString(16).padStart(2, '0'))
-                                .join('');
-
-                              // Inject calculated hash directly back into the remote cloud state mock draft payload
-                              updateDraft(d => {
-                                d.settings.pinHash = updatedHexHash;
-                              });
-
-                              // Clean input terminals safely
-                              inputEl.value = '';
-                              alert('Cryptographic hash rotated successfully in sandbox state.');
-                            } catch (err: any) {
-                              alert(`Cryptographic Subsystem Fault: ${err.message}`);
-                            }
-                          }}
-                          className="flex-1 px-3 py-2 bg-zinc-800 hover:bg-zinc-700 hover:text-white border border-zinc-700/80 text-zinc-300 text-xs font-mono rounded-xl transition-all"
-                        >
-                          Compute New Hash
-                        </button>
-                      </div>
+                            inputEl.value = '';
+                            alert('Cryptographic hash rotated successfully in sandbox state.');
+                          } catch (err: any) {
+                            alert(`Cryptographic Subsystem Fault: ${err.message}`);
+                          }
+                        }}
+                        className="flex-1 px-3 py-2 bg-zinc-800 hover:bg-zinc-700 hover:text-white border border-zinc-700/80 text-zinc-300 text-xs font-mono rounded-xl transition-all"
+                      >
+                        Compute New Hash
+                      </button>
                     </div>
                   </div>
 
-                </div> {/* CLOSE GRID: Closing parameters wrapper node grid frame */}
+                </div> {/* CLOSED: Two-column grid container wrapper node matrix row */}
               </div>
             )}
 
