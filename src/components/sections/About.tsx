@@ -12,7 +12,7 @@ export function About() {
   if (!data) return null;
 
   return (
-    <section className="space-y-8 py-10" id="about">
+    <section className={`space-y-8 py-10 rounded-3xl px-4 sm:px-6 transition-colors duration-500 ${currentDimension === 'creamy' ? 'bg-[#FFF7C2]/40' : currentDimension === 'arctic' ? 'bg-[#20133A]/50' : 'bg-zinc-900/20'}`} id="about">
       {/* SECTION HEADER BLOCK */}
       <div className="flex items-center gap-4">
         <h2 className={`text-2xl sm:text-3xl font-bold tracking-tight transition-colors duration-500 ${pack.textPrimary}`}>
@@ -33,7 +33,7 @@ export function About() {
       {/* Spreads your full width skills track nicely across mobile and desktop identical views */}
       <div className="w-full pt-4 relative">
         <span className="text-[10px] font-mono tracking-widest uppercase opacity-40 mb-2 block">
-          🫳 Drag to scroll • Click stack to extract data profiles
+          🫳 • Click stack to extract data profiles
         </span>
         <CardSwap skills={data.skills || []} />
       </div>

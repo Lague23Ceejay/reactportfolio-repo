@@ -39,7 +39,7 @@ export function Hero() {
       
       {/* LEFT COLUMN: LIVE DYNAMIC CONTENT TEXT BLOCKS */}
       <div className="flex-1 flex flex-col items-start justify-center">
-        <span className="text-xs font-bold tracking-widest text-emerald-500 uppercase font-mono mb-4">
+        <span className={`text-xs font-bold tracking-widest uppercase font-mono mb-4 ${currentDimension === 'creamy' ? 'text-rose-500' : currentDimension === 'arctic' ? 'text-cyan-400' : 'text-emerald-500'}`}>
           {title}
         </span>
         

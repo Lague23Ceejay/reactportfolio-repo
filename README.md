@@ -61,7 +61,7 @@ npm run preview
 
 ## Project Structure
 
-```text
+```reactportfolio
 .
 ├── api/
 │   └── save-content.ts          # Vercel serverless endpoint to persist content changes

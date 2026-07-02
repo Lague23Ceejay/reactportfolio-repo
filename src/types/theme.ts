@@ -10,7 +10,7 @@ export interface ThemePack {
   cardClass: string;
   fontClass: string;
   cursor: {
-    type: 'line' | 'target' | 'dot';
+    type: 'line' | 'target' | 'snowflake';
     color: string;
     glow: string;
     trail: boolean;

@@ -24,7 +24,7 @@ export function Contact() {
     : 'bg-zinc-900/20 border-zinc-800 text-zinc-100 shadow-2xl';
 
   return (
-    <section className="space-y-8 py-10" id="contact">
+    <section className={`space-y-8 py-10 rounded-3xl px-4 sm:px-6 transition-colors duration-500 ${currentDimension === 'creamy' ? 'bg-[#FFF7C2]/40' : currentDimension === 'arctic' ? 'bg-[#20133A]/50' : 'bg-zinc-900/20'}`} id="contact">
       
       {/* SECTION HEADER BLOCK */}
       <div className="flex items-center gap-4">
@@ -32,7 +32,7 @@ export function Contact() {
         <h2 className={`text-2xl sm:text-3xl font-bold tracking-tight transition-colors duration-500 ${pack.textPrimary}`}>
           Get In Touch
         </h2>
-        <div className={`h-[1px] flex-1 transition-colors duration-500 ${currentDimension === 'creamy' ? 'bg-stone-400/40' : 'bg-zinc-800'}`} />
+        <div className={`h-px flex-1 transition-colors duration-500 ${currentDimension === 'creamy' ? 'bg-stone-400/40' : 'bg-zinc-800'}`} />
       </div>
 
       {/* CORE INTERACTIVE CONTACT BANNER WRAPPER CONTAINER */}
@@ -85,6 +85,18 @@ export function Contact() {
               }`}
             >
               ↳ LinkedIn
+            </a>
+          )}
+            {data.upwork && (
+            <a 
+              href={data.upwork} 
+              target="_blank" 
+              rel="noreferrer" 
+              className={`transition-colors font-medium ${
+                currentDimension === 'creamy' ? 'text-stone-600 hover:text-stone-900' : 'text-zinc-300 hover:text-white'
+              }`}
+            >
+              ↳ upwork
             </a>
           )}
         </div>

@@ -36,7 +36,7 @@ export interface PortfolioData {
   about: { bio: string; skills: { name: string; iconCode: string; description?: string; }[] };
   projects: ProjectItem[];
   gallery: GalleryItem[];
-  contact: { email: string; github: string; linkedin: string; websiteUrl: string };
+  contact: { email: string; github: string; linkedin: string; upwork: string; websiteUrl: string };
   settings: {
     theme: string;
     pinHash: string;

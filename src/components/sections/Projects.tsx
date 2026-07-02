@@ -15,7 +15,7 @@ export function Projects() {
   const pack = dimensionPacks[currentDimension];
 
   return (
-    <section className="space-y-8 py-10" id="work">
+    <section className={`space-y-8 py-10 rounded-3xl px-4 sm:px-6 transition-colors duration-500 ${currentDimension === 'creamy' ? 'bg-[#FFF7C2]/40' : currentDimension === 'arctic' ? 'bg-[#20133A]/50' : 'bg-zinc-900/20'}`} id="work">
       
       {/* SECTION HEADER BLOCK */}
       <div className="flex items-center gap-4">
@@ -55,7 +55,7 @@ export function Projects() {
                   <div className="space-y-1.5">
                     <div className="flex flex-wrap gap-2 items-center">
                       {/* 🚀 FIXED: Classification labels switch color signatures safely */}
-                      <span className={`text-[10px] font-mono uppercase tracking-wider ${currentDimension === 'creamy' ? 'text-stone-500' : 'text-zinc-500'}`}>
+                      <span className={`text-[10px] font-mono uppercase tracking-wider ${pack.textSecondary}`}>
                         [{project.githubUrl || 'Repository'}]
                       </span>
                       <span className={`text-[10px] font-mono px-2 py-0.5 rounded border ${
@@ -68,9 +68,7 @@ export function Projects() {
                     </div>
                     
                     {/* 🚀 FIXED: Project Title tracks dynamic high-contrast configurations */}
-                    <h3 className={`text-xl font-bold tracking-tight transition-colors pt-1 ${
-                      currentDimension === 'creamy' ? 'text-stone-900 group-hover:text-rose-600' : 'text-zinc-100 group-hover:text-emerald-400'
-                    }`}>
+                    <h3 className={`text-xl font-bold tracking-tight transition-colors pt-1 ${pack.textPrimary} ${currentDimension === 'creamy' ? 'group-hover:text-rose-600' : 'group-hover:text-emerald-400'}`}>
                       {project.title}
                     </h3>
                   </div>
@@ -136,7 +134,7 @@ export function Projects() {
                           );
                         })}
                       </div>
-                      <div className={`text-[9px] font-mono text-right ${currentDimension === 'creamy' ? 'text-stone-500' : 'text-zinc-500'}`}>
+                      <div className={`text-[9px] font-mono text-right ${pack.textSecondary}`}>
                         Overall Progress Index: {totalPercentage}%
                       </div>
                     </div>

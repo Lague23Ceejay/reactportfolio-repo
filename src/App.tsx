@@ -52,7 +52,7 @@ export default function App() {
       SENIOR DEV HOOK: Active dimensional layout wrapper layer container view.
       The transition handling guarantees background tones and typography weights shift dynamically.
     */
-    <div className={`relative min-h-screen overflow-x-hidden transition-all duration-500 ease-in-out ${pack.bgClass} ${pack.fontClass}`}>
+    <div className={`relative min-h-screen overflow-x-hidden transition-all duration-500 ease-in-out ${pack.bgClass} ${pack.fontClass} ${pack.textPrimary}`}>
       
       {/* ==========================================================================
          A. PORTAL BACKGROUND ANIMATION ENGINES
