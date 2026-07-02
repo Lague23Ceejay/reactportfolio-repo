@@ -44,17 +44,17 @@
       {
         "name": "Dart",
         "iconCode": "dart",
-        "description": ""
+        "description": "Code language use to build Mobile Application "
       },
       {
         "name": "Python",
         "iconCode": "python",
-        "description": ""
+        "description": "Programming language simpler syntax "
       },
       {
         "name": "JavaScript",
         "iconCode": "javascript",
-        "description": ""
+        "description": "Programming language widely used for web-development"
       }
     ]
   },
