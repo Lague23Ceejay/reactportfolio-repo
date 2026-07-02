@@ -258,3 +258,20 @@ npm run preview
 - This project is a CMS-style portfolio driven by base64 image uploads and a serverless save API.
 - The admin overlay edits state in a draft object and persists it to `public/data.json`.
 - The current update improves upload robustness and addresses the admin image upload issue.
+
+
+## new update
+
+  Theme-based text colors are now wired up
+- The main page text now follows the active theme automatically from the shared theme pack in themeStore.ts.
+
+What changed?
+- The main app wrapper now inherits the active theme’s primary text color.
+- Hero, gallery, footer, and project section text now use theme-based classes.
+- The cosmic, creamy, and arctic themes now have coordinated primary/secondary text styling.
+
+Where to adjust colors?
+Can manually change them by editing the values in themeStore.ts, especially:
+
+textPrimary
+textSecondary
