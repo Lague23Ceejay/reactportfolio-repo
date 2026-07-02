@@ -68,7 +68,7 @@ export const CardSwap: React.FC<HorizontalTickerProps> = ({ skills = [] }) => {
           /* 🚀 THE IMMERSIVE TRANSITION: 
              Cards float 12px upwards (`hover:-translate-y-3`) smoothly when hovered or touched, 
              while the underlying lane track keeps moving seamlessly in the background! */
-          className={`flex-shrink-0 w-36 h-36 border rounded-2xl flex flex-col items-center justify-center p-4 gap-3 text-center transition-all duration-300 select-none transform-3d hover:scale-105 hover:-translate-y-3 cursor-pointer ${cardThemeClass}`}
+          className={`shrink-0 w-36 h-36 border rounded-2xl flex flex-col items-center justify-center p-4 gap-3 text-center transition-all duration-300 select-none transform-3d hover:scale-105 hover:-translate-y-3 cursor-pointer ${cardThemeClass}`}
         >
           <div className={`p-3 rounded-xl border transition-colors duration-300 ${
             currentDimension === 'creamy' ? 'bg-stone-50 border-stone-200' : 'bg-zinc-950 border-zinc-800'

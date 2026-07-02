@@ -31,7 +31,7 @@ export function AdminProjectsManager() {
         </button>
       </div>
 
-      <div className="space-y-6 max-h-[550px] overflow-y-auto pr-2 custom-scrollbar">
+      <div className="space-y-6 max-h-137.5 overflow-y-auto pr-2 custom-scrollbar">
         {draft.projects.map((project, index) => {
           
           // Real-time calculated overall percentage math wrapper loop
