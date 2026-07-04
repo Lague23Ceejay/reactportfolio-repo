@@ -6,7 +6,6 @@ import { AdminProjectsManager } from './AdminProjectsManager';
 import { AdminGalleryManager } from './AdminGalleryManager';
 import { AdminAboutManager } from './AdminAboutManager';
 import { AdminGraduationManager } from './AdminGraduationManager';
-import { AdminCursor } from '../ui/AdminCursor';
 import { optimizeImage } from '../../utils/imageOptimizer'; // 🚀 LIGHTWEIGHT UTILITY: Client-side compression script
 import { useImageUpload } from '../../hooks/useImageUpload';
 
@@ -172,9 +171,7 @@ export function AdminOverlay() {
      ========================================================================== */
   if (!isAuthenticated) {
     return (
-      <div className="fixed inset-0 bg-zinc-950 z-50 flex items-center justify-center p-4 cursor-none">
-        <AdminCursor />
-
+      <div className="fixed inset-0 bg-zinc-950 z-50 flex items-center justify-center p-4">
         <div className="fixed inset-0 pointer-events-none z-50 mix-blend-screen hidden md:block">
           <div className="absolute w-3 h-3 rounded-full bg-red-500 opacity-60 animate-ping" />
         </div>
@@ -228,8 +225,7 @@ export function AdminOverlay() {
      7. MAIN ADMINISTRATIVE CONSOLE PRESENTATION ENGINE
      ========================================================================== */
   return (
-    <div className="fixed inset-0 bg-zinc-950/95 backdrop-blur-md z-50 overflow-y-auto p-4 sm:p-8 cursor-none">
-      <AdminCursor />
+    <div className="fixed inset-0 bg-zinc-950/95 backdrop-blur-md z-50 overflow-y-auto p-4 sm:p-8">
       <div className="max-w-4xl mx-auto bg-zinc-900 border border-zinc-800 rounded-3xl p-6 sm:p-10 space-y-8 shadow-2xl flex flex-col min-h-[85vh]">
         
         {/* SECTION 7.1: SYSTEM TITLE & PERSISTENCE CONTROL TRACKERS */}

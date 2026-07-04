@@ -36,13 +36,14 @@ export const DimensionCursor: React.FC = () => {
     gsap.to(cursorRef.current, {
       x: event.clientX,
       y: event.clientY,
-      duration: 0.14,
+      duration: 0.05,
       ease: 'power3.out'
     });
   }, []);
 
-  const updateHoverState = useCallback((event: MouseEvent | PointerEvent) => {
-    setIsHoveredLink(isInteractiveElement(event.target));
+  const updateHoverState = useCallback((event: Event) => {
+    const target = event.target;
+    setIsHoveredLink(target instanceof Element ? isInteractiveElement(target) : false);
   }, []);
 
   useEffect(() => {
@@ -68,28 +69,47 @@ export const DimensionCursor: React.FC = () => {
     document.body.style.cursor = 'none';
 
     window.addEventListener('mousemove', moveCursor);
+    window.addEventListener('mouseover', updateHoverState);
+    window.addEventListener('mouseout', updateHoverState);
     window.addEventListener('pointerover', updateHoverState);
     window.addEventListener('pointerout', updateHoverState);
-    window.addEventListener('mousemove', updateHoverState);
 
     return () => {
       window.removeEventListener('mousemove', moveCursor);
+      window.removeEventListener('mouseover', updateHoverState);
+      window.removeEventListener('mouseout', updateHoverState);
       window.removeEventListener('pointerover', updateHoverState);
       window.removeEventListener('pointerout', updateHoverState);
-      window.removeEventListener('mousemove', updateHoverState);
       document.body.style.cursor = '';
     };
   }, [isAdminOverlayOpen, isAuthenticated, isMobile, moveCursor, updateHoverState]);
 
-  // Spin animation for snowflake
+  // Spin animation for snowflake and cosmic line cursor
   useEffect(() => {
-    if (type === "snowflake" && cursorRef.current) {
-      gsap.to(cursorRef.current, {
+    if (!cursorRef.current) return;
+
+    if (type === "snowflake") {
+      const tween = gsap.to(cursorRef.current, {
         rotation: "+=360",
         duration: 6,
         repeat: -1,
         ease: "linear"
       });
+      return () => {
+        tween.kill();
+      };
+    }
+
+    if (type === "line") {
+      const tween = gsap.to(cursorRef.current, {
+        rotation: "+=360",
+        duration: 1.8,
+        repeat: -1,
+        ease: "none"
+      });
+      return () => {
+        tween.kill();
+      };
     }
   }, [type]);
 
@@ -136,17 +156,23 @@ export const DimensionCursor: React.FC = () => {
     return (
       <div
         ref={cursorRef}
-        className="fixed top-0 left-0 pointer-events-none z-50 -translate-x-1/2 -translate-y-1/2 mix-blend-difference hidden md:block"
+        className="fixed top-0 left-0 pointer-events-none z-50 -translate-x-1/2 -translate-y-1/2 hidden md:block"
         style={{
-          borderColor: color,
-          borderWidth: 2,
-          boxShadow: glow,
-          width: isHoveredLink ? 4 : 2,
-          height: isHoveredLink ? 40 : 28,
-          borderRadius: "4px",
-          transition: "width 0.2s, height 0.2s, border-color 0.2s, box-shadow 0.2s"
+          transformOrigin: 'center center',
+          filter: `drop-shadow(${glow})`
         }}
-      />
+      >
+        <div
+          style={{
+            width: isHoveredLink ? 44 : 28,
+            height: 2,
+            backgroundColor: color,
+            borderRadius: '9999px',
+            boxShadow: glow,
+            transition: 'width 0.15s ease, background-color 0.2s ease, box-shadow 0.2s ease'
+          }}
+        />
+      </div>
     );
   }
 

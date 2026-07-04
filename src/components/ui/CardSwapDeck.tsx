@@ -2,10 +2,7 @@
 
 import React, { useState, forwardRef } from 'react';
 import { useThemeStore, dimensionPacks } from '../../store/themeStore';
-import { 
-  SiReact, SiTypescript, SiTailwindcss, SiJavascript, 
-  SiNodedotjs, SiHtml5, SiCss, SiGit
-} from 'react-icons/si';
+import { renderIconSVG } from '../../utils/renderIconSVG';
 
 interface SkillItem {
   name: string;
@@ -20,24 +17,17 @@ interface HorizontalTickerProps {
 /* ==========================================================================
    1. HIGH-PERFORMANCE DEVICON VECTOR MAP
    ========================================================================== */
-export const renderIconSVG = (code: string) => {
-  const clean = (code || '').toLowerCase().trim();
+const renderCardIcon = (code: string) => {
   const iconClass = "text-4xl block mx-auto transition-transform duration-300 group-hover:scale-110";
-  
-  if (clean === 'react') return <SiReact className={`${iconClass} text-[#61DAFB]`} />;
-  if (clean === 'ts' || clean === 'typescript') return <SiTypescript className={`${iconClass} text-[#3178C6]`} />;
-  if (clean === 'tailwind' || clean === 'tailwindcss') return <SiTailwindcss className={`${iconClass} text-[#06B6D4]`} />;
-  if (clean === 'js' || clean === 'javascript') return <SiJavascript className={`${iconClass} text-[#F7DF1E]`} />;
-  if (clean === 'node' || clean === 'nodejs') return <SiNodedotjs className={`${iconClass} text-[#339933]`} />;
-  if (clean === 'html' || clean === 'html5') return <SiHtml5 className={`${iconClass} text-[#E34F26]`} />;
-  if (clean === 'css' || clean === 'css3') return <SiCss className={`${iconClass} text-[#1572B6]`} />;
-  if (clean === 'git') return <SiGit className={`${iconClass} text-[#F05032]`} />;
+  const icon = renderIconSVG(code);
 
-  return (
-    <div className="w-10 h-10 bg-zinc-900 border border-zinc-800 text-zinc-500 rounded font-mono font-bold flex items-center justify-center text-[10px] uppercase">
-      {clean.substring(0, 4)}
-    </div>
-  );
+  if (React.isValidElement<{ className?: string }>(icon)) {
+    return React.cloneElement(icon, {
+      className: `${icon.props.className ?? ''} ${iconClass}`.trim()
+    });
+  }
+
+  return icon;
 };
 /* ==========================================================================
    2. REWIRED TICKER LOOP LAYOUT MARQUEE (PURE CSS STRIPPED MATRIX)
@@ -73,7 +63,7 @@ export const CardSwap: React.FC<HorizontalTickerProps> = ({ skills = [] }) => {
           <div className={`p-3 rounded-xl border transition-colors duration-300 ${
             currentDimension === 'creamy' ? 'bg-stone-50 border-stone-200' : 'bg-zinc-950 border-zinc-800'
           }`}>
-            {renderIconSVG(skill.iconCode)}
+            {renderCardIcon(skill.iconCode)}
           </div>
           <span className="text-[11px] font-mono font-bold truncate max-w-full block">
             {skill.name}
@@ -139,7 +129,7 @@ export const CardSwap: React.FC<HorizontalTickerProps> = ({ skills = [] }) => {
             <div className={`p-4 rounded-2xl border ${
               currentDimension === 'creamy' ? 'bg-stone-50 border-stone-200' : 'bg-zinc-950 border-zinc-800'
             }`}>
-              {renderIconSVG(activeSkill.iconCode)}
+              {renderCardIcon(activeSkill.iconCode)}
             </div>
 
             <div className="space-y-2 w-full">

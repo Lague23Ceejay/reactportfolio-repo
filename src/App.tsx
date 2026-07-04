@@ -155,10 +155,9 @@ export default function App() {
          ========================================================================== */}
       <CircularSwitcher />
 
-{/* Mount main cursor only when admin overlay is NOT active */}
-{!window.location.hash.includes('#admin') && <DimensionCursor />}
+<DimensionCursor />
 
-{/* Mount admin overlay (with its own cursor) */}
+{/* Mount admin overlay */}
 <AdminOverlay />
 
     </div>
