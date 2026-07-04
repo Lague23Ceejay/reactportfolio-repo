@@ -57,10 +57,11 @@ export function Hero() {
         
         {/* PARALLAX RINGS CANVAS OVERLAY LAYOUT */}
         <div 
-          className="absolute pointer-events-none z-0 w-[180%] h-[180%] top-[40%] left-[40%]"
+          className="absolute pointer-events-none -z-10 w-[220%] h-[220%] top-1/2 left-1/2"
           style={{
+            transform: 'translate(-50%, -50%)',
             maskImage: 'radial-gradient(circle at center, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 70%)',
-            WebkitMaskImage: 'radial-gradient(circle at center, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 70%)'
+            WebkitMaskImage: 'radial-gradient(circle at center, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 70%)',
           }}
         >
           <MagicRings

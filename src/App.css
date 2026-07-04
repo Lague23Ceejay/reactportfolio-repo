@@ -27,6 +27,21 @@
     margin: 0 auto;
   }
 
+  * rings container sits behind */
+.hero .rings {
+  position: absolute;
+  inset: 0;
+  z-index: 0; /* behind profile */
+  pointer-events: none;
+}
+
+/* profile (avatar) sits above rings */
+.hero .profile,
+.hero .avatar {
+  position: relative; /* make z-index effective */
+  z-index: 10;
+}
+
   .base {
     width: 170px;
     position: relative;
@@ -182,3 +197,5 @@
     border-right-color: var(--border);
   }
 }
+
+
