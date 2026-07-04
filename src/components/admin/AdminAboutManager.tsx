@@ -37,7 +37,7 @@ export function AdminAboutManager() {
                 updateDraft(d => { d.about.bio = htmlContent; });
               }}
               dangerouslySetInnerHTML={{ __html: draft.about.bio }}
-              className="w-full min-h-[140px] p-4 text-sm outline-none text-zinc-300 leading-relaxed max-h-[250px] overflow-y-auto custom-scrollbar"
+              className="w-full min-h-35 p-4 text-sm outline-none text-zinc-300 leading-relaxed max-h-62.5 overflow-y-auto custom-scrollbar"
             />
           </div>
         </div>
@@ -55,7 +55,7 @@ export function AdminAboutManager() {
             </button>
           </div>
 
-          <div className="grid gap-3 max-h-[350px] overflow-y-auto pr-1 custom-scrollbar">
+          <div className="grid gap-3 max-h-87.5 overflow-y-auto pr-1 custom-scrollbar">
             {draft.about.skills.map((skill, sIdx) => (
               <div key={sIdx} className="flex flex-col bg-zinc-900/40 border border-zinc-800/80 p-3 rounded-xl group relative gap-3">
                 

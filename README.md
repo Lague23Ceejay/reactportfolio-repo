@@ -1,23 +1,23 @@
 ﻿# React Portfolio
 
-A modern React portfolio with a live admin editor, custom cursor effects, and Vercel-backed JSON persistence.
+A modern React portfolio with a live admin editor, animated theme switching, custom cursor behavior, and Vercel-backed media/content persistence.
 
 ## Overview
 
-This project is a personal portfolio website built with React, TypeScript, and Vite. It loads editable content from `public/data.json` and exposes a secure admin overlay for live updates.
+This project is a personal portfolio website built with React, TypeScript, and Vite. It loads editable content from public/data.json and exposes a PIN-protected admin overlay for live updates.
 
-Key features:
+## Current Features
 
-- Hero section with editable name, title, tagline, and profile image
-- Graduation feature section with live banner content and optional GCash QR support
-- About section with rich biography and skill cards
-- Projects section with dynamic entries, status badges, stack labels, and external links
-- Gallery section with grouped image categories and upload support
-- Contact section with configurable email, URL, and social links
-- Hash-based admin entry via `#admin` and PIN authentication
-- Dedicated admin cursor and main page cursor separation
-- Animated theme/dimension switching, particle effects, and reveal animations
-- Vercel serverless endpoint for saving portfolio JSON data
+- Hero section with editable profile details, tagline, and image assets
+- Graduation feature section with optional GCash/QR support and admin editing
+- About section with biography text and skill cards
+- Projects section with project metadata, stack labels, external links, and featured status
+- Gallery section with upload support and category-based organization
+- Contact section with configurable email, website URL, and social links
+- Hash-based admin entry via #admin and PIN authentication
+- Theme/dimension switching across cosmic, creamy, and arctic packs
+- Animated backgrounds, reveal transitions, particles, and cursor effects
+- Vercel serverless endpoints for saving content and uploading media assets
 
 ## Tech Stack
 
@@ -27,11 +27,12 @@ Key features:
 - Tailwind CSS
 - Zustand
 - GSAP
-- framer-motion
+- Framer Motion
 - Three.js / OGL
+- React Icons
 - @vercel/node
 - @octokit/rest
-- React Icons
+- @vercel/blob
 
 ## Getting Started
 
@@ -41,7 +42,7 @@ Install dependencies:
 npm install
 ```
 
-Run in development:
+Run locally:
 
 ```bash
 npm run dev
@@ -61,39 +62,39 @@ npm run preview
 
 ## Project Structure
 
-```reactportfolio
+```text
 .
 ├── api/
-│   └── save-content.ts          # Vercel serverless endpoint to persist content changes
+│   ├── save-content.ts      # Saves portfolio JSON to GitHub via Vercel
+│   └── upload-image.ts      # Uploads images/audio to Vercel Blob
 ├── public/
-│   ├── data.json                # Editable portfolio content source
+│   ├── data.json            # Main portfolio content source
 │   ├── favicon.svg
 │   └── icons.svg
 ├── src/
-│   ├── App.tsx                  # Main app shell, theme wrapper, and overlay mount
-│   ├── main.tsx                 # React entry point
-│   ├── index.css                # Global CSS imports
-│   ├── App.css                  # App-level styles and overrides
-│   ├── assets/                  # Static asset files
+│   ├── App.tsx              # App shell, theme wrapper, and overlay mounting
+│   ├── main.tsx             # React entry point
+│   ├── index.css            # Global styles and Tailwind setup
+│   ├── App.css              # App-level overrides
+│   ├── assets/              # Static images and other local assets
 │   ├── components/
-│   │   ├── admin/               # Admin overlay and section editors
+│   │   ├── admin/           # Admin overlay and section editors
 │   │   │   ├── AdminAboutManager.tsx
 │   │   │   ├── AdminGalleryManager.tsx
 │   │   │   ├── AdminGraduationManager.tsx
 │   │   │   ├── AdminOverlay.tsx
 │   │   │   └── AdminProjectsManager.tsx
-│   │   ├── layout/              # Shared layout components
+│   │   ├── layout/          # Shared layout components
 │   │   │   ├── Footer.tsx
 │   │   │   └── Navbar.tsx
-│   │   ├── sections/            # Page section components
+│   │   ├── sections/        # Main page sections
 │   │   │   ├── About.tsx
 │   │   │   ├── Contact.tsx
 │   │   │   ├── Gallery.tsx
 │   │   │   ├── GraduationFeature.tsx
 │   │   │   ├── Hero.tsx
 │   │   │   └── Projects.tsx
-│   │   └── ui/                  # UI helpers, animations, and cursor components
-│   │       ├── AdminCursor.tsx
+│   │   └── ui/              # UI helpers, animations, and cursors
 │   │       ├── AnimatedBackground.tsx
 │   │       ├── CardSwapDeck.tsx
 │   │       ├── CircularSwitcher.tsx
@@ -102,176 +103,81 @@ npm run preview
 │   │       ├── MagnetEffect.tsx
 │   │       ├── Particles.tsx
 │   │       ├── ScrollReveal.tsx
-│   │       └── SpotlightCard.tsx
+│   │       ├── SnowParticles.tsx
+│   │       ├── SpotlightCard.tsx
+│   │       └── TargetCursor.tsx
 │   ├── hooks/
-│   │   └── usePortfolioData.ts   # Loads `public/data.json` at startup
+│   │   ├── useImageUpload.ts
+│   │   ├── usePortfolioData.ts
+│   │   └── usePortfolioData.ts
 │   ├── store/
-│   │   ├── portfolioStore.ts     # Zustand store for portfolio data and draft edits
-│   │   └── themeStore.ts         # Theme/dimension state and cursor packs
-│   └── types/
-│       ├── portfolio.ts
-│       └── theme.ts
+│   │   ├── portfolioStore.ts
+│   │   └── themeStore.ts
+│   ├── types/
+│   │   ├── portfolio.ts
+│   │   └── theme.ts
+│   └── utils/
+│       └── renderIconSVG.tsx
 ├── eslint.config.js
 ├── package.json
-├── package-lock.json
 ├── tsconfig.json
 ├── tsconfig.app.json
 ├── tsconfig.node.json
+├── vercel.json
 ├── vite.config.ts
-└── vercel.json
+└── README.md
 ```
 
 ## Core Modules
 
 ### Admin System
 
-- `src/components/admin/AdminOverlay.tsx`
-  - Opens on `#admin` hash and locks access behind a PIN gate
-  - Manages draft state, content save flow, and overlay UI
-  - Renders admin section editors and a dedicated admin cursor
+- src/components/admin/AdminOverlay.tsx
+  - Opens on #admin and locks access behind a PIN gate
+  - Manages draft state, save flow, and the admin shell
+  - Renders the section-specific admin managers
 
-- `src/components/admin/AdminAboutManager.tsx`
-  - Edits about text and skills
-  - Supports adding/removing badges and biography content
+- src/components/admin/AdminAboutManager.tsx
+  - Edits about text and skill entries
 
-- `src/components/admin/AdminProjectsManager.tsx`
-  - Edits projects with title, description, status, links, and stack labels
-  - Supports featured projects and live project list updates
+- src/components/admin/AdminProjectsManager.tsx
+  - Edits projects, links, stack labels, and featured flags
 
-- `src/components/admin/AdminGalleryManager.tsx`
-  - Manages gallery categories and image cards
-  - Supports image upload and metadata editing
+- src/components/admin/AdminGalleryManager.tsx
+  - Manages gallery items and upload workflows
 
-- `src/components/admin/AdminGraduationManager.tsx`
-  - Updates graduation banner content, messaging, and image assets
-  - Handles file upload and in-panel preview
+- src/components/admin/AdminGraduationManager.tsx
+  - Edits graduation banner text and supporting media
 
 ### Rendering and UI
 
-- `src/components/sections/Hero.tsx`
-  - Hero introduction block with profile image and headline copy
+- src/components/sections/Hero.tsx
+- src/components/sections/About.tsx
+- src/components/sections/Projects.tsx
+- src/components/sections/Gallery.tsx
+- src/components/sections/Contact.tsx
+- src/components/sections/GraduationFeature.tsx
 
-- `src/components/sections/GraduationFeature.tsx`
-  - Optional graduation banner render
+### Data and Persistence
 
-- `src/components/sections/About.tsx`
-  - Biography display with skill cards and text section
+- public/data.json
+  - Main source of truth for the portfolio content
 
-- `src/components/sections/Projects.tsx`
-  - Portfolio project cards with status and link actions
+- src/hooks/usePortfolioData.ts
+  - Loads content from public/data.json on startup
 
-- `src/components/sections/Gallery.tsx`
-  - Responsive gallery grid for uploaded images
+- src/store/portfolioStore.ts
+  - Stores live portfolio data and admin draft state
 
-- `src/components/sections/Contact.tsx`
-  - Contact call-to-action and links display
+- api/save-content.ts
+  - Persists the current draft back to GitHub via Vercel
 
-### Cursor and Animation
-
-- `src/components/ui/DimensionCursor.tsx`
-  - Custom main page cursor with theme-specific visuals
-  - Hides when the admin overlay is active or on mobile
-
-- `src/components/ui/AdminCursor.tsx`
-  - Dedicated admin overlay cursor
-  - Appears only in overlay mode
-
-- `src/components/ui/ScrollReveal.tsx`
-  - Entry animation wrapper for page sections
-
-- `src/components/ui/Particles.tsx`
-  - Particle background effect for the cosmic theme
-
-- `src/components/ui/AnimatedBackground.tsx`
-  - Animated layout effect for the arctic theme
-
-## Data and Persistence
-
-- `public/data.json`
-  - Single source of truth for portfolio content
-  - Contains hero, about, projects, gallery, contact, settings, and graduation data
-
-- `src/hooks/usePortfolioData.ts`
-  - Fetches `public/data.json` when the app starts
-  - Hydrates Zustand store with content data
-
-- `src/store/portfolioStore.ts`
-  - Manages live content and admin draft edits
-
-- `api/save-content.ts`
-  - Accepts save requests from the admin UI
-  - Persists dashboard updates to GitHub via Vercel
-
-## Local Development
-
-```bash
-npm install
-npm run dev
-```
-
-### Production Build
-
-```bash
-npm run build
-npm run preview
-```
+- api/upload-image.ts
+  - Handles image/audio uploads to Vercel Blob
 
 ## Notes
 
-- The admin overlay uses `#admin` in the URL and keeps the page locked behind a PIN.
-- The app loads its editable content from `public/data.json`.
-- The main cursor is disabled while the admin overlay is active, and a separate admin cursor is shown.
-- `themeStore.ts` controls dimension theme definitions and cursor pack styles.
-
-### Stage 3: Graduation feature and UI polish
-
-- Added graduation section and admin manager
-- Added animated UI components like `MagicRings`, `Particles`, `SpotlightCard`, and `ScrollReveal`
-- Added dimension theme system for styling variations
-- Added richer project metadata and gallery category controls
-
-### Stage 4: Persistence and deployment
-
-- Added `api/save-content.ts` GitHub sync endpoint
-- Wired admin commit button to serverless save flow
-- Prepared Vercel deployment configuration in `vercel.json`
-
-## Important Files
-
-- `src/App.tsx`
-- `src/hooks/usePortfolioData.ts`
-- `src/store/portfolioStore.ts`
-- `src/store/themeStore.ts`
-- `src/components/admin/AdminOverlay.tsx`
-- `src/components/admin/AdminGraduationManager.tsx`
-- `src/components/admin/AdminGalleryManager.tsx`
-- `src/components/admin/AdminAboutManager.tsx`
-- `src/components/admin/AdminProjectsManager.tsx`
-- `src/components/sections/GraduationFeature.tsx`
-- `src/components/sections/Projects.tsx`
-- `src/components/sections/Gallery.tsx`
-- `api/save-content.ts`
-- `public/data.json`
-
-## Notes
-
-- This project is a CMS-style portfolio driven by base64 image uploads and a serverless save API.
-- The admin overlay edits state in a draft object and persists it to `public/data.json`.
-- The current update improves upload robustness and addresses the admin image upload issue.
-
-
-## new update
-
-  Theme-based text colors are now wired up
-- The main page text now follows the active theme automatically from the shared theme pack in themeStore.ts.
-
-What changed?
-- The main app wrapper now inherits the active theme’s primary text color.
-- Hero, gallery, footer, and project section text now use theme-based classes.
-- The cosmic, creamy, and arctic themes now have coordinated primary/secondary text styling.
-
-Where to adjust colors?
-Can manually change them by editing the values in themeStore.ts, especially:
-
-textPrimary
-textSecondary
+- The app uses theme packs defined in src/store/themeStore.ts for the cosmic, creamy, and arctic experiences.
+- The main page cursor is theme-aware and uses the custom cursor logic in src/components/ui/DimensionCursor.tsx.
+- The admin overlay uses the normal browser cursor while the main page keeps its custom cursor behavior.
+- Skill icon rendering is centralized in src/utils/renderIconSVG.tsx and consumed by the main about/skill cards.

@@ -55,7 +55,7 @@ export function GraduationFeature() {
 
         {/* NATIVE CELEBRATION PICTURE DISPLAY SLOT */}
         {graduation.gcashUrl && (
-          <div className="w-full lg:w-72 h-48 md:h-64 rounded-xl overflow-hidden border border-white/10 shadow-2xl flex-shrink-0">
+          <div className="w-full lg:w-72 h-48 md:h-64 rounded-xl overflow-hidden border border-white/10 shadow-2xl shrink-0">
             <img 
               src={graduation.gcashUrl} 
               alt="Celebration Feature" 
