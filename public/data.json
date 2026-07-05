@@ -77,21 +77,27 @@
   "gallery": [
     {
       "id": "6bde4bd4-7a88-45e7-8c89-4be3a4d5bd9d",
-      "title": "Untitled Layout Asset",
+      "title": "@Mcdonald' ",
       "category": "Friends",
       "imageUrl": "https://w4huipym72sb25c6.public.blob.vercel-storage.com/1783011777849-1000030183-EoyflHmlQ1COFeLvt61w7CukU0QVRj.webp"
     },
     {
       "id": "f8fd1306-c0e3-4c64-a870-c491cd07b367",
-      "title": "Untitled Layout Asset",
+      "title": "Pool with the gang(incomplete)",
       "category": "Friends",
       "imageUrl": "https://w4huipym72sb25c6.public.blob.vercel-storage.com/1783011816363-1000019699-N8k5ZqZAPtcUdnyKozSCa5IynIK37w.webp"
     },
     {
-      "id": "9e7731ea-cbee-45d1-9cdf-488f5ca9eed7",
-      "title": "New Year's Eve with Fam💞",
-      "category": "Friends",
-      "imageUrl": "https://w4huipym72sb25c6.public.blob.vercel-storage.com/1783183839948-1000092933-zcGdqbGqBuwRJa6B3CX2cQ5DSuGB4v.webp"
+      "id": "88e1775b-c017-4cd6-87b8-02bb3f977376",
+      "title": "New Year's Eve ",
+      "category": "Family",
+      "imageUrl": "https://w4huipym72sb25c6.public.blob.vercel-storage.com/1783234114347-1000092933-5clOa03TXpRlQdXWEZimlzOj07qdzf.webp"
+    },
+    {
+      "id": "ca2ff944-ebc7-41fc-92c3-9d655306c2d2",
+      "title": "My Birthday @ Cebu🥳",
+      "category": "Family",
+      "imageUrl": "https://w4huipym72sb25c6.public.blob.vercel-storage.com/1783234142299-1000149368-QaTS5hzRPoe8e966YRMlbhWpWvR1dH.webp"
     }
   ],
   "contact": {
@@ -129,6 +135,6 @@
     "title": "Welcome to My Digital Portal! 👋",
     "subtitle": "BS in Information Systems — Just recently Graduated!",
     "message": "\"Information Systems is about engineering solutions that connect human intent with computing potential.\"",
-    "gcashUrl": ""
+    "gcashUrl": "https://w4huipym72sb25c6.public.blob.vercel-storage.com/1783234027811-1000150593-dl9iRjB5lQA3LRaj4wgobCPkVahmgL.webp"
   }
 }
