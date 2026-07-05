@@ -89,3 +89,6 @@ html {
 @media (pointer: coarse) {
   .dimension-cursor { display: none !important; }
 }
+.hero .group {
+  isolation: isolate;
+}
