@@ -26,8 +26,6 @@ const TargetCursor: React.FC<TargetCursorProps> = ({
     return (hasTouchScreen && isSmallScreen) || isMobileUserAgent;
   }, []);
 
-  const constants = useMemo(() => ({ borderWidth: 3, cornerSize: 12 }), []);
-  
   const moveCursor = useCallback((x: number, y: number) => {
     if (!cursorRef.current) return;
 

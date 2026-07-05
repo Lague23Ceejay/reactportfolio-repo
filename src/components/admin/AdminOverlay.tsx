@@ -94,6 +94,37 @@ export function AdminOverlay() {
   /* ==========================================================================
      4. HIGH PERFORMANCE BINARY IMAGE SYNC ROUTE
      ========================================================================== */
+  const handleResumeAssetUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setIsUploading(true);
+      const cleanName = file.name.replace(/\.[^/.]+$/, '').replace(/[^a-zA-Z0-9]/g, '-');
+      const filename = `${Date.now()}-${cleanName}${file.name.includes('.') ? file.name.slice(file.name.lastIndexOf('.')) : ''}`;
+
+      const response = await fetch('/api/upload-image', {
+        method: 'POST',
+        headers: {
+          'x-filename': filename,
+          'Content-Type': file.type || 'application/octet-stream',
+        },
+        body: file,
+      });
+
+      if (!response.ok) throw new Error(`Upload processing failed (${response.status})`);
+      const blobResult = await response.json();
+
+      updateDraft((draftState) => {
+        draftState.contact.resumeUrl = blobResult.url;
+      });
+    } catch (err: any) {
+      alert(`Resume Asset Upload Error: ${err?.message ?? 'Unknown context'}`);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   const handleHeroImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -438,6 +469,24 @@ export function AdminOverlay() {
                         className="w-full bg-zinc-900 border border-zinc-800 p-2.5 rounded-xl text-xs font-mono text-zinc-300 outline-none focus:border-emerald-500/30"
                         placeholder="https://vercel.app"
                       />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-[11px] font-mono text-zinc-500">Resume Asset (PDF, image, or file)</label>
+                      <input
+                        type="file"
+                        accept="image/*,.pdf,.doc,.docx,.txt"
+                        onChange={handleResumeAssetUpload}
+                        className="w-full rounded-xl border border-zinc-800 bg-zinc-900 p-2.5 text-xs text-zinc-300 file:mr-3 file:rounded-full file:border-0 file:bg-emerald-500/10 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-emerald-400"
+                      />
+                      {draft.contact.resumeUrl && (
+                        <div className="rounded-xl border border-zinc-800 bg-zinc-950/60 p-2.5 text-[11px] text-zinc-400">
+                          <p className="font-semibold text-zinc-300">Current asset</p>
+                          <a href={draft.contact.resumeUrl} target="_blank" rel="noreferrer" className="mt-1 block break-all text-emerald-400 underline underline-offset-2">
+                            {draft.contact.resumeUrl}
+                          </a>
+                        </div>
+                      )}
                     </div>
 
                     {/* INTERACTIVE VECTOR GENERATOR AND FORCE ANCHOR TRIGGER MODULE */}

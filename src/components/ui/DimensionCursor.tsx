@@ -224,16 +224,12 @@ const moveCursor = useCallback((event: MouseEvent) => {
     return null;
   }
 
-  // 🔥 Mount TargetCursor when theme requires "target"
   if (type === 'target') {
     return (
       <TargetCursor
         spinDuration={2}
         hideDefaultCursor
-        parallaxOn
-        hoverDuration={0.2}
         cursorColor={color}
-        cursorColorOnTarget="#B497CF"
       />
     );
   }

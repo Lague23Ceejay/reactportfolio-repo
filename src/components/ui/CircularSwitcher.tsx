@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useThemeStore, dimensionPacks } from '../../store/themeStore';
 import { FiLayers } from 'react-icons/fi';
@@ -7,6 +7,8 @@ import type { DimensionType } from '../../types/theme';
 export const CircularSwitcher: React.FC = () => {
   const { currentDimension, setHoveredDimension, triggerHop } = useThemeStore();
   const [isActivated, setIsActivated] = useState(false);
+  const [position, setPosition] = useState({ x: 28, y: 28 });
+  const dragRef = useRef<HTMLDivElement>(null);
 
   const dimensions = Object.keys(dimensionPacks) as DimensionType[];
 
@@ -17,27 +19,65 @@ export const CircularSwitcher: React.FC = () => {
   };
 
   const currentThemeColors = switcherColorMap[currentDimension];
+  const switcherStyle = useMemo(() => ({
+    left: position.x,
+    top: position.y,
+  }), [position.x, position.y]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setPosition((prev) => ({
+        x: Math.min(window.innerWidth - 84, Math.max(16, prev.x)),
+        y: Math.min(window.innerHeight - 84, Math.max(16, prev.y)),
+      }));
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (!dragRef.current) return;
+    const rect = dragRef.current.getBoundingClientRect();
+    const offsetX = event.clientX - rect.left;
+    const offsetY = event.clientY - rect.top;
+
+    const onMove = (moveEvent: PointerEvent) => {
+      const nextX = moveEvent.clientX - offsetX;
+      const nextY = moveEvent.clientY - offsetY;
+      setPosition({
+        x: Math.min(window.innerWidth - 84, Math.max(16, nextX)),
+        y: Math.min(window.innerHeight - 84, Math.max(16, nextY)),
+      });
+    };
+
+    const onUp = () => {
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onUp);
+    };
+
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp);
+  };
 
   return (
-    /* 
-      SENIOR LAYOUT SYNCHRONIZATION:
-      - Both desktop and phone layouts are locked into the bottom-right corner.
-      - Removed the full-screen dimming overlay completely to keep the mobile experience lightweight.
-      - Pointer highlight kills prevent box artifacts from appearing on phone view taps.
-    */
-    <div 
-      className="fixed bottom-8 right-8 w-20 h-20 flex items-center justify-center select-none"
+    <div
+      ref={dragRef}
+      className="fixed w-20 h-20 flex items-center justify-center select-none"
       style={{
         zIndex: 99999,
         pointerEvents: 'auto',
+        left: switcherStyle.left,
+        top: switcherStyle.top,
         WebkitTapHighlightColor: 'transparent',
-        outline: 'none'
+        outline: 'none',
       }}
       onMouseEnter={() => setIsActivated(true)}
       onMouseLeave={() => {
         setIsActivated(false);
         setHoveredDimension(null);
       }}
+      onPointerDown={handlePointerDown}
       // Mobile tap toggle helper ensures the menu functions reliably on phone screens
       onClick={(e) => {
         e.stopPropagation();

@@ -2,6 +2,7 @@
 
 import { usePortfolioStore } from '../../store/portfolioStore';
 import { useThemeStore, dimensionPacks } from '../../store/themeStore'; // 🚀 LIGHTWEIGHT UTILITY CONNECTION
+import { ResumeEnvelope } from '../ui/ResumeEnvelope';
 
 export function Contact() {
   /* ==========================================================================
@@ -45,6 +46,10 @@ export function Contact() {
           <p className={`text-lg font-normal leading-relaxed transition-colors duration-500 ${pack.textSecondary}`}>
             Let's create something functional and beautiful together. Feel free to check my public profiles or connect directly via email.
           </p>
+        </div>
+
+        <div className="flex flex-col items-center gap-4">
+          <ResumeEnvelope resumeUrl={data.resumeUrl} resumeLabel="Resume" />
         </div>
 
         {/* BOTTOM EXTERNAL NETWORKS REDIRECT MATRIX */}
