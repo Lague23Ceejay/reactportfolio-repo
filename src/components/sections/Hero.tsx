@@ -59,6 +59,7 @@ export function Hero() {
         <div 
           className="absolute pointer-events-none -z-10 w-[220%] h-[220%] top-1/2 left-1/2"
           style={{
+            zIndex: 0, // ✅ explicit numeric z-index
             transform: 'translate(-50%, -50%)',
             maskImage: 'radial-gradient(circle at center, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 70%)',
             WebkitMaskImage: 'radial-gradient(circle at center, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 70%)',
@@ -92,6 +93,7 @@ export function Hero() {
         {/* PROFILE MAIN MOUNT BOUNDS PANEL CONTAINER */}
         <div 
           className={`w-64 h-64 md:w-72 md:h-72 rounded-full border flex items-center justify-center text-center transition-all duration-500 relative z-10 overflow-hidden ${avatarBg}`}
+           style={{ zIndex: 10 }} // ✅ numeric z-index ensures it’s above rings
         >
           {profileImage ? (
             /* 🚀 REFACTORED ELEMENT MOUNT: AUTOMATED DUAL-IMAGE GLITCH CROSSFADER */
