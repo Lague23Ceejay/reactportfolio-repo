@@ -51,12 +51,12 @@ export function GraduationFeature() {
           </h3>
 
           <div className="space-y-4 max-w-2xl">
-            <p
-              className={`text-base leading-relaxed whitespace-pre-wrap break-words ${pack.textSecondary}` +
-                (/\\|import\s+\{|const\s+future|Promise\(|console\.log|https?:\/\/|\n/.test(graduation.message) ? ' font-mono' : '')}
+            {/* Use <pre> for proper indentation */}
+            <pre
+              className={`text-base leading-relaxed whitespace-pre-wrap break-words font-mono ${pack.textSecondary}`}
             >
               {decodeMessage(graduation.message)}
-            </p>
+            </pre>
             <p className={`text-sm italic font-medium flex items-center gap-1.5 ${pack.textSecondary}`}>
               <FiHeart className="inline text-rose-500" /> Congratulations on Graduation!
             </p>
