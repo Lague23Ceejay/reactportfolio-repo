@@ -77,27 +77,15 @@
   "gallery": [
     {
       "id": "6bde4bd4-7a88-45e7-8c89-4be3a4d5bd9d",
-      "title": "@Mcdonald' ",
-      "category": "Friends",
+      "title": "Untitled Layout Asset",
+      "category": "General Sandbox",
       "imageUrl": "https://w4huipym72sb25c6.public.blob.vercel-storage.com/1783011777849-1000030183-EoyflHmlQ1COFeLvt61w7CukU0QVRj.webp"
     },
     {
       "id": "f8fd1306-c0e3-4c64-a870-c491cd07b367",
-      "title": "Pool with the gang(incomplete)",
-      "category": "Friends",
+      "title": "Untitled Layout Asset",
+      "category": "General Sandbox",
       "imageUrl": "https://w4huipym72sb25c6.public.blob.vercel-storage.com/1783011816363-1000019699-N8k5ZqZAPtcUdnyKozSCa5IynIK37w.webp"
-    },
-    {
-      "id": "88e1775b-c017-4cd6-87b8-02bb3f977376",
-      "title": "New Year's Eve ",
-      "category": "Family",
-      "imageUrl": "https://w4huipym72sb25c6.public.blob.vercel-storage.com/1783234114347-1000092933-5clOa03TXpRlQdXWEZimlzOj07qdzf.webp"
-    },
-    {
-      "id": "ca2ff944-ebc7-41fc-92c3-9d655306c2d2",
-      "title": "My Birthday @ Cebu🥳",
-      "category": "Family",
-      "imageUrl": "https://w4huipym72sb25c6.public.blob.vercel-storage.com/1783234142299-1000149368-QaTS5hzRPoe8e966YRMlbhWpWvR1dH.webp"
     }
   ],
   "contact": {
@@ -134,7 +122,7 @@
     "badgeText": "Class of 2026 Launch Pad",
     "title": "Welcome to My Digital Portal! 👋",
     "subtitle": "BS in Information Systems — Just recently Graduated!",
-    "message": "\"Information Systems is about engineering solutions that connect human intent with computing potential.\"",
-    "gcashUrl": "https://w4huipym72sb25c6.public.blob.vercel-storage.com/1783234027811-1000150593-dl9iRjB5lQA3LRaj4wgobCPkVahmgL.webp"
+    "message": "\\\\\"System Successfully Configured: Graduated.\"\n\nimport { Graduate } from 'University';\n\n// Deploying Information Systems Degree...\nconst future = new Promise((resolve) => {\n    const status = \"Graduated\";\n    if (status === \"Graduated\") {\n        resolve(\"Bright\");\n    }\n});\n\nfuture.then(result => console.log(`Future: ${result} ✨`));\n\n\\\\https://laguereactportfolio-repo.vercel.app/\n",
+    "gcashUrl": ""
   }
 }
