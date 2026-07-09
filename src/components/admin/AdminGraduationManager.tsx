@@ -15,7 +15,7 @@ export function AdminGraduationManager() {
     badgeText: "Class of 2026 Launch Pad",
     title: "Welcome to My Digital Portal! 👋",
     subtitle: "BS in Information Systems — Graduating Tomorrow!",
-    message: '"Information Systems is about engineering solutions that connect human intent with computing potential."',
+    message: '\\\"System Successfully Configured: Graduated.\\n\\nimport { Graduate } from \'University\';\\n\\n// Deploying Information Systems Degree...\\nconst future = new Promise((resolve) => {\\n    const status = \"Graduated\";\\n    if (status === \"Graduated\") {\\n        resolve(\"Bright\");\\n    }\\n});\\n\\nfuture.then(result => console.log(\`Future: ${result} ✨\`));\\n\\n\\\\https://laguereactportfolio-repo.vercel.app/',
     gcashUrl: "" // This will now hold your clean CDN link string!
   };
 

@@ -1,4 +1,4 @@
-{
+﻿{
   "hero": {
     "name": "Christian John K. Lague",
     "title": "Bachelor of Science in Information Systems",
@@ -102,14 +102,6 @@
       "cosmic": "/audio/cosmic.mp3",
       "creamy": "/audio/creamy.mp3",
       "arctic": "/audio/arctic.mp3"
-    },
-    "graduation": {
-      "isEnabled": true,
-      "badgeText": "Class of 2026 Launch Pad",
-      "title": "Welcome to My Digital Portal! 👋",
-      "subtitle": "BS in Information Systems — Graduating Tomorrow!",
-      "message": "Technology is most powerful when it serves people. My goal is to build clean, efficient systems that simplify complex problems and make everyday digital experiences better.",
-      "gcashUrl": ""
     }
   },
   "theme": {
