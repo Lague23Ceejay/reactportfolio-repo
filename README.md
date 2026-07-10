@@ -1,25 +1,25 @@
 ﻿# React Portfolio
 
-A modern React portfolio with a live admin editor, animated theme switching, custom cursor behavior, and Vercel-backed media/content persistence.
+A polished React + TypeScript portfolio site with a live admin CMS, animated theme switching, immersive UI effects, and Vercel-backed content/media persistence.
 
 ## Overview
 
-This project is a personal portfolio website built with React, TypeScript, and Vite. It loads editable content from public/data.json and exposes a PIN-protected admin overlay for live updates.
+This project is a personal portfolio website built with Vite and React. The app loads content from public/data.json, renders the portfolio experience across multiple sections, and exposes a PIN-protected admin overlay for live editing.
 
-## Current Features
+## What this project includes
 
-- Hero section with editable profile details, tagline, and image assets
-- Graduation feature section with optional GCash/QR support and admin editing
-- About section with biography text and skill cards
-- Projects section with project metadata, stack labels, external links, and featured status
-- Gallery section with upload support and category-based organization
-- Contact section with configurable email, website URL, and social links
-- Hash-based admin entry via #admin and PIN authentication
-- Theme/dimension switching across cosmic, creamy, and arctic packs
-- Animated backgrounds, reveal transitions, particles, and cursor effects
-- Vercel serverless endpoints for saving content and uploading media assets
+- A hero section for profile introduction and branding
+- A graduation feature section with optional support content and media
+- An about section with biography text and skill cards
+- A projects section for featured work and external links
+- A gallery section with category-based organization
+- A contact section with social links and resume support
+- A hash-based admin experience via #admin
+- Three visual dimensions: cosmic, creamy, and arctic
+- Animated effects such as particles, scroll reveals, cursor interactions, and theme transitions
+- Serverless API routes for saving portfolio content and uploading media assets
 
-## Tech Stack
+## Tech stack
 
 - React 18
 - TypeScript
@@ -34,7 +34,12 @@ This project is a personal portfolio website built with React, TypeScript, and V
 - @octokit/rest
 - @vercel/blob
 
-## Getting Started
+## Requirements
+
+- Node.js 18+ (recommended)
+- npm
+
+## Getting started
 
 Install dependencies:
 
@@ -42,7 +47,7 @@ Install dependencies:
 npm install
 ```
 
-Run locally:
+Run the development server:
 
 ```bash
 npm run dev
@@ -54,130 +59,82 @@ Build for production:
 npm run build
 ```
 
-Preview the production build:
+Preview the production build locally:
 
 ```bash
 npm run preview
 ```
 
-## Project Structure
+## Admin workflow
+
+The admin interface is opened with the hash route #admin.
+
+Once open, the app prompts for a PIN. Authentication is verified against the hashed PIN stored in public/data.json, and the UI supports editing content in draft mode before saving changes.
+
+### Saving changes
+
+- The admin overlay updates a draft state locally
+- The save action sends the portfolio JSON to the Vercel API route
+- The app then refreshes the live data view
+
+## Content and data model
+
+The main portfolio content lives in public/data.json. This file acts as the primary source of truth for:
+
+- hero content
+- graduation data
+- about section text and skills
+- projects and gallery items
+- contact details and admin settings
+
+## Project structure
 
 ```text
 .
 ├── api/
-│   ├── save-content.ts      # Saves portfolio JSON to GitHub via Vercel
-│   └── upload-image.ts      # Uploads images/audio to Vercel Blob
+│   ├── save-content.ts      # Persists portfolio content to GitHub via Vercel
+│   └── upload-image.ts      # Uploads images and media assets to Vercel Blob
 ├── public/
 │   ├── data.json            # Main portfolio content source
 │   ├── favicon.svg
 │   └── icons.svg
 ├── src/
-│   ├── App.tsx              # App shell, theme wrapper, and overlay mounting
+│   ├── App.tsx              # Main app shell and section composition
 │   ├── main.tsx             # React entry point
-│   ├── index.css            # Global styles and Tailwind setup
-│   ├── App.css              # App-level overrides
-│   ├── assets/              # Static images and other local assets
 │   ├── components/
 │   │   ├── admin/           # Admin overlay and section editors
-│   │   │   ├── AdminAboutManager.tsx
-│   │   │   ├── AdminGalleryManager.tsx
-│   │   │   ├── AdminGraduationManager.tsx
-│   │   │   ├── AdminOverlay.tsx
-│   │   │   └── AdminProjectsManager.tsx
 │   │   ├── layout/          # Shared layout components
-│   │   │   ├── Footer.tsx
-│   │   │   └── Navbar.tsx
 │   │   ├── sections/        # Main page sections
-│   │   │   ├── About.tsx
-│   │   │   ├── Contact.tsx
-│   │   │   ├── Gallery.tsx
-│   │   │   ├── GraduationFeature.tsx
-│   │   │   ├── Hero.tsx
-│   │   │   └── Projects.tsx
-│   │   └── ui/              # UI helpers, animations, and cursors
-│   │       ├── AnimatedBackground.tsx
-│   │       ├── CardSwapDeck.tsx
-│   │       ├── CircularSwitcher.tsx
-│   │       ├── DimensionCursor.tsx
-│   │       ├── MagicRings.tsx
-│   │       ├── MagnetEffect.tsx
-│   │       ├── Particles.tsx
-│   │       ├── ScrollReveal.tsx
-│   │       ├── SnowParticles.tsx
-│   │       ├── SpotlightCard.tsx
-│   │       └── TargetCursor.tsx
-│   ├── hooks/
-│   │   ├── useImageUpload.ts
-│   │   ├── usePortfolioData.ts
-│   │   └── usePortfolioData.ts
-│   ├── store/
-│   │   ├── portfolioStore.ts
-│   │   └── themeStore.ts
-│   ├── types/
-│   │   ├── portfolio.ts
-│   │   └── theme.ts
-│   └── utils/
-│       └── renderIconSVG.tsx
-├── eslint.config.js
+│   │   └── ui/              # Interaction layers, theme UI, animations
+│   ├── hooks/               # Data loading and upload hooks
+│   ├── store/               # Zustand state for portfolio and theme data
+│   ├── types/               # Type definitions for portfolio data
+│   └── utils/               # Helper utilities
 ├── package.json
-├── tsconfig.json
-├── tsconfig.app.json
-├── tsconfig.node.json
 ├── vercel.json
 ├── vite.config.ts
 └── README.md
 ```
 
-## Core Modules
+## Deployment notes
 
-### Admin System
+This app is designed to work well with Vercel.
 
-- src/components/admin/AdminOverlay.tsx
-  - Opens on #admin and locks access behind a PIN gate
-  - Manages draft state, save flow, and the admin shell
-  - Renders the section-specific admin managers
+For content persistence, the serverless endpoint in api/save-content.ts relies on GitHub-related environment variables such as:
 
-- src/components/admin/AdminAboutManager.tsx
-  - Edits about text and skill entries
+- GITHUB_TOKEN
+- GITHUB_OWNER
+- GITHUB_REPO
+- GITHUB_BRANCH
 
-- src/components/admin/AdminProjectsManager.tsx
-  - Edits projects, links, stack labels, and featured flags
+For media uploads, the upload route uses Vercel Blob and should be configured in your Vercel environment.
 
-- src/components/admin/AdminGalleryManager.tsx
-  - Manages gallery items and upload workflows
+## Improvements identified during review
 
-- src/components/admin/AdminGraduationManager.tsx
-  - Edits graduation banner text and supporting media
+The README was expanded to better reflect the actual architecture and usage of the project, including:
 
-### Rendering and UI
-
-- src/components/sections/Hero.tsx
-- src/components/sections/About.tsx
-- src/components/sections/Projects.tsx
-- src/components/sections/Gallery.tsx
-- src/components/sections/Contact.tsx
-- src/components/sections/GraduationFeature.tsx
-
-### Data and Persistence
-
-- public/data.json
-  - Main source of truth for the portfolio content
-
-- src/hooks/usePortfolioData.ts
-  - Loads content from public/data.json on startup
-
-- src/store/portfolioStore.ts
-  - Stores live portfolio data and admin draft state
-
-- api/save-content.ts
-  - Persists the current draft back to GitHub via Vercel
-
-- api/upload-image.ts
-  - Handles image/audio uploads to Vercel Blob
-
-## Notes
-
-- The app uses theme packs defined in src/store/themeStore.ts for the cosmic, creamy, and arctic experiences.
-- The main page cursor is theme-aware and uses the custom cursor logic in src/components/ui/DimensionCursor.tsx.
-- The admin overlay uses the normal browser cursor while the main page keeps its custom cursor behavior.
-- Skill icon rendering is centralized in src/utils/renderIconSVG.tsx and consumed by the main about/skill cards.
+- clearer local setup instructions
+- a more accurate overview of the admin CMS workflow
+- deployment and environment-variable context
+- a concise project structure summary
+- improved descriptions of the portfolio data flow and UI systems

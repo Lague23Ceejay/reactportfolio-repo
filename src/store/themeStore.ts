@@ -3,11 +3,11 @@
 import { create } from 'zustand';
 import type { DimensionType, ThemePack } from '../types/theme';
 
-/* ==========================================================================
-   1. STATIC PORTAL DIMENSION STYLE PACKS MATRIX
-   ========================================================================== */
-export const dimensionPacks: Record<DimensionType, ThemePack> = {
-  cosmic: {
+  /* ==========================================================================
+    1. STATIC PORTAL DIMENSION STYLE PACKS MATRIX
+    ========================================================================== */
+  export const dimensionPacks: Record<DimensionType, ThemePack> = {
+    cosmic: {
     id: 'cosmic',
     name: 'Cosmic Drop',
     tagline: 'Dev/Night Coder',
@@ -20,10 +20,15 @@ export const dimensionPacks: Record<DimensionType, ThemePack> = {
     motionSpeed: 0.6,
     ease: 'power3.out',
     textPrimary: 'text-zinc-100',
-    textSecondary: 'text-zinc-400'
+    textSecondary: 'text-zinc-400',
+
+    accent: '#10b981',
+    accentBg: '#064e3b',
+    accentBorder: '#34d399',
   },
-  
-  creamy: {
+
+    
+    creamy: {
     id: 'creamy',
     name: 'Creamy Studio',
     tagline: 'Creative/Soft Aesthetic',
@@ -37,6 +42,11 @@ export const dimensionPacks: Record<DimensionType, ThemePack> = {
     ease: 'elastic.out(1, 0.75)',
     textPrimary: 'text-stone-900 font-extrabold', 
     textSecondary: 'text-stone-800 font-medium',  
+
+    // NEW centralized variables
+    accent: '#5e79c4',
+    accentBg: '#FFEE8C',
+    accentBorder: '#5e79c4',
   },
 
   arctic: {
@@ -52,7 +62,12 @@ export const dimensionPacks: Record<DimensionType, ThemePack> = {
     motionSpeed: 0.4,
     ease: 'power4.inOut',
     textPrimary: 'text-slate-100',
-    textSecondary: 'text-slate-400'
+    textSecondary: 'text-slate-400',
+
+    // NEW centralized variables
+    accent: '#B069DB',
+    accentBg: '#301959',
+    accentBorder: '#e9d5ff',
   }
 };
 
@@ -60,20 +75,19 @@ export const dimensionPacks: Record<DimensionType, ThemePack> = {
    2. IMMUTABLE ZUSTAND STORE APPLICATION INTERFACE CONTRACT
    ========================================================================== */
 interface ThemeState {
-  currentDimension: 'cosmic' | 'arctic' | 'creamy';
+  currentDimension: DimensionType;
   isTransitioning: boolean;
   isAudioMuted: boolean;
+  hoveredDimension: DimensionType | null;
   
   // 🚀 FIXED INJECTION: Added state parameters to handle active HUD switcher previews [1, 2]
-  hoveredDimension: 'cosmic' | 'arctic' | 'creamy' | null;
+  
 
   // Global State Mutator Action Handlers
-  setDimension: (dim: 'cosmic' | 'arctic' | 'creamy') => void;
-  toggleAudioMute: () => void;
-  
+   setDimension: (dim: DimensionType) => void;
+  setHoveredDimension: (dim: DimensionType | null) => void;
   // 🚀 FIXED INJECTION: Integrated missing handlers needed by CircularSwitcher.tsx [1, 2]
-  setHoveredDimension: (dim: 'cosmic' | 'arctic' | 'creamy' | null) => void;
-  triggerHop: (targetDim: 'cosmic' | 'arctic' | 'creamy') => void;
+  triggerHop: (targetDim: DimensionType) => void;
 }
 
 /* ==========================================================================

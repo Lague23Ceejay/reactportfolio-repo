@@ -17,7 +17,13 @@ export interface ThemePack {
   };
   motionSpeed: number;
   ease: string;
-  // SENIOR DEV TYPE OVERRIDES: Clear the 'does not exist on type ThemePack' error
   textPrimary: string;
   textSecondary: string;
+
+  // Centralized theme variables (used by App.tsx inline styles)
+  accent: string;
+  accentBg: string;
+  accentBorder: string;
 }
+
+
