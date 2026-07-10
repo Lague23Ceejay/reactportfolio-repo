@@ -4,137 +4,118 @@ A polished React + TypeScript portfolio site with a live admin CMS, animated the
 
 ## Overview
 
-This project is a personal portfolio website built with Vite and React. The app loads content from public/data.json, renders the portfolio experience across multiple sections, and exposes a PIN-protected admin overlay for live editing.
+This repo powers a single-page portfolio experience. Content is loaded from `public/data.json`; the app renders multiple sections and exposes a PIN-protected admin overlay (open with `#admin`) for live edits and content publishing.
 
-## What this project includes
+## Quick start
 
-- A hero section for profile introduction and branding
-- A graduation feature section with optional support content and media
-- An about section with biography text and skill cards
-- A projects section for featured work and external links
-- A gallery section with category-based organization
-- A contact section with social links and resume support
-- A hash-based admin experience via #admin
-- Three visual dimensions: cosmic, creamy, and arctic
-- Animated effects such as particles, scroll reveals, cursor interactions, and theme transitions
-- Serverless API routes for saving portfolio content and uploading media assets
-
-## Tech stack
-
-- React 18
-- TypeScript
-- Vite
-- Tailwind CSS
-- Zustand
-- GSAP
-- Framer Motion
-- Three.js / OGL
-- React Icons
-- @vercel/node
-- @octokit/rest
-- @vercel/blob
-
-## Requirements
-
-- Node.js 18+ (recommended)
-- npm
-
-## Getting started
-
-Install dependencies:
+Install and run locally:
 
 ```bash
 npm install
-```
-
-Run the development server:
-
-```bash
 npm run dev
 ```
 
-Build for production:
+Build:
 
 ```bash
 npm run build
-```
-
-Preview the production build locally:
-
-```bash
 npm run preview
 ```
 
-## Admin workflow
+## Where to change UI elements (buttons, cards, background)
 
-The admin interface is opened with the hash route #admin.
+If you need to adjust colors, sizes, spacing or behavior for the main interactive elements, edit these files:
 
-Once open, the app prompts for a PIN. Authentication is verified against the hashed PIN stored in public/data.json, and the UI supports editing content in draft mode before saving changes.
+- Buttons: update per-theme button styles in `src/store/themeStore.ts` (the `ThemePack` entries control `accent`, `accentBg`, `accentBorder`, `fontClass`, and `cardClass` used across components). Change visual defaults and add utility classes there.
+- Generic button components and per-instance classes: `src/components/ui/ResumeEnvelope.tsx`, `src/components/layout/Navbar.tsx`, and section headers (e.g. `src/components/sections/About.tsx`) — edit the `className` strings for padding, font-size, rounded corners, and border.
+- Cards (tech stack, projects, gallery):
+	- Tech stack cards: `src/components/ui/CardSwapDeck.tsx` — adjust card width/height (`w-36 h-36`), border radius, and inner padding; the modal overlay sizing is also here.
+	- Project cards: `src/components/sections/Projects.tsx` — modify card wrapper classes, `max-w` values, and the `cardClass` theme variable.
+	- Gallery image cards: `src/components/sections/Gallery.tsx` — change thumbnail sizes and `object-contain` vs `object-cover` behavior.
+- Background / theme visuals:
+	- Theme variables and `bgClass` per dimension: `src/store/themeStore.ts` (preferred place to set `bg-neon-arctic` or other classes).
+	- Global styles and helpers (radial gradients, colors): `src/index.css` — add or tune `.bg-neon-arctic` and other custom background classes.
+	- Animated canvas-based backgrounds: `src/components/ui/AnimatedBackground.tsx` — change palette, particle counts, blur/shadow and gradient masking.
 
-### Saving changes
+Notes about theming:
+- `themeStore.ts` defines three dimension packs: `cosmic`, `creamy`, `arctic`. Each pack exposes `bgClass`, `textClass`, `accentClass`, `cardClass`, and `cursor` settings. Prefer changing values here so changes propagate consistently.
+- If you tweak `bgClass` using Tailwind arbitrary classes (e.g. `bg-[radial-gradient(...)]`) prefer moving complex gradients into `src/index.css` as named classes (`.bg-neon-arctic`) — this is more stable across Tailwind/Vite builds.
 
-- The admin overlay updates a draft state locally
-- The save action sends the portfolio JSON to the Vercel API route
-- The app then refreshes the live data view
+## How to change a color or size example
 
-## Content and data model
+- To change the tech-stack card size, edit `src/components/ui/CardSwapDeck.tsx`: replace `w-36 h-36` with `w-44 h-44` (or a responsive class list like `w-28 sm:w-36 md:w-44`).
+- To change the primary accent color for the arctic theme, edit `src/store/themeStore.ts` and update the `accent` and `accentBg` values for the `arctic` pack. Example keys: `accent: '#B069DB'` and `accentBg: '#301959'`.
+- To alter the neon background layers, prefer editing `src/index.css` and `.bg-neon-arctic` gradients rather than inlining in `themeStore.ts`.
 
-The main portfolio content lives in public/data.json. This file acts as the primary source of truth for:
+## Admin & content model
 
-- hero content
-- graduation data
-- about section text and skills
-- projects and gallery items
-- contact details and admin settings
+The primary content file is `public/data.json`. Use the admin overlay (`#admin`) to make live edits; the admin UI tracks a draft state and posts changes to `api/save-content.ts` which persists to GitHub (requires GitHub tokens in Vercel env).
+
+Keep `public/data.json` valid JSON — avoid merge conflict markers and BOMs. If JSON parsing errors occur, check for `<<<<<<<`/`>>>>>>>` or leading UTF-8 BOM bytes (`EF BB BF`).
+
+## Deployment
+
+The site is intended for Vercel. Environment variables used by serverless endpoints include:
+
+- `GITHUB_TOKEN`
+- `GITHUB_OWNER`
+- `GITHUB_REPO`
+- `GITHUB_BRANCH`
+
+Media uploads rely on Vercel Blob configuration.
+
+## Troubleshooting tips
+
+- If a modal or overlay appears misaligned when clicked from inside a transformed container (animated marquee, scaled parent), render the overlay with a portal to `document.body` (see `src/components/ui/CardSwapDeck.tsx` for the portal example).
+- If cursor or pointer interactions block clicks, verify custom cursor elements use `pointer-events: none` and that overlay wrappers use `pointer-events-auto` when appropriate (see `src/components/ui/DimensionCursor.tsx`).
+- Large build chunks: if bundles exceed 500 kB, consider dynamic imports or `build.rollupOptions.output.manualChunks` in `vite.config.ts`.
+
+## Where to look for specific UI changes
+
+- Buttons: `src/components/ui/ResumeEnvelope.tsx`, `src/components/layout/Navbar.tsx`, `src/components/ui/*`
+- Cards: `src/components/ui/CardSwapDeck.tsx`, `src/components/sections/Projects.tsx`, `src/components/sections/Gallery.tsx`
+- Backgrounds: `src/components/ui/AnimatedBackground.tsx`, `src/index.css`, `src/store/themeStore.ts`
 
 ## Project structure
 
-```text
+Quick tree of the repository to help locate files mentioned above:
+
+```
 .
 ├── api/
-│   ├── save-content.ts      # Persists portfolio content to GitHub via Vercel
-│   └── upload-image.ts      # Uploads images and media assets to Vercel Blob
+│   ├── save-content.ts        # Persist content to GitHub (Vercel serverless)
+│   └── upload-image.ts        # Upload media to Vercel Blob
 ├── public/
-│   ├── data.json            # Main portfolio content source
+│   ├── data.json              # Main portfolio content source (primary data model)
 │   ├── favicon.svg
 │   └── icons.svg
 ├── src/
-│   ├── App.tsx              # Main app shell and section composition
-│   ├── main.tsx             # React entry point
-│   ├── components/
-│   │   ├── admin/           # Admin overlay and section editors
-│   │   ├── layout/          # Shared layout components
-│   │   ├── sections/        # Main page sections
-│   │   └── ui/              # Interaction layers, theme UI, animations
-│   ├── hooks/               # Data loading and upload hooks
-│   ├── store/               # Zustand state for portfolio and theme data
-│   ├── types/               # Type definitions for portfolio data
-│   └── utils/               # Helper utilities
+│   ├── App.tsx                # Main app shell and section composition
+│   ├── main.tsx               # React entry point
+│   ├── index.css              # Global CSS and custom background utilities
+	│   ├── components/
+│   │   │   ├── admin/         # Admin overlay and section editors
+│   │   │   ├── layout/        # Shared layout components (Navbar, Footer)
+│   │   │   ├── sections/      # Main page sections (Hero, About, Projects, Gallery)
+│   │   │   └── ui/            # Interaction layers (CardSwapDeck, AnimatedBackground, Cursor)
+│   ├── hooks/                 # Data loading and upload hooks
+│   ├── store/                 # Zustand state for portfolio and theme data (themeStore.ts)
+│   ├── types/                 # Type definitions for portfolio data
+│   └── utils/                 # Helper utilities (image optimizer, icon renderer)
 ├── package.json
 ├── vercel.json
 ├── vite.config.ts
 └── README.md
 ```
 
-## Deployment notes
+## Contributing
 
-This app is designed to work well with Vercel.
+If you submit changes that affect visual themes, please:
 
-For content persistence, the serverless endpoint in api/save-content.ts relies on GitHub-related environment variables such as:
+1. Update `src/store/themeStore.ts` with any new theme variables.
+2. Add or adjust a named CSS utility in `src/index.css` for complex backgrounds.
+3. Run `npm run build` and verify no Tailwind or TypeScript warnings.
 
-- GITHUB_TOKEN
-- GITHUB_OWNER
-- GITHUB_REPO
-- GITHUB_BRANCH
+---
 
-For media uploads, the upload route uses Vercel Blob and should be configured in your Vercel environment.
-
-## Improvements identified during review
-
-The README was expanded to better reflect the actual architecture and usage of the project, including:
-
-- clearer local setup instructions
-- a more accurate overview of the admin CMS workflow
-- deployment and environment-variable context
-- a concise project structure summary
-- improved descriptions of the portfolio data flow and UI systems
+If you'd like, I can add a short section with exact class examples for mobile/desktop responsive sizes for the main buttons/cards and produce a PR-style diff to apply them. Tell me which components you want adjusted first and I'll implement them.

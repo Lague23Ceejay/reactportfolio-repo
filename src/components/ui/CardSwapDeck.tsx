@@ -1,6 +1,5 @@
-// src/components/ui/CardSwapDeck.tsx
-
-import React, { useState, forwardRef } from 'react';
+import React, { useState, useEffect, forwardRef } from 'react';
+import { createPortal } from 'react-dom';
 import { useThemeStore, dimensionPacks } from '../../store/themeStore';
 import { renderIconSVG } from '../../utils/renderIconSVG';
 
@@ -29,6 +28,7 @@ const renderCardIcon = (code: string) => {
 
   return icon;
 };
+
 /* ==========================================================================
    2. REWIRED TICKER LOOP LAYOUT MARQUEE (PURE CSS STRIPPED MATRIX)
    ========================================================================== */
@@ -36,6 +36,23 @@ export const CardSwap: React.FC<HorizontalTickerProps> = ({ skills = [] }) => {
   const { currentDimension } = useThemeStore();
   const pack = dimensionPacks[currentDimension];
   const [activeSkill, setActiveSkill] = useState<SkillItem | null>(null);
+
+  // 🚀 BACKGROUND SCROLL LOCKER EFFECT
+  useEffect(() => {
+    const body = document.body;
+    if (activeSkill) {
+      body.style.overflow = 'hidden';
+      body.style.overscrollBehavior = 'none';
+    } else {
+      body.style.overflow = '';
+      body.style.overscrollBehavior = '';
+    }
+
+    return () => {
+      body.style.overflow = '';
+      body.style.overscrollBehavior = '';
+    };
+  }, [activeSkill]);
 
   const fallbackInfo = "Core engineering baseline structure integrated inside our secure multi-dimensional web architecture frameworks loops.";
 
@@ -54,10 +71,10 @@ export const CardSwap: React.FC<HorizontalTickerProps> = ({ skills = [] }) => {
       return (
         <div
           key={`${skill.iconCode}-${index}`}
-          onClick={() => setActiveSkill(skill)}
-          /* 🚀 THE IMMERSIVE TRANSITION: 
-             Cards float 12px upwards (`hover:-translate-y-3`) smoothly when hovered or touched, 
-             while the underlying lane track keeps moving seamlessly in the background! */
+          onClick={(e) => {
+            e.stopPropagation(); // 🚀 Prevent event bubbling conflicts
+            setActiveSkill(skill);
+          }}
           className={`shrink-0 w-36 h-36 border rounded-2xl flex flex-col items-center justify-center p-4 gap-3 text-center transition-all duration-300 select-none transform-3d hover:scale-105 hover:-translate-y-3 cursor-pointer ${cardThemeClass}`}
         >
           <div className={`p-3 rounded-xl border transition-colors duration-300 ${
@@ -72,14 +89,11 @@ export const CardSwap: React.FC<HorizontalTickerProps> = ({ skills = [] }) => {
       );
     });
   };
-
   return (
-    <div className="w-full space-y-6 relative overflow-hidden group/marquee">
+    /* 🚀 FIX: Forced isolate stack with pointer-events-auto to bypass pointer capturing from custom cursors */
+    <div className="w-full space-y-6 relative overflow-hidden group/marquee isolate pointer-events-auto">
       
-      {/* ⚙️ ISOLATED MARQUEE HARDWARE COMPOSITOR ENGINE STYLE SHEET
-          By moving 100% of the movement onto a dedicated CSS keyframe animation 
-          using translate3d, the browser processes this on the GPU. It can never 
-          freeze, lock up, or break after 3-4 seconds! */}
+      {/* ⚙️ ISOLATED MARQUEE HARDWARE COMPOSITOR ENGINE STYLE SHEET */}
       <style>{`
         @keyframes marqueeSlidingEngine {
           0% { transform: translate3d(0, 0, 0); }
@@ -91,19 +105,17 @@ export const CardSwap: React.FC<HorizontalTickerProps> = ({ skills = [] }) => {
           animation: marqueeSlidingEngine 22s linear infinite !important;
           will-change: transform !important;
         }
-        /* 🛑 HOLD TO PAUSE INTERCEPTION: 
-           The entire row freezes cleanly in place while you hold click or touch down 
-           so visitors can tap the cards easily without missing them. */
         .group\\/marquee:active .animate-marquee-track {
           animation-play-state: paused !important;
         }
       `}</style>
+
       {/* COMPOSITOR-DRIVEN ENDLESS SCROLLING LENS CHANNEL */}
       <div 
-        className="w-full overflow-hidden py-6 flex select-none relative" 
+        className="w-full overflow-hidden py-6 flex select-none relative pointer-events-auto" 
         style={{ scrollbarWidth: 'none' }}
       >
-        <div className="animate-marquee-track gap-6">
+        <div className="animate-marquee-track gap-6 pointer-events-auto">
           {renderCardList()}
         </div>
       </div>
@@ -111,44 +123,47 @@ export const CardSwap: React.FC<HorizontalTickerProps> = ({ skills = [] }) => {
       {/* ==========================================================================
          3. DYNAMIC INTERACTIVE INFORMATION OVERLAY MODAL
          ========================================================================== */}
-      {activeSkill && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-fadeIn">
-          <div className="absolute inset-0" onClick={() => setActiveSkill(null)} />
-          
-          <div className={`relative z-10 w-full max-w-md border p-6 rounded-2xl flex flex-col items-center gap-4 text-center shadow-2xl ${
-            currentDimension === 'creamy' ? 'bg-white border-stone-300 text-stone-900' : 'bg-zinc-950 border-zinc-800 text-zinc-100'
-          }`}>
-            <button 
-              type="button"
-              onClick={() => setActiveSkill(null)}
-              className="absolute top-4 right-4 text-xs font-mono opacity-50 hover:opacity-100 cursor-pointer"
-            >
-              ✕ Close
-            </button>
+      {activeSkill && (typeof document !== 'undefined' ? createPortal(
+        /* 🚀 Portal modal: renders at document.body to avoid transformed ancestor containing blocks */
+        (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn left-0 top-0 pointer-events-auto">
+            <div className="absolute inset-0 cursor-pointer" onClick={() => setActiveSkill(null)} />
 
-            <div className={`p-4 rounded-2xl border ${
-              currentDimension === 'creamy' ? 'bg-stone-50 border-stone-200' : 'bg-zinc-950 border-zinc-800'
+            <div className={`relative z-10 w-full max-w-[min(100%,28rem)] border p-6 rounded-[2rem] flex flex-col items-center gap-4 text-center shadow-2xl max-h-[85vh] overflow-y-auto custom-scrollbar pointer-events-auto ${
+              currentDimension === 'creamy' ? 'bg-white border-stone-300 text-stone-900' : 'bg-zinc-950 border-zinc-800 text-zinc-100'
             }`}>
-              {renderCardIcon(activeSkill.iconCode)}
-            </div>
+              <button 
+                type="button"
+                onClick={() => setActiveSkill(null)}
+                className="absolute top-4 right-4 text-xs font-mono opacity-50 hover:opacity-100 cursor-pointer"
+              >
+                ✕ Close
+              </button>
 
-            <div className="space-y-2 w-full">
-              <h3 className={`text-lg font-bold tracking-tight ${pack.textPrimary}`}>
-                {activeSkill.name}
-              </h3>
-              <p className={`text-xs uppercase tracking-widest font-mono font-bold ${
-                currentDimension === 'creamy' ? 'text-rose-600' : 'text-emerald-500'
+              <div className={`p-4 rounded-2xl border shrink-0 ${
+                currentDimension === 'creamy' ? 'bg-stone-50 border-stone-200' : 'bg-zinc-950 border-zinc-800'
               }`}>
-                Technology Infrastructure Record
+                {renderCardIcon(activeSkill.iconCode)}
+              </div>
+
+              <div className="space-y-2 w-full shrink-0">
+                <h3 className={`text-lg font-bold tracking-tight ${pack.textPrimary}`}>
+                  {activeSkill.name}
+                </h3>
+                <p className={`text-xs uppercase tracking-widest font-mono font-bold ${
+                  currentDimension === 'creamy' ? 'text-rose-600' : 'text-emerald-500'
+                }`}>
+                  Technology Infrastructure Record
+                </p>
+              </div>
+
+              <p className={`text-sm leading-relaxed whitespace-pre-wrap font-light py-2 ${pack.textSecondary}`}>
+                {activeSkill.description || fallbackInfo}
               </p>
             </div>
-
-            <p className={`text-sm leading-relaxed whitespace-pre-wrap font-light py-2 ${pack.textSecondary}`}>
-              {activeSkill.description || fallbackInfo}
-            </p>
           </div>
-        </div>
-      )}
+        ), document.body as Element
+      ) : null)}
     </div>
   );
 };

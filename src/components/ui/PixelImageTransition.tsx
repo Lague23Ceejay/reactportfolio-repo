@@ -50,18 +50,20 @@ export const PixelImageTransition: React.FC<GlitchTransitionProps> = ({
 
   // 2. Automate the 3-second cycle trigger loop
   useEffect(() => {
-    if (!secondContent) {
-      setActiveSource(1);
-      return;
-    }
+  if (!secondContent) {
+    setActiveSource(1);
+    return;
+  }
 
-    const timer = setInterval(() => {
-      isGlitchingRef.current = true;
-      glitchTimeRef.current = 0;
-    }, intervalDuration);
+  const timer = setInterval(() => {
+    isGlitchingRef.current = true;
+    glitchTimeRef.current = 0;
+    // 🚀 SWAP STATE IN SYNC WITH THE INTERVAL TIMER
+    setActiveSource(prev => (prev === 1 ? 2 : 1));
+  }, intervalDuration);
 
-    return () => clearInterval(timer);
-  }, [secondContent, intervalDuration]);
+  return () => clearInterval(timer);
+}, [secondContent, intervalDuration]);
 
   // 3. Hardware-Accelerated Glitch Physics Loop with Chromatic Aberration
   useEffect(() => {
@@ -161,9 +163,6 @@ export const PixelImageTransition: React.FC<GlitchTransitionProps> = ({
       // Terminate the glitch timeline burst and swap your source index pointers
       if (glitchTimeRef.current >= 24) { 
         isGlitchingRef.current = false;
-        if (img2) {
-          setActiveSource(prev => (prev === 1 ? 2 : 1));
-        }
       }
 
       animId = requestAnimationFrame(renderLoop);
