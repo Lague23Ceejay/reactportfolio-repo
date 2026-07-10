@@ -114,11 +114,7 @@
     "badgeText": "Class of 2026 Launch Pad",
     "title": "Welcome to My Digital Portal! 👋",
     "subtitle": "BS in Information Systems — Just recently Graduated!",
-<<<<<<< HEAD
-    "message": "\\\\ Design is not just what it looks like. Design is how it works. — Steve Jobs\n\n// Define the system parameters\nconst system = {\n    isConfigured: true,\n    status: \"Graduated\"\n};\n\n// Log the status dynamically to the console\nif (system.isConfigured) {\n    console.log(`System Successfully Configured: ${system.status}`);\n}\n",
-=======
     "message": "\\\\ Design is not just what it looks like. Design is how it works. — Steve Jobs\n\n// Define the system parameters\nconst system = {\n\tisConfigured: true,\n\tstatus: \"Graduated\"\n};\n\n// Log the status dynamically to the console\nif (system.isConfigured) {\n\tconsole.log(`System Successfully Configured: ${system.status}`);\n}",
->>>>>>> save-point
     "gcashUrl": ""
   }
 }
