@@ -30,17 +30,8 @@ const TargetCursor: React.FC<TargetCursorProps> = ({
     if (!cursorRef.current) return;
 
     if (!firstMoveRef.current) {
-      // First move: snap into place and start spinning
-      gsap.set(cursorRef.current, { x, y, xPercent: -50, yPercent: -50 });
+      gsap.set(cursorRef.current, { x, y, xPercent: -50, yPercent: -50, rotation: 0 });
       firstMoveRef.current = true;
-
-      // Start spin on first move
-      if (spinTlRef.current) spinTlRef.current.kill();
-      spinTlRef.current = gsap.timeline({ repeat: -1 }).to(cursorRef.current, {
-        rotation: '+=360',
-        duration: spinDuration,
-        ease: 'none'
-      });
       return;
     }
 
@@ -51,7 +42,7 @@ const TargetCursor: React.FC<TargetCursorProps> = ({
       duration: 0.05,
       ease: 'power3.out'
     });
-  }, [spinDuration]);
+  }, []);
 
   useEffect(() => {
     if (isMobile || !cursorRef.current) return;
@@ -65,18 +56,29 @@ const TargetCursor: React.FC<TargetCursorProps> = ({
       x: window.innerWidth / 2,
       y: window.innerHeight / 2,
       xPercent: -50,
-      yPercent: -50
+      yPercent: -50,
+      rotation: 0
+    });
+
+    if (spinTlRef.current) spinTlRef.current.kill();
+    spinTlRef.current = gsap.timeline({ repeat: -1 }).to(cursorRef.current, {
+      rotation: '+=360',
+      duration: spinDuration,
+      ease: 'none'
     });
 
     window.addEventListener('mousemove', (e) => moveCursor(e.clientX, e.clientY), { passive: true });
 
     return () => {
-      if (spinTlRef.current) spinTlRef.current.kill();
+      if (spinTlRef.current) {
+        spinTlRef.current.kill();
+        spinTlRef.current = null;
+      }
       if (hideDefaultCursor) {
         document.body.style.cursor = '';
       }
     };
-  }, [isMobile, hideDefaultCursor, moveCursor]);
+  }, [isMobile, hideDefaultCursor, moveCursor, spinDuration]);
 
   if (isMobile) return null;
 

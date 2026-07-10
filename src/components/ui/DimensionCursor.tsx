@@ -10,8 +10,9 @@ import TargetCursor from './TargetCursor';
 const isInteractiveElement = (target: EventTarget | null) => {
   if (!(target instanceof HTMLElement)) return false;
   return Boolean(
-    target.closest('a, button, input, textarea, select, label, [role="button"], [role="link"]') ||
-    target.classList.contains('cursor-pointer')
+    target.closest('a, button, input, textarea, select, label, [role="button"], [role="link"], .interactive, .cursor-pointer, .cursor-target') ||
+    target.classList.contains('cursor-pointer') ||
+    target.classList.contains('cursor-target')
   );
 };
 
@@ -64,7 +65,8 @@ const moveCursor = useCallback((event: MouseEvent) => {
 
   const updateHoverState = useCallback((event: Event) => {
     const target = event.target;
-    setIsHoveredLink(target instanceof Element ? isInteractiveElement(target) : false);
+    const element = target instanceof Element ? target : target instanceof Node ? target.parentElement : null;
+    setIsHoveredLink(element ? isInteractiveElement(element) : false);
   }, []);
 
   // Admin overlay detection (unchanged)
