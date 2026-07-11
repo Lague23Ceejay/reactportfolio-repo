@@ -39,7 +39,7 @@ export function Gallery() {
     <section className={`space-y-8 rounded-3xl px-4 sm:px-6 py-8 transition-colors duration-500 ${currentDimension === 'creamy' ? 'bg-[#FFF7C2]/40' : currentDimension === 'arctic' ? 'bg-[#20133A]/50' : 'bg-zinc-900/20'}`} id="sandbox">
       <div className="space-y-2">
         <div className="flex items-center gap-4">
-          <h2 className={`text-2xl sm:text-3xl font-bold tracking-tight cursor-target ${pack.textPrimary}`}>Memories & Milestones</h2>
+          <h2 className={`text-2xl sm:text-3xl font-bold tracking-tight target-cursor ${pack.textPrimary}`}>Memories & Milestones</h2>
           <div className={`h-px flex-1 ${currentDimension === 'creamy' ? 'bg-stone-400/40' : 'bg-zinc-800'}`} />
         </div>
         <p className={`text-sm font-light max-w-xl leading-relaxed ${pack.textSecondary}`}>

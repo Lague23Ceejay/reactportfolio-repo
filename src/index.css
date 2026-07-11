@@ -32,6 +32,11 @@ html {
   to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes dimension-cursor-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 .animate-fadeIn {
   animation: fadeIn 0.3s cubic-bezier(0.21, 1.02, 0.43, 1.01) forwards;
 }
@@ -64,16 +69,15 @@ html {
   outline: none !important;
 }
 
-/* TargetCursor helpers */
+/* TargetCursor updates */
 .dimension-cursor {
   width: 0;
   height: 0;
   pointer-events: none !important;
   position: fixed;
   opacity: 1;
-  transition: opacity 160ms cubic-bezier(.2,.9,.2,1);
-  will-change: transform, opacity;
-  z-index: 9999;
+  /* CRITICAL ENGINE OVERRIDE: Removed manual transitions to stop GSAP animation stuttering */
+  z-index: 99999;
 }
 
 .dimension-cursor .target-dot {
@@ -83,14 +87,6 @@ html {
 .dimension-cursor .target-cursor-corner {
   box-sizing: border-box;
   border-radius: 2px;
-  transform-origin: center center;
-  transition: border-color 140ms ease, transform 160ms ease;
 }
 
-/* ensure hidden on touch devices */
-@media (pointer: coarse) {
-  .dimension-cursor { display: none !important; }
-}
-.hero .group {
-  isolation: isolate;
-}
+

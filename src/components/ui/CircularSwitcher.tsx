@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+// src/components/ui/CircularSwitcher.tsx
+import React, { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useThemeStore, dimensionPacks } from '../../store/themeStore';
 import { FiLayers } from 'react-icons/fi';
@@ -7,8 +8,6 @@ import type { DimensionType } from '../../types/theme';
 export const CircularSwitcher: React.FC = () => {
   const { currentDimension, setHoveredDimension, triggerHop } = useThemeStore();
   const [isActivated, setIsActivated] = useState(false);
-  const [position, setPosition] = useState({ x: 28, y: 28 });
-  const dragRef = useRef<HTMLDivElement>(null);
 
   const dimensions = Object.keys(dimensionPacks) as DimensionType[];
 
@@ -19,69 +18,36 @@ export const CircularSwitcher: React.FC = () => {
   };
 
   const currentThemeColors = switcherColorMap[currentDimension];
-  const switcherStyle = useMemo(() => ({
-    left: position.x,
-    top: position.y,
-  }), [position.x, position.y]);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setPosition((prev) => ({
-        x: Math.min(window.innerWidth - 84, Math.max(16, prev.x)),
-        y: Math.min(window.innerHeight - 84, Math.max(16, prev.y)),
-      }));
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
-    if (!dragRef.current) return;
-    const rect = dragRef.current.getBoundingClientRect();
-    const offsetX = event.clientX - rect.left;
-    const offsetY = event.clientY - rect.top;
-
-    const onMove = (moveEvent: PointerEvent) => {
-      const nextX = moveEvent.clientX - offsetX;
-      const nextY = moveEvent.clientY - offsetY;
-      setPosition({
-        x: Math.min(window.innerWidth - 84, Math.max(16, nextX)),
-        y: Math.min(window.innerHeight - 84, Math.max(16, nextY)),
-      });
-    };
-
-    const onUp = () => {
-      window.removeEventListener('pointermove', onMove);
-      window.removeEventListener('pointerup', onUp);
-    };
-
-    window.addEventListener('pointermove', onMove);
-    window.addEventListener('pointerup', onUp);
-  };
 
   return (
-    <div
-      ref={dragRef}
+    <motion.div
+      drag
+      dragMomentum={false}
+      dragElastic={0}
+      // Configures drag boundaries to measure inwards from the right and bottom walls
+      dragConstraints={{
+        left: -window.innerWidth + 96,
+        right: -16,
+        top: -window.innerHeight + 96,
+        bottom: -16
+      }}
+      // CRITICAL FIX: Negative values push the button away from the bottom-right edge
+      initial={{ x: -28, y: -28 }}
       className="fixed w-20 h-20 flex items-center justify-center select-none"
       style={{
         zIndex: 99999,
         pointerEvents: 'auto',
-        left: switcherStyle.left,
-        top: switcherStyle.top,
+        touchAction: 'none',
         WebkitTapHighlightColor: 'transparent',
         outline: 'none',
+        // ANCHOR SWITCH: Lock baseline zero positions to the bottom-right
+        right: 0,
+        bottom: 0,
       }}
       onMouseEnter={() => setIsActivated(true)}
       onMouseLeave={() => {
         setIsActivated(false);
         setHoveredDimension(null);
-      }}
-      onPointerDown={handlePointerDown}
-      // Mobile tap toggle helper ensures the menu functions reliably on phone screens
-      onClick={(e) => {
-        e.stopPropagation();
-        setIsActivated(!isActivated);
       }}
     >
       {/* RADIALLY DISTRIBUTED SWITCHER DOTS */}
@@ -89,9 +55,8 @@ export const CircularSwitcher: React.FC = () => {
         {isActivated && (
           <div className="absolute inset-0 w-full h-full flex items-center justify-center pointer-events-auto">
             {dimensions.map((dim, i) => {
-              // Calculate tight, clustered corner spacing angles
               const angle = (i * 2 * Math.PI) / dimensions.length - Math.PI / 2;
-              const radius = 68; // Compact radial sweep optimized for the corner anchor
+              const radius = 68; 
               const targetColors = switcherColorMap[dim];
 
               return (
@@ -156,10 +121,14 @@ export const CircularSwitcher: React.FC = () => {
           WebkitTapHighlightColor: 'transparent',
           outline: 'none'
         }}
+        onClick={(e) => {
+          e.stopPropagation();
+          setIsActivated(!isActivated);
+        }}
         className="w-14 h-14 rounded-full flex flex-col items-center justify-center shadow-2xl cursor-pointer relative z-10 border border-white/10 outline-none select-none"
       >
         <FiLayers className="text-lg" style={{ color: currentThemeColors.iconColor }} />
       </motion.button>
-    </div>
+    </motion.div>
   );
 };
