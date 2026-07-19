@@ -32,14 +32,6 @@ interface PortfolioState {
   resetDraft: () => void;
 }
 
-export const dimensionPacks = {
-  creamy: {
-    cursor: { type: 'dot', color: '#B497CF', glow: '0 0 6px #B497CF' },
-  }
-
-};
-
-
 /* ==========================================================================
    3. IMMUTABLE REACTIVE ZUSTAND STATE ENGINE IMPLEMENTATION
    ========================================================================== */

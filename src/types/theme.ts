@@ -1,3 +1,5 @@
+// src/types/theme.ts
+
 export type DimensionType = 'cosmic' | 'creamy' | 'arctic';
 
 export interface ThemePack {
@@ -25,5 +27,3 @@ export interface ThemePack {
   accentBg: string;
   accentBorder: string;
 }
-
-

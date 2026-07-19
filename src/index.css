@@ -1,92 +1,96 @@
-/* 
-  SENIOR DEV FIX: Cleared Tailwind v4 migration errors.
-  Replaced legacy v3 @tailwind directives with a clean, single v4 import statement.
-*/
-@import "tailwindcss";
+  /* ...utils/index.css */
+  /* 
+    SENIOR DEV FIX: Cleared Tailwind v4 migration errors.
+    Replaced legacy v3 @tailwind directives with a clean, single v4 import statement.
+  */
+  @import "tailwindcss";
 
-@theme {
-  --color-emerald-500: #10b981;
-  --color-zinc-950: #09090b;
-}
+  @theme {
+    --color-emerald-500: #10b981;
+    --color-zinc-950: #09090b;
+  }
 
-/* Base resets apply directly in v4 (removed @layer base entirely) */
-html {
-  scroll-behavior: smooth;
-  background-color: #09090b;
-}
+  /* Base resets apply directly in v4 (removed @layer base entirely) */
+  html {
+    scroll-behavior: smooth;
+    background-color: #09090b;
+  }
 
-/* Custom Scrollbar Utilities */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 4px;
-}
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #27272a;
-  border-radius: 9999px;
-}
+  /* Custom Scrollbar Utilities */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #27272a;
+    border-radius: 9999px;
+  }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
 
-@keyframes dimension-cursor-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
+  @keyframes dimension-cursor-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
 
-.animate-fadeIn {
-  animation: fadeIn 0.3s cubic-bezier(0.21, 1.02, 0.43, 1.01) forwards;
-}
+  .animate-fadeIn {
+    animation: fadeIn 0.3s cubic-bezier(0.21, 1.02, 0.43, 1.01) forwards;
+  }
 
-/* Devicon Vector Alignment Override */
-.colored, [class^="devicon-"], [class*=" devicon-"] {
-  font-family: "devicon" !important;
-  font-style: normal !important;
-  font-weight: normal !important;
-  font-variant: normal !important;
-  text-transform: none;
-  line-height: 1;
-  -webkit-font-smoothing: antialiased;
-  display: inline-block !important;
-  speak-as: none; /* Modern standard compliant alternative for old icon fonts */
-}
+  /* Devicon Vector Alignment Override */
+  .colored, [class^="devicon-"], [class*=" devicon-"] {
+    font-family: "devicon" !important;
+    font-style: normal !important;
+    font-weight: normal !important;
+    font-variant: normal !important;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    display: inline-block !important;
+    speak-as: none; /* Modern standard compliant alternative for old icon fonts */
+  }
 
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #27272a;
-  border-radius: 9999px;
-}
-/* 
-  SENIOR DEV MOBILE GRAPHICS ENVELOPE:
-  Completely neutralizes and disables the tap box highlight overlay 
-  across all mobile viewports, forcing fluid material transitions.
-*/
-* {
-  -webkit-tap-highlight-color: transparent !important;
-  -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
-  outline: none !important;
-}
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #27272a;
+    border-radius: 9999px;
+  }
+  /* 
+    SENIOR DEV MOBILE GRAPHICS ENVELOPE:
+    Completely neutralizes and disables the tap box highlight overlay 
+    across all mobile viewports, forcing fluid material transitions.
+  */
+  * {
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
+    outline: none !important;
+  }
 
-/* TargetCursor updates */
-.dimension-cursor {
-  width: 0;
-  height: 0;
-  pointer-events: none !important;
-  position: fixed;
-  opacity: 1;
-  /* CRITICAL ENGINE OVERRIDE: Removed manual transitions to stop GSAP animation stuttering */
-  z-index: 99999;
-}
+  /* TargetCursor updates */
+  .dimension-cursor {
+    width: 0;
+    height: 0;
+    pointer-events: none !important;
+    position: fixed;
+    opacity: 1;
+    /* CRITICAL ENGINE OVERRIDE: Removed manual transitions to stop GSAP animation stuttering */
+    z-index: 99999;
+  }
 
-.dimension-cursor .target-dot {
-  box-shadow: 0 0 8px rgba(0,0,0,0.12);
-}
+  .dimension-cursor .target-dot {
+    box-shadow: 0 0 8px rgba(0,0,0,0.12);
+  }
 
-.dimension-cursor .target-cursor-corner {
+  .dimension-cursor .target-cursor-corner {
   box-sizing: border-box;
+  width: 12px;
+  height: 12px;
   border-radius: 2px;
 }
+
 
 

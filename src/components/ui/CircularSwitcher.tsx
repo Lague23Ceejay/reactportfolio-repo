@@ -14,7 +14,7 @@ export const CircularSwitcher: React.FC = () => {
   const switcherColorMap = {
     cosmic: { mainBg: '#ffffff', iconColor: '#000000', label: 'Cosmic' },
     arctic: { mainBg: '#B069DB', iconColor: '#ff6b35', label: 'Neon' },
-    creamy: { mainBg: '#FFEE8C', iconColor: '#22d3ee', label: 'Creamy' }
+    creamy: { mainBg: '#FFEE8C', iconColor: '#22d3ee', label: 'Creamy' },
   };
 
   const currentThemeColors = switcherColorMap[currentDimension];

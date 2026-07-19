@@ -1,3 +1,4 @@
+//...ui/AdminCursor.tsx
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { gsap } from 'gsap';
 

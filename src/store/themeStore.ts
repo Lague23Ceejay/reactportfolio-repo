@@ -68,7 +68,7 @@ import type { DimensionType, ThemePack } from '../types/theme';
     accent: '#B069DB',
     accentBg: '#301959',
     accentBorder: '#e9d5ff',
-  }
+  },
 };
 
 /* ==========================================================================

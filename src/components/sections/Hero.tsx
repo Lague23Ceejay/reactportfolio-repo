@@ -23,6 +23,7 @@ export function Hero() {
   const ringConfig = {
     cosmic: { color: '#10b981', colorTwo: '#34d399', ringCount: 5, speed: 0.6 },
     arctic: { color: '#B069DB', colorTwo: '#22d3ee', ringCount: 6, speed: 1.0 },
+    dot: { color: '#ffffff', colorTwo: '#cccccc', ringCount: 1, speed: 0.5 },
     creamy: { color: '#FFEE8C', colorTwo: '#f43f5e', ringCount: 4, speed: 0.8 }
   }[currentDimension] || { color: '#10b981', colorTwo: '#34d399', ringCount: 5, speed: 0.6 };
 

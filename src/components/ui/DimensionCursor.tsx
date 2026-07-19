@@ -149,14 +149,9 @@ export const DimensionCursor: React.FC = () => {
   }
 
   if (type === 'target') {
-    return (
-      <TargetCursor
-        spinDuration={2}
-        hideDefaultCursor
-        cursorColor={color}
-      />
-    );
-  }
+  return <TargetCursor spinDuration={2} hideDefaultCursor cursorColor={color} />;
+}
+
 
   if (type === "snowflake") {
     return (
