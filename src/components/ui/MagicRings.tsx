@@ -1,3 +1,4 @@
+//src/components/ui/MagicRings.tsx
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 

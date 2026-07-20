@@ -1,3 +1,4 @@
+//src/components/ui/SpotlightCard.tsx
 import React, { useRef, useState } from 'react';
 
 interface Position {

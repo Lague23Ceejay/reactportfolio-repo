@@ -1,3 +1,4 @@
+//src/components/ui/MagnetEffect.tsx
 import { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 

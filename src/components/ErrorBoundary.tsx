@@ -1,3 +1,4 @@
+//src/components/ErrorBoundary.tsx
 import React from 'react';
 
 type Props = { children: React.ReactNode };

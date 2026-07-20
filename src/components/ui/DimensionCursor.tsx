@@ -9,7 +9,9 @@ import TargetCursor from './TargetCursor';
 const isInteractiveElement = (target: EventTarget | null) => {
   if (!(target instanceof HTMLElement)) return false;
   return Boolean(
-    target.closest('a, button, input, textarea, select, label, [role="button"], [role="link"], .interactive, .cursor-pointer, .cursor-target') ||
+    target.closest(
+      'a, button, input, textarea, select, label, [role="button"], [role="link"], .interactive, .cursor-pointer, .cursor-target'
+    ) ||
     target.classList.contains('cursor-pointer') ||
     target.classList.contains('cursor-target')
   );
@@ -21,7 +23,12 @@ export const DimensionCursor: React.FC = () => {
   const activePack = dimensionPacks[hoveredDimension || currentDimension];
 
   const { type, color, glow } = activePack.cursor;
-  const spinAnimation = type === 'snowflake' ? 'dimension-cursor-spin 6s linear infinite' : type === 'line' ? 'dimension-cursor-spin 1.8s linear infinite' : 'none';
+  const spinAnimation =
+    type === 'snowflake'
+      ? 'dimension-cursor-spin 6s linear infinite'
+      : type === 'line'
+      ? 'dimension-cursor-spin 1.8s linear infinite'
+      : 'none';
 
   const cursorRef = useRef<HTMLDivElement | null>(null);
   const [isHoveredLink, setIsHoveredLink] = useState(false);
@@ -30,33 +37,48 @@ export const DimensionCursor: React.FC = () => {
 
   const isMobile = useMemo(() => {
     if (typeof window === 'undefined') return false;
-    return ('ontouchstart' in window || navigator.maxTouchPoints > 0) && window.innerWidth <= 768;
+    return (
+      ('ontouchstart' in window || navigator.maxTouchPoints > 0) &&
+      window.innerWidth <= 768
+    );
   }, []);
 
-  const moveCursor = useCallback((event: MouseEvent) => {
-    if (!cursorRef.current || type === 'target') return;
+  const moveCursor = useCallback(
+    (event: MouseEvent) => {
+      if (!cursorRef.current || type === 'target') return;
 
-    const x = event.clientX;
-    const y = event.clientY;
+      const x = event.clientX;
+      const y = event.clientY;
 
-    if (!firstMoveRef.current) {
-      gsap.set(cursorRef.current, { x, y });
-      gsap.to(cursorRef.current, { opacity: 1, duration: 0.18, ease: 'power2.out' });
-      firstMoveRef.current = true;
-      return;
-    }
+      if (!firstMoveRef.current) {
+        gsap.set(cursorRef.current, { x, y });
+        gsap.to(cursorRef.current, {
+          opacity: 1,
+          duration: 0.18,
+          ease: 'power2.out',
+        });
+        firstMoveRef.current = true;
+        return;
+      }
 
-    gsap.to(cursorRef.current, {
-      x,
-      y,
-      duration: 0.05,
-      ease: 'power3.out'
-    });
-  }, [type]);
+      gsap.to(cursorRef.current, {
+        x,
+        y,
+        duration: 0.05,
+        ease: 'power3.out',
+      });
+    },
+    [type]
+  );
 
   const updateHoverState = useCallback((event: Event) => {
     const target = event.target;
-    const element = target instanceof Element ? target : target instanceof Node ? target.parentElement : null;
+    const element =
+      target instanceof Element
+        ? target
+        : target instanceof Node
+        ? target.parentElement
+        : null;
     setIsHoveredLink(element ? isInteractiveElement(element) : false);
   }, []);
 
@@ -64,7 +86,8 @@ export const DimensionCursor: React.FC = () => {
   useEffect(() => {
     const checkAdminState = () => {
       const hasAdminHash = window.location.hash === '#admin';
-      const adminModalMounted = document.getElementById('adminConsoleOverlayMasterContainer') !== null;
+      const adminModalMounted =
+        document.getElementById('adminConsoleOverlayMasterContainer') !== null;
       setIsAdminOverlayOpen(hasAdminHash || adminModalMounted);
     };
 
@@ -81,11 +104,12 @@ export const DimensionCursor: React.FC = () => {
 
   // Mount/unmount listeners for pointer and hover
   useEffect(() => {
+    if (type === 'target') return; // 🚫 skip when TargetCursor is active
     if (isAdminOverlayOpen || isAuthenticated || isMobile) return;
 
     document.body.style.cursor = 'none';
 
-    if (cursorRef.current && type !== 'target') {
+    if (cursorRef.current) {
       const el = cursorRef.current;
       const initX = Math.round(window.innerWidth / 2);
       const initY = Math.round(window.innerHeight / 2);
@@ -93,12 +117,15 @@ export const DimensionCursor: React.FC = () => {
         x: initX,
         y: initY,
         opacity: 1,
-        transformOrigin: '50% 50%'
+        transformOrigin: '50% 50%',
       });
 
       el.style.filter = `drop-shadow(${glow})`;
       el.style.setProperty('--cursor-color', color);
-      el.style.setProperty('--cursor-glow', glow || '0 0 10px rgba(0,0,0,0)');
+      el.style.setProperty(
+        '--cursor-glow',
+        glow || '0 0 10px rgba(0,0,0,0)'
+      );
     }
 
     window.addEventListener('mousemove', moveCursor, { passive: true });
@@ -115,23 +142,21 @@ export const DimensionCursor: React.FC = () => {
       window.removeEventListener('pointerout', updateHoverState);
       document.body.style.cursor = '';
     };
-  }, [isAdminOverlayOpen, isAuthenticated, isMobile, type, moveCursor, updateHoverState, color, glow]);
-
-  useEffect(() => {
-    if (!cursorRef.current || type === 'target') {
-      return () => {
-        // The wrapper does not own a rotation loop for the target cursor.
-      };
-    }
-
-    return () => {
-      // The wrapper keeps its cleanup explicit without competing with the target cursor animation layer.
-    };
-  }, [type]);
+  }, [
+    isAdminOverlayOpen,
+    isAuthenticated,
+    isMobile,
+    type,
+    moveCursor,
+    updateHoverState,
+    color,
+    glow,
+  ]);
 
   // Asset color updates
   useEffect(() => {
-    if (!cursorRef.current || type === 'target') return;
+    if (type === 'target') return; // 🚫 skip when TargetCursor is active
+    if (!cursorRef.current) return;
     const el = cursorRef.current;
     gsap.to(el, {
       duration: 0.22,
@@ -139,8 +164,11 @@ export const DimensionCursor: React.FC = () => {
       onStart: () => {
         el.style.filter = `drop-shadow(${glow})`;
         el.style.setProperty('--cursor-color', color);
-        el.style.setProperty('--cursor-glow', glow || '0 0 10px rgba(0,0,0,0)');
-      }
+        el.style.setProperty(
+          '--cursor-glow',
+          glow || '0 0 10px rgba(0,0,0,0)'
+        );
+      },
     });
   }, [color, glow, type]);
 
@@ -149,17 +177,31 @@ export const DimensionCursor: React.FC = () => {
   }
 
   if (type === 'target') {
-  return <TargetCursor spinDuration={2} hideDefaultCursor cursorColor={color} />;
-}
+    // ✅ Only render TargetCursor, no DimensionCursor listeners
+    return (
+      <TargetCursor
+        spinDuration={2}
+        hideDefaultCursor
+        cursorColor={color}
+        cursorColorOnTarget={glow ? glow : '#B497CF'}
+      />
+    );
+  }
 
-
-  if (type === "snowflake") {
+  if (type === 'snowflake') {
     return (
       <div
         ref={cursorRef}
         className="dimension-cursor"
         aria-hidden="true"
-        style={{ position: 'fixed', left: 0, top: 0, zIndex: 99999, pointerEvents: 'none', willChange: 'transform,opacity' }}
+        style={{
+          position: 'fixed',
+          left: 0,
+          top: 0,
+          zIndex: 99999,
+          pointerEvents: 'none',
+          willChange: 'transform,opacity',
+        }}
       >
         <div
           className={`dimension-cursor-target ${isHoveredLink ? 'is-target' : ''}`}
@@ -172,16 +214,18 @@ export const DimensionCursor: React.FC = () => {
             transition: 'font-size 0.18s, color 0.18s',
             pointerEvents: 'none',
             animation: spinAnimation,
-            transformOrigin: 'center center'
+            transformOrigin: 'center center',
           }}
         >
-          <span aria-hidden="true" style={{ lineHeight: 1 }}>❄️</span>
+          <span aria-hidden="true" style={{ lineHeight: 1 }}>
+            ❄️
+          </span>
         </div>
       </div>
     );
   }
 
-  if (type === "line") {
+  if (type === 'line') {
     return (
       <div
         ref={cursorRef}
@@ -193,7 +237,7 @@ export const DimensionCursor: React.FC = () => {
           top: 0,
           zIndex: 99999,
           pointerEvents: 'none',
-          willChange: 'transform,opacity'
+          willChange: 'transform,opacity',
         }}
       >
         <div
@@ -205,10 +249,11 @@ export const DimensionCursor: React.FC = () => {
             backgroundColor: color,
             border: 'none',
             boxShadow: glow,
-            transition: 'width 0.15s ease, background-color 0.2s ease, box-shadow 0.2s ease',
+            transition:
+              'width 0.15s ease, background-color 0.2s ease, box-shadow 0.2s ease',
             pointerEvents: 'none',
             animation: spinAnimation,
-            transformOrigin: 'center center'
+            transformOrigin: 'center center',
           }}
         />
       </div>

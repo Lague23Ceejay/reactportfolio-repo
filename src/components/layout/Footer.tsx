@@ -1,3 +1,4 @@
+//src/components/layout/Footer.tsx
 import { usePortfolioStore } from '../../store/portfolioStore';
 import { useThemeStore, dimensionPacks } from '../../store/themeStore';
 

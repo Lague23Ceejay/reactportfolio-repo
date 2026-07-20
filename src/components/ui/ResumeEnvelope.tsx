@@ -1,3 +1,4 @@
+//src/components/ui/ResumeEnvelope.tsx
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useMemo, useState } from 'react';
 import { useThemeStore, dimensionPacks } from '../../store/themeStore';

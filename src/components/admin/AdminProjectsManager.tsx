@@ -1,3 +1,4 @@
+//src/components/admin/AdminProjectsManager.tsx
 import { usePortfolioStore } from '../../store/portfolioStore';
 
 export function AdminProjectsManager() {

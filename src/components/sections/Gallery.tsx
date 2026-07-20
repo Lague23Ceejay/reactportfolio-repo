@@ -1,3 +1,4 @@
+//src/components/sections/Gallery.tsx
 import { useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { usePortfolioStore } from '../../store/portfolioStore';

@@ -1,3 +1,4 @@
+//src/components/sections/GraduationFeature.tsx
 import { useThemeStore, dimensionPacks } from '../../store/themeStore';
 import { usePortfolioStore } from '../../store/portfolioStore'; 
 import { FiAward, FiHeart } from 'react-icons/fi';

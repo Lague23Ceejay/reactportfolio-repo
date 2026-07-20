@@ -1,3 +1,4 @@
+//src/components/layout/Navbar.tsx
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useThemeStore } from '../../store/themeStore';
