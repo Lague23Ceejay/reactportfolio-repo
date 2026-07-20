@@ -94,3 +94,7 @@
 
 
 
+.cursor-target {
+  position: relative; 
+  display: inline-block; 
+}

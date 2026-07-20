@@ -1,5 +1,5 @@
 // src/components/ui/TargetCursor.tsx
-import React, { useEffect, useRef, useMemo } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 
 export interface TargetCursorProps {
@@ -14,133 +14,250 @@ export interface TargetCursorProps {
 
 const TargetCursor: React.FC<TargetCursorProps> = ({
   targetSelector = '.cursor-target',
-  spinDuration = 2,
+  spinDuration = 1.8,
   hideDefaultCursor = true,
-  hoverDuration = 0.2,
-  parallaxOn = true,
-  cursorColor = '#ffffff',
-  cursorColorOnTarget = '#B497CF'
+  cursorColor = '#00ff88',
+  cursorColorOnTarget = '#ff00aa'
 }) => {
-  const cursorRef = useRef<HTMLDivElement>(null);
-  const cornersRef = useRef<NodeListOf<HTMLDivElement> | null>(null);
-  const spinTl = useRef<gsap.core.Timeline | null>(null);
-  const dotRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const spinnerRef = useRef<HTMLDivElement>(null);
+  const spinTweenRef = useRef<gsap.core.Tween | null>(null);
 
-  const isMobile = useMemo(() => {
-    if (typeof window === 'undefined') return false;
-    const hasTouchScreen = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-    const isSmallScreen = window.innerWidth <= 768;
-    const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
-    const mobileRegex = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i;
-    return (hasTouchScreen && isSmallScreen) || mobileRegex.test(userAgent.toLowerCase());
-  }, []);
+  const [dimensions, setDimensions] = useState({
+    width: 0,
+    height: 0,
+    x: 0,
+    y: 0,
+    isHovered: false
+  });
+  const hoveredTargetRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
-    if (isMobile || !cursorRef.current) return;
+    if (hideDefaultCursor) document.body.style.cursor = 'none';
 
-    const originalCursor = document.body.style.cursor;
-    if (hideDefaultCursor) {
-      document.body.style.cursor = 'none';
+    const enterTarget = (match: HTMLElement) => {
+      if (hoveredTargetRef.current === match) return;
+      hoveredTargetRef.current = match;
+
+      const rect = match.getBoundingClientRect();
+      setDimensions({
+        width: rect.width,
+        height: rect.height,
+        x: rect.left + rect.width / 2,
+        y: rect.top + rect.height / 2,
+        isHovered: true
+      });
+
+      if (spinTweenRef.current) {
+        spinTweenRef.current.pause();
+        gsap.to(spinnerRef.current, {
+          rotation: 0,
+          duration: 0.18,
+          ease: 'power2.out',
+          overwrite: 'auto'
+        });
+      }
+    };
+
+    const leaveTarget = () => {
+      hoveredTargetRef.current = null;
+      setDimensions({ width: 0, height: 0, x: 0, y: 0, isHovered: false });
+      if (spinTweenRef.current) spinTweenRef.current.play();
+    };
+
+    const handleMouseMove = (event: MouseEvent) => {
+      const mouseX = event.clientX;
+      const mouseY = event.clientY;
+      const currentTarget = document.elementFromPoint(mouseX, mouseY) as HTMLElement | null;
+      const match = currentTarget?.closest(targetSelector) as HTMLElement | null;
+
+      if (match) {
+        enterTarget(match);
+      } else if (hoveredTargetRef.current) {
+        leaveTarget();
+      }
+
+      // If not hovering a target, move the container to the mouse
+      if (!hoveredTargetRef.current && containerRef.current) {
+        gsap.to(containerRef.current, {
+          x: mouseX,
+          y: mouseY,
+          duration: 0.06,
+          ease: 'power3.out',
+          overwrite: 'auto'
+        });
+      }
+    };
+
+    if (spinTweenRef.current) spinTweenRef.current.kill();
+    if (spinnerRef.current) {
+      spinTweenRef.current = gsap.to(spinnerRef.current, {
+        rotation: '+=360',
+        duration: spinDuration,
+        repeat: -1,
+        ease: 'none'
+      });
     }
 
-    const cursor = cursorRef.current;
-    cornersRef.current = cursor.querySelectorAll<HTMLDivElement>('.target-cursor-corner');
-
-    gsap.set(cursor, {
-      xPercent: -50,
-      yPercent: -50,
-      x: window.innerWidth / 2,
-      y: window.innerHeight / 2
-    });
-
-    // Continuous spin
-    spinTl.current = gsap.timeline({ repeat: -1 }).to(cursor, {
-      rotation: '+=360',
-      duration: spinDuration,
-      ease: 'none'
-    });
-
-    const moveHandler = (e: MouseEvent) => {
-      gsap.to(cursor, {
-        x: e.clientX,
-        y: e.clientY,
-        duration: 0.1,
-        ease: 'power3.out'
-      });
-    };
-    window.addEventListener('mousemove', moveHandler);
-
-    const enterHandler = (e: MouseEvent) => {
-      const target = (e.target as Element).closest(targetSelector);
-      if (!target || !cornersRef.current) return;
-
-      spinTl.current?.pause();
-      gsap.set(cursor, { rotation: 0 });
-
-      const corners = Array.from(cornersRef.current);
-      gsap.to(corners, {
-        borderColor: cursorColorOnTarget,
-        duration: 0.15,
-        ease: 'power2.out'
-      });
-      if (dotRef.current) {
-        gsap.to(dotRef.current, {
-          backgroundColor: cursorColorOnTarget,
-          duration: 0.15,
-          ease: 'power2.out'
-        });
-      }
-    };
-    window.addEventListener('mouseover', enterHandler as EventListener);
-
-    const leaveHandler = () => {
-      if (!cornersRef.current) return;
-      const corners = Array.from(cornersRef.current);
-      gsap.to(corners, {
-        borderColor: cursorColor,
-        duration: 0.15,
-        ease: 'power2.out'
-      });
-      if (dotRef.current) {
-        gsap.to(dotRef.current, {
-          backgroundColor: cursorColor,
-          duration: 0.15,
-          ease: 'power2.out'
-        });
-      }
-      spinTl.current?.restart();
-    };
-    window.addEventListener('mouseout', leaveHandler);
-
+    window.addEventListener('mousemove', handleMouseMove);
     return () => {
-      window.removeEventListener('mousemove', moveHandler);
-      window.removeEventListener('mouseover', enterHandler as EventListener);
-      window.removeEventListener('mouseout', leaveHandler);
-      spinTl.current?.kill();
-      document.body.style.cursor = originalCursor;
+      if (spinTweenRef.current) spinTweenRef.current.kill();
+      window.removeEventListener('mousemove', handleMouseMove);
+      if (hideDefaultCursor) document.body.style.cursor = '';
     };
-  }, [targetSelector, spinDuration, hideDefaultCursor, cursorColor, cursorColorOnTarget, isMobile]);
+  }, [spinDuration, hideDefaultCursor, targetSelector]);
 
-  if (isMobile) return null;
+  useEffect(() => {
+    const corners = spinnerRef.current?.querySelectorAll<HTMLElement>('.target-corner');
+    if (!corners || corners.length !== 4) return;
+
+    // corner offset from center; add a small padding so corners sit outside element bounds
+    const pad = 10;
+    const offsetX = dimensions.isHovered ? dimensions.width / 2 + pad : 12;
+    const offsetY = dimensions.isHovered ? dimensions.height / 2 + pad : 12;
+    const duration = dimensions.isHovered ? 0.28 : 0.18;
+    const ease = dimensions.isHovered ? 'back.out(1.3)' : 'power2.out';
+
+    const coords = [
+      { x: -offsetX, y: -offsetY }, // top-left
+      { x: offsetX, y: -offsetY },  // top-right
+      { x: -offsetX, y: offsetY },  // bottom-left
+      { x: offsetX, y: offsetY }    // bottom-right
+    ];
+
+    corners.forEach((corner, i) => {
+      const { x, y } = coords[i];
+      gsap.to(corner, { x, y, duration, ease, overwrite: 'auto' });
+    });
+
+    // Move the whole container to the hovered element center
+    if (containerRef.current) {
+      const targetX = dimensions.isHovered ? dimensions.x : undefined;
+      const targetY = dimensions.isHovered ? dimensions.y : undefined;
+
+      if (dimensions.isHovered) {
+        gsap.to(containerRef.current, {
+          x: targetX,
+          y: targetY,
+          duration: 0.18,
+          ease: 'power2.out',
+          overwrite: 'auto'
+        });
+      } else {
+        // when leaving, keep container following mouse (no abrupt jump)
+        // nothing extra needed here because mousemove handler will take over
+      }
+    }
+  }, [dimensions]);
 
   return (
-    <div
-      ref={cursorRef}
-      className="fixed top-0 left-0 w-0 h-0 pointer-events-none z-[9999]"
-      style={{ willChange: 'transform' }}
-    >
-      {/* Dot */}
+    <>
+      {/* container is fixed and moved to mouse/target center; children are positioned relative to container origin */}
       <div
-        ref={dotRef}
-        className="absolute top-1/2 left-1/2 w-1 h-1 rounded-full -translate-x-1/2 -translate-y-1/2"
-        style={{ willChange: 'transform', backgroundColor: cursorColor }}
-      />
-      {/* Corners */}
-      <div className="target-cursor-corner absolute top-1/2 left-1/2 w-3 h-3 border-[3px] -translate-x-[150%] -translate-y-[150%] border-r-0 border-b-0" style={{ borderColor: cursorColor }} />
-      <div className="target-cursor-corner absolute top-1/2 left-1/2 w-3 h-3 border-[3px] translate-x-1/2 -translate-y-[150%] border-l-0 border-b-0" style={{ borderColor: cursorColor }} />
-      <div className="target-cursor-corner absolute top-1/2 left-1/2 w-3 h-3 border-[3px] translate-x-1/2 translate-y-1/2 border-l-0 border-t-0" style={{ borderColor: cursorColor }} />
-      <div className="target-cursor-corner absolute top-1/2 left-1/2 w-3 h-3 border-[3px] -translate-x-[150%] translate-y-1/2 border-r-0 border-t-0" style={{ borderColor: cursorColor }} />
-    </div>
+        ref={containerRef}
+        style={{
+          position: 'fixed',
+          left: 0,
+          top: 0,
+          width: 0,
+          height: 0,
+          zIndex: 99999,
+          pointerEvents: 'none',
+          willChange: 'transform'
+        }}
+        aria-hidden="true"
+      >
+        {/* spinnerRef holds the four corners; set transformOrigin to center so offsets are symmetric */}
+        <div
+          ref={spinnerRef}
+          style={{
+            position: 'absolute',
+            left: 0,
+            top: 0,
+            width: 0,
+            height: 0,
+            pointerEvents: 'none',
+            transformOrigin: '50% 50%',
+            willChange: 'transform'
+          }}
+        >
+          {/* Each corner is centered at the container origin initially (translate -50% -50%) */}
+          <div
+            className="target-corner"
+            style={{
+              position: 'absolute',
+              left: 0,
+              top: 0,
+              width: 12,
+              height: 12,
+              borderLeft: `3px solid ${cursorColor}`,
+              borderTop: `3px solid ${cursorColor}`,
+              transform: 'translate(-50%, -50%)',
+              pointerEvents: 'none'
+            }}
+          />
+          <div
+            className="target-corner"
+            style={{
+              position: 'absolute',
+              left: 0,
+              top: 0,
+              width: 12,
+              height: 12,
+              borderRight: `3px solid ${cursorColor}`,
+              borderTop: `3px solid ${cursorColor}`,
+              transform: 'translate(-50%, -50%)',
+              pointerEvents: 'none'
+            }}
+          />
+          <div
+            className="target-corner"
+            style={{
+              position: 'absolute',
+              left: 0,
+              top: 0,
+              width: 12,
+              height: 12,
+              borderLeft: `3px solid ${cursorColor}`,
+              borderBottom: `3px solid ${cursorColor}`,
+              transform: 'translate(-50%, -50%)',
+              pointerEvents: 'none'
+            }}
+          />
+          <div
+            className="target-corner"
+            style={{
+              position: 'absolute',
+              left: 0,
+              top: 0,
+              width: 12,
+              height: 12,
+              borderRight: `3px solid ${cursorColor}`,
+              borderBottom: `3px solid ${cursorColor}`,
+              transform: 'translate(-50%, -50%)',
+              pointerEvents: 'none'
+            }}
+          />
+        </div>
+
+        {/* core dot is now a child of the same container so it shares the same origin and transforms */}
+        <div
+          style={{
+            position: 'absolute',
+            left: 0,
+            top: 0,
+            width: 6,
+            height: 6,
+            borderRadius: '50%',
+            backgroundColor: dimensions.isHovered ? cursorColorOnTarget : cursorColor,
+            transform: 'translate(-50%, -50%)',
+            pointerEvents: 'none',
+            boxShadow: `0 0 10px ${dimensions.isHovered ? cursorColorOnTarget : cursorColor}`,
+            zIndex: 100000
+          }}
+        />
+      </div>
+    </>
   );
 };
 
