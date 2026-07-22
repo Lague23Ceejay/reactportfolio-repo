@@ -5,9 +5,10 @@ import { useThemeStore } from '../../store/themeStore';
 
 type NavLink = { name: string; href: string };
 
-export function Navbar(): JSX.Element {
+export function Navbar(): JSX.Element | null {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isAdminOverlay, setIsAdminOverlay] = useState(false);
   const { currentDimension } = useThemeStore();
 
   const navLinks: NavLink[] = [
@@ -79,6 +80,21 @@ export function Navbar(): JSX.Element {
     };
   }, [isOpen]);
 
+  // Detect admin overlay by hash
+  useEffect(() => {
+    const checkAdmin = () => {
+      setIsAdminOverlay(window.location.hash.includes('admin'));
+    };
+    checkAdmin();
+    window.addEventListener('hashchange', checkAdmin);
+    return () => window.removeEventListener('hashchange', checkAdmin);
+  }, []);
+
+  if (isAdminOverlay) {
+    // Hide navbar entirely in admin overlay
+    return null;
+  }
+
   return (
     <>
       <header
@@ -90,38 +106,33 @@ export function Navbar(): JSX.Element {
           {/* Logo */}
           <a
             href="#"
-            onMouseEnter={() => {
-              /* small CSS-only rotation handled by class below if desired */
-            }}
             className={`font-mono text-sm tracking-tight font-bold transition-colors inline-flex items-center gap-2 ${currentConfig.logo}`}
             aria-label="Home"
           >
-            
-
-            <span className="hidden sm:inline">Ceejay<span className={`${currentConfig.logoDot}`}>.dev</span></span>
+            <span className="hidden sm:inline">
+              Ceejay<span className={`${currentConfig.logoDot}`}>.dev</span>
+            </span>
           </a>
 
           {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-8 text-sm font-mono font-medium">
-            {navLinks.map((link) => {
-              return (
-                <div
-                  key={link.name}
-                  className="cursor-target inline-block"
-                  data-cursor-color={currentDimension === 'arctic' ? 'var(--accent)' : undefined}
+            {navLinks.map((link) => (
+              <div
+                key={link.name}
+                className="cursor-target inline-block"
+                data-cursor-color={currentDimension === 'arctic' ? 'var(--accent)' : undefined}
+              >
+                <a
+                  href={link.href}
+                  className={`transition-colors ${currentConfig.linksDefault} px-1`}
+                  aria-label={link.name}
                 >
-                  <a
-                    href={link.href}
-                    className={`transition-colors ${currentConfig.linksDefault} px-1`}
-                    aria-label={link.name}
-                  >
-                    <span className="relative inline-flex items-center">
-                      <span className="pill-label">{link.name}</span>
-                    </span>
-                  </a>
-                </div>
-              );
-            })}
+                  <span className="relative inline-flex items-center">
+                    <span className="pill-label">{link.name}</span>
+                  </span>
+                </a>
+              </div>
+            ))}
           </nav>
 
           {/* Mobile hamburger */}
