@@ -63,7 +63,7 @@ export function Contact() {
 
           {/* Resume button — reveal from down */}
           <ScrollReveal direction="down" delay={0.14}>
-            <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col items-center gap-4 cursor-target">
               <ResumeEnvelope resumeUrl={data.resumeUrl} resumeLabel="Resume" />
             </div>
           </ScrollReveal>
@@ -79,8 +79,8 @@ export function Contact() {
                 href={`mailto:${data.email}`}
                 className={`font-bold transition-all ${
                   currentDimension === 'creamy'
-                    ? 'text-rose-600 hover:text-rose-700 underline'
-                    : 'text-emerald-400 hover:underline'
+                    ? 'text-rose-600 hover:text-rose-700 underline cursor-target'
+                    : 'text-emerald-400 hover:underline cursor-target'
                 }`}
               >
                 ↳ {data.email}
@@ -93,11 +93,11 @@ export function Contact() {
                   rel="noreferrer"
                   className={`transition-colors font-medium ${
                     currentDimension === 'creamy'
-                      ? 'text-stone-600 hover:text-stone-900'
-                      : 'text-zinc-300 hover:text-white'
+                      ? 'text-stone-600 hover:text-stone-900 cursor-target'
+                      : 'text-zinc-300 hover:text-white cursor-target'
                   }`}
                 >
-                  ↳ GitHub
+                  ↳ Fiverr
                 </a>
               )}
 
@@ -108,8 +108,8 @@ export function Contact() {
                   rel="noreferrer"
                   className={`transition-colors font-medium ${
                     currentDimension === 'creamy'
-                      ? 'text-stone-600 hover:text-stone-900'
-                      : 'text-zinc-300 hover:text-white'
+                      ? 'text-stone-600 hover:text-stone-900 cursor-target'
+                      : 'text-zinc-300 hover:text-white cursor-target'
                   }`}
                 >
                   ↳ LinkedIn
@@ -123,8 +123,8 @@ export function Contact() {
                   rel="noreferrer"
                   className={`transition-colors font-medium ${
                     currentDimension === 'creamy'
-                      ? 'text-stone-600 hover:text-stone-900'
-                      : 'text-zinc-300 hover:text-white'
+                      ? 'text-stone-600 hover:text-stone-900 cursor-target'
+                      : 'text-zinc-300 hover:text-white cursor-target'
                   }`}
                 >
                   ↳ Upwork

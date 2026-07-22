@@ -14,7 +14,7 @@ export function Footer() {
         {/* Left Hand Column: Branding Signature */}
         <div>
           <p className={pack.textPrimary}>© {new Date().getFullYear()} {name}. All rights reserved.</p>
-          <p className={`text-[10px] font-light mt-0.5 ${pack.textSecondary}`}>Built with React, TypeScript, & Tailwind v4</p>
+          <p className={`text-[10px] font-light mt-0.5 ${pack.textSecondary}`}>Built with React, TypeScript, & Tailwind v4 and credits to the developers of Reactbits.dev</p>
         </div>
 
         {/* Right Hand Column: System Terminal Status Token Line */}

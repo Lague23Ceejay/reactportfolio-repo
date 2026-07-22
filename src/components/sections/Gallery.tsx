@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import ReactDOM from 'react-dom';
 import Stack from '../ui/Stack';
 import { usePortfolioStore } from '../../store/portfolioStore';
+import Tabs from '../ui/Tabs';
 
 export type GalleryItem = {
   id?: string | number;
@@ -132,16 +133,16 @@ export function Gallery(): JSX.Element {
   const [activeCategory, setActiveCategory] = useState<string>(categories[0] ?? 'General');
 
   useEffect(() => {
-    if (categories.length && !categories.includes(activeCategory)) {
-      setActiveCategory(categories[0]);
+    // keep activeCategory valid when categories change
+    if (activeCategory !== 'All' && !categories.includes(activeCategory)) {
+      setActiveCategory(categories[0] ?? 'All');
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [categories]);
+  }, [categories, activeCategory]);
 
-  const filteredImages = useMemo(
-    () => gallery.filter((item) => (item.category ?? 'General') === activeCategory),
-    [gallery, activeCategory]
-  );
+  const filteredImages = useMemo(() => {
+    if (activeCategory === 'All') return gallery;
+    return gallery.filter((item) => (item.category ?? 'General') === activeCategory);
+  }, [gallery, activeCategory]);
 
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
@@ -181,25 +182,16 @@ export function Gallery(): JSX.Element {
     <section id="gallery" className="py-12 space-y-8">
       <h2 className="text-2xl font-bold tracking-tight">Gallery</h2>
 
-      {/* Tabs */}
-      <div className="flex flex-wrap gap-3">
-        {categories.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => {
-              setActiveCategory(cat);
-              setLightboxIndex(null);
-            }}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-              activeCategory === cat
-                ? 'bg-emerald-500 text-white'
-                : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
-            }`}
-          >
-            {cat}
-          </button>
-        ))}
-      </div>
+
+       <Tabs
+        tabs={['All', ...categories]}
+        active={activeCategory}
+        onChange={(t) => {
+          setActiveCategory(t);
+          setLightboxIndex(null); // close lightbox when switching tabs
+        }}
+        className="mb-4"
+      />
 
       {/* Stack */}
       <div className="flex justify-center">

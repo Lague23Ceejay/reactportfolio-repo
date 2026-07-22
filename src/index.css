@@ -1,102 +1,295 @@
-  /* ...src/index.css */
-  /* 
-    SENIOR DEV FIX: Cleared Tailwind v4 migration errors.
-    Replaced legacy v3 @tailwind directives with a clean, single v4 import statement.
-  */
-  @import "tailwindcss";
+/* ...src/index.css */
 
-  @theme {
-    --color-emerald-500: #10b981;
-    --color-zinc-950: #09090b;
-  }
+/* 
+  SENIOR DEV FIX: Cleared Tailwind v4 migration errors.
+  Replaced legacy v3 @tailwind directives with a clean, single v4 import statement.
+*/
+@import "tailwindcss";
 
-  /* Base resets apply directly in v4 (removed @layer base entirely) */
-  html {
-    scroll-behavior: smooth;
-    scroll-padding-top: 6rem;
-    background-color: #09090b;
-  }
-
-  body {
-    margin: 0;
-    min-height: 100vh;
-    background-color: #09090b;
-  }
-
-  section[id], div[id] {
-    scroll-margin-top: 5rem;
-  }
-
-  /* Custom Scrollbar Utilities */
-  .custom-scrollbar::-webkit-scrollbar {
-    width: 4px;
-  }
-  .custom-scrollbar::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #27272a;
-    border-radius: 9999px;
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(4px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  @keyframes dimension-cursor-spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-  }
-
-  .animate-fadeIn {
-    animation: fadeIn 0.3s cubic-bezier(0.21, 1.02, 0.43, 1.01) forwards;
-  }
-
-  /* Devicon Vector Alignment Override */
-  .colored, [class^="devicon-"], [class*=" devicon-"] {
-    font-family: "devicon" !important;
-    font-style: normal !important;
-    font-weight: normal !important;
-    font-variant: normal !important;
-    text-transform: none;
-    line-height: 1;
-    -webkit-font-smoothing: antialiased;
-    display: inline-block !important;
-    speak-as: none; /* Modern standard compliant alternative for old icon fonts */
-  }
-
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #27272a;
-    border-radius: 9999px;
-  }
-  /* 
-    SENIOR DEV MOBILE GRAPHICS ENVELOPE:
-    Completely neutralizes and disables the tap box highlight overlay 
-    across all mobile viewports, forcing fluid material transitions.
-  */
-  * {
-    -webkit-tap-highlight-color: transparent !important;
-    -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
-    outline: none !important;
-  }
-
-  /* TargetCursor updates */
-  .dimension-cursor {
-    width: 0;
-    height: 0;
-    pointer-events: none !important;
-    position: fixed;
-    opacity: 1;
-    /* CRITICAL ENGINE OVERRIDE: Removed manual transitions to stop GSAP animation stuttering */
-    z-index: 99999;
-  }
-
-  .dimension-cursor .target-dot {
-    box-shadow: 0 0 8px rgba(0,0,0,0.12);
-  }
-
-.cursor-target {
-  position: relative; 
-  display: inline-block; 
+@theme {
+  --color-emerald-500: #10b981;
+  --color-zinc-950: #09090b;
 }
+
+/* ---------------------------------------------------------------------------
+   Base layout / resets
+   --------------------------------------------------------------------------- */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 6rem;
+  background-color: #09090b;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: #09090b;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* anchor scroll offset helpers */
+section[id], div[id] {
+  scroll-margin-top: 5rem;
+}
+
+/* Custom Scrollbar Utilities */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #27272a;
+  border-radius: 9999px;
+}
+
+/* Small animation utilities */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s cubic-bezier(0.21, 1.02, 0.43, 1.01) forwards;
+}
+
+/* Cursor spin used by dimension cursor visuals */
+@keyframes dimension-cursor-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Devicon Vector Alignment Override */
+.colored, [class^="devicon-"], [class*=" devicon-"] {
+  font-family: "devicon" !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block !important;
+  speak-as: none;
+}
+
+/* Remove mobile tap highlight and avoid outline removal for accessibility-sensitive elements */
+* {
+  -webkit-tap-highlight-color: transparent !important;
+  -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
+}
+
+/* ---------------------------------------------------------------------------
+   Theme variables (Arctic neon is the default)
+   - Use .theme-arctic, .theme-cosmic, .theme-creamy to scope theme-specific styles
+   --------------------------------------------------------------------------- */
+:root {
+  --accent: #10b981;      /* fallback emerald */
+  --accent-2: #34d399;
+  --bg-primary: #09090b;
+  --text-primary: #e6eef6;
+}
+
+/* Arctic (neon) theme variables — default */
+.theme-arctic {
+  --accent: #22d3ee;
+  --accent-2: #B069DB;
+  --bg-primary: #0b1220;
+  --bg-accent: linear-gradient(180deg, #071026 0%, #1b0f2a 100%);
+  --text-primary: #e6f7ff;
+  --muted: #9fbfd0;
+}
+
+/* Cosmic and Creamy kept for compatibility */
+.theme-cosmic {
+  --accent: #10b981;
+  --accent-2: #34d399;
+  --bg-primary: #09090b;
+  --text-primary: #e6f7f0;
+}
+
+.theme-creamy {
+  --accent: #5e79c4;
+  --accent-2: #FFEE8C;
+  --bg-primary: #fefefe;
+  --text-primary: #1f2937;
+}
+
+/* Apply theme background quickly when root class is present */
+.theme-arctic body, .theme-cosmic body, .theme-creamy body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+/* ---------------------------------------------------------------------------
+   TargetCursor / Dimension cursor styles
+   - Keep pointer-events: none so it never blocks interactions
+   - Use high z-index but avoid interfering with modals (modals should be higher)
+   --------------------------------------------------------------------------- */
+.dimension-cursor {
+  width: 0;
+  height: 0;
+  pointer-events: none !important;
+  position: fixed;
+  opacity: 1;
+  z-index: 99999;
+  top: 0;
+  left: 0;
+  transform: translate3d(0,0,0);
+  will-change: transform, opacity;
+}
+
+/* small dot used by some cursor variants */
+.dimension-cursor .target-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 9999px;
+  background: var(--accent);
+  box-shadow: 0 0 10px rgba(34,211,238,0.95), 0 0 28px rgba(34,211,238,0.18);
+  pointer-events: none;
+}
+
+/* crosshair / target ring */
+.dimension-cursor .target-ring {
+  width: 36px;
+  height: 36px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 0 18px rgba(34,211,238,0.12);
+  animation: dimension-cursor-spin 6s linear infinite;
+  pointer-events: none;
+}
+
+/* helper class for inline targets */
+.cursor-target {
+  position: relative;
+  display: inline-block;
+}
+
+/* ---------------------------------------------------------------------------
+   Custom neon cursor (DOM element approach)
+   - Use pointer-events: none so it never intercepts clicks or hover
+   - Small, performant, and theme-aware
+   --------------------------------------------------------------------------- */
+.custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 12px;
+  height: 12px;
+  border-radius: 9999px;
+  background: var(--accent);
+  box-shadow: 0 0 8px rgba(34,211,238,0.95), 0 0 20px rgba(176,105,219,0.12);
+  transform: translate3d(-50%, -50%, 0);
+  pointer-events: none;
+  z-index: 99998;
+  transition: width .12s ease, height .12s ease, box-shadow .12s ease, opacity .12s ease, background .12s ease;
+  will-change: transform, width, height, opacity;
+}
+
+/* larger state for click/hover */
+.custom-cursor--large {
+  width: 28px;
+  height: 28px;
+  opacity: 0.98;
+  box-shadow: 0 0 18px rgba(34,211,238,0.95), 0 0 36px rgba(176,105,219,0.12);
+}
+
+/* hide custom cursor on interactive controls so native caret and focus remain usable */
+input, textarea, select, button, a {
+  cursor: auto !important;
+}
+
+/* utility to temporarily hide the custom cursor */
+.custom-cursor--hidden {
+  display: none !important;
+}
+
+/* ---------------------------------------------------------------------------
+   Loading screen styles (neon look)
+   - Use .loading-overlay to show/hide the loader from App.tsx
+   --------------------------------------------------------------------------- */
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99997;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(2,6,23,0.92);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  pointer-events: auto;
+}
+
+.loading-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+  color: var(--text-primary);
+}
+
+/* neon ring */
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.loading-ring {
+  width: 5rem;
+  height: 5rem;
+  border-radius: 9999px;
+  background: radial-gradient(circle at 30% 30%, rgba(34,211,238,0.12), transparent 30%),
+              linear-gradient(135deg, rgba(176,105,219,0.06), rgba(34,211,238,0.06));
+  border: 1px solid rgba(34,211,238,0.12);
+  box-shadow:
+    0 0 12px rgba(34,211,238,0.12),
+    0 0 28px rgba(176,105,219,0.04);
+  animation: spin-slow 6s linear infinite;
+  display: grid;
+  place-items: center;
+}
+
+/* inner neon dot */
+.loading-dot {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 9999px;
+  background: var(--accent);
+  box-shadow: 0 0 12px rgba(34,211,238,0.95), 0 0 28px rgba(34,211,238,0.25);
+}
+
+/* loading text */
+.loading-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.loading-subtitle {
+  font-size: 0.875rem;
+  color: rgba(255,255,255,0.75);
+}
+
+/* ---------------------------------------------------------------------------
+   Small accessibility & dev helpers
+   --------------------------------------------------------------------------- */
+/* When the loading overlay is active, prevent body scroll via a helper class */
+.body-lock-scroll {
+  overflow: hidden !important;
+  touch-action: none !important;
+}
+
+/* ensure modals and lightboxes are above cursor and loader */
+.modal, .lightbox {
+  z-index: 100000 !important;
+}
+
+/* ---------------------------------------------------------------------------
+   Legacy / compatibility tweaks (kept for safety)
+   --------------------------------------------------------------------------- */
+.cursor-target { position: relative; display: inline-block; }
+
+/* end of file */

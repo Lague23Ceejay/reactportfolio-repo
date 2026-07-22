@@ -95,7 +95,7 @@ interface ThemeState {
    ========================================================================== */
 export const useThemeStore = create<ThemeState>((set) => ({
   // Core initial state defaults
-  currentDimension: 'cosmic',
+  currentDimension: 'arctic',
   isTransitioning: false,
   isAudioMuted: true, // Audio loops start safely muted by default
   hoveredDimension: null,

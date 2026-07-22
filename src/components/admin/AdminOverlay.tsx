@@ -9,7 +9,6 @@ import { AdminGraduationManager } from './AdminGraduationManager';
 import { optimizeImage } from '../../utils/imageOptimizer'; // 🚀 LIGHTWEIGHT UTILITY: Client-side compression script
 import { useImageUpload } from '../../hooks/useImageUpload';
 
-
 // Strict mapping type dictionary for application workspace tab-routing matrices
 type AdminTab = 'hero' | 'graduation' | 'about' | 'projects' | 'gallery' | 'settings';
 
@@ -489,46 +488,8 @@ export function AdminOverlay() {
                       )}
                     </div>
 
-                    {/* INTERACTIVE VECTOR GENERATOR AND FORCE ANCHOR TRIGGER MODULE */}
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const svgElement = document.getElementById('settingsExportableQRCodeSVG');
-                        if (!svgElement) return alert('Exporter fault: System vector grid missing.');
-                        
-                        const svgData = new XMLSerializer().serializeToString(svgElement);
-                        const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
-                        const svgUrl = URL.createObjectURL(svgBlob);
-                        
-                        const downloadAnchor = document.createElement('a');
-                        downloadAnchor.href = svgUrl;
-                        downloadAnchor.download = 'portfolio-branding-qr.svg';
-                        document.body.appendChild(downloadAnchor);
-                        downloadAnchor.click();
-                        
-                        document.body.removeChild(downloadAnchor);
-                        URL.revokeObjectURL(svgUrl);
-                      }}
-                      className="w-full py-2.5 bg-emerald-500/10 hover:bg-emerald-500 text-emerald-400 hover:text-zinc-950 font-mono font-semibold border border-emerald-500/20 rounded-xl text-xs transition-all duration-300 cursor-pointer"
-                    >
-                      ↓ Download Shareable QR Asset (.SVG)
-                    </button>
-                  </div>
-                                      {/* COLUMN 2: HARDWARE PREVIEW VISUALIZER & DYNAMIC TRACK RECORDS */}
-                  <div className="space-y-4">
-                    <div className="p-4 bg-zinc-900/30 border border-zinc-800/60 rounded-xl flex flex-col items-center justify-center gap-3 text-center">
-                      <div className="p-3 bg-white rounded-xl inline-block shadow-lg">
-                        {/* High-density pixel-aligned SVG vector matrix map schema layout */}
-                        <svg id="settingsExportableQRCodeSVG" width="120" height="120" viewBox="0 0 29 29" shapeRendering="crispEdges" className="block">
-                          <path fill="#ffffff" d="M0 0h29v29H0z"/>
-                          <path stroke="#09090b" d="M0 0h7v1H0zm22 0h7v1h-7zM0 1h1v5H0zm6 0h1v5H6zm16 0h1v5h-1zm6 0h1v5h-1zM1 2h4v1H1zm22 0h4v1h-4zM1 3h4v1H1zm22 0h4v1h-4zM1 4h4v1H1zm22 0h4v1h-4zM0 6h7v1H0zm22 0h7v1h-7zM8 8h1v1H8zm2 0h2v1h-2zm4 0h1v2h-1zm2 0h2v1h-2zm3 0h1v1h-1zm3 0h1v2h-1zm-11 1h1v1h-1zm4 0h3v1h-3zm5 0h1v1h-1zm-15 1h2v1H3zm3 0h2v1H6zm4 0h1v1h-1zm4 0h1v1h-1zm3 0h1v2h-1zm2 0h1v1h-1zm-13 1h1v1H4zm3 0h1v1H7zm1 0h1v1H8zm5 0h1v1h-1zm3 0h1v1h-1zm4 0h1v1h-1zm-14 1h1v1H5zm3 0h2v1H8zm4 0h1v1h-1zm2 0h1v1h-1zm4 0h1v1h-1zm-16 1h7v1H1zm9 0h2v1h-2zm3 0h1v1h-1zm5 0h3v1h-3zm-17 1h1v5H1zm6 0h1v5H6zm3 0h1v1H9zm2 0h1v1h-1zm4 0h3v1h-3zm5 0h1v2h-1zm-12 1h1v1h-1zm3 0h1v1h-1zm2 0h1v2h-1zm4 0h1v1h-1zm-11 1h4v1H2zm7 0h1v1H9zm6 0h1v1h-1zm5 0h1v1h-1zm-18 1h4v1H2zm6 0h2v1H8zm5 0h2v1h-2zm4 0h1v1h-1zm-17 1h4v1H2zm5 0h1v1H7zm4 0h1v1h-1zm2 0h3v1h-3zm5 0h2v1h-2zm-17 1h7v1H1zm9 0h1v1H9zm2 0h1v1h-1zm3 0h4v1h-4zm5 0h2v1h-2z"/>
-                        </svg>
-                      </div>
-                      <p className="text-[10px] font-mono text-zinc-500 leading-normal max-w-45">
-                        Dynamic scale asset grid hook. Click download to extract the crisp master file.
-                      </p>
-                    </div>
-                  </div>
+
+                </div>
 
                   {/* DYNAMIC INTEGRATED AUDIO AMBIENT CMS ROW CONTROLLER */}
                   <div className="p-4 bg-zinc-900/40 border border-zinc-800/80 rounded-xl space-y-4 sm:col-span-2">

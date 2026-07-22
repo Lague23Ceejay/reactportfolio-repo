@@ -186,7 +186,7 @@ export function Projects() {
                         href={project.deploymentUrl.startsWith('http') ? project.deploymentUrl : `https://${project.deploymentUrl}`}
                         target="_blank"
                         rel="noreferrer"
-                        className={`cursor-pointer transition-colors ${
+                        className={`cursor-pointer transition-colors cursor-target ${
                           currentDimension === 'creamy' ? 'text-rose-600 hover:text-rose-700 underline' : 'text-emerald-400 hover:underline'
                         }`}
                       >
