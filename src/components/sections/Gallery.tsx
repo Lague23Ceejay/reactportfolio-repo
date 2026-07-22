@@ -1,8 +1,10 @@
-//src/components/sections/Gallery.tsx
+// src/components/sections/Gallery.tsx
 import { useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { usePortfolioStore } from '../../store/portfolioStore';
 import { useThemeStore, dimensionPacks } from '../../store/themeStore';
+import { ScrollReveal } from '../ui/ScrollReveal';
+import { RevealGroup } from '../ui/RevealGroup';
 
 export function Gallery() {
   const gallery = usePortfolioStore((state) => state.data?.gallery || []);
@@ -17,7 +19,6 @@ export function Gallery() {
   useEffect(() => {
     document.body.style.overflow = activeImage ? 'hidden' : '';
     document.body.style.height = activeImage ? '100dvh' : '';
-
     return () => {
       document.body.style.overflow = '';
       document.body.style.height = '';
@@ -28,45 +29,95 @@ export function Gallery() {
     if (currentDimension === 'creamy') {
       return 'bg-[#fffef3]/95 text-stone-900 border-stone-200';
     }
-
     if (currentDimension === 'arctic') {
       return 'bg-[#130a23]/95 text-slate-100 border-cyan-400/20';
     }
-
     return 'bg-zinc-950/95 text-zinc-100 border-zinc-800';
   }, [currentDimension]);
 
   return (
-    <section className={`space-y-8 rounded-3xl px-4 sm:px-6 py-8 transition-colors duration-500 ${currentDimension === 'creamy' ? 'bg-[#FFF7C2]/40' : currentDimension === 'arctic' ? 'bg-[#20133A]/50' : 'bg-zinc-900/20'}`} id="sandbox">
-      <div className="space-y-2">
-        <div className="flex items-center gap-4">
-          <h2 className={`text-2xl sm:text-3xl font-bold tracking-tight cursor-target ${pack.textPrimary}`}>Memories & Milestones</h2>
-          <div className={`h-px flex-1 ${currentDimension === 'creamy' ? 'bg-stone-400/40' : 'bg-zinc-800'}`} />
-        </div>
-        <p className={`text-sm font-light max-w-xl leading-relaxed ${pack.textSecondary}`}>
-          A visual archive of the moments that shaped my college experience.
-        </p>
-      </div>
-
-      <div className="columns-1 sm:columns-2 md:columns-3 gap-4 space-y-4 pt-4">
-        {gallery.map((item) => (
-          item.imageUrl && (
-            <button
-              key={item.id}
-              type="button"
-              onClick={() => setActiveImage({ imageUrl: item.imageUrl!, title: item.title, category: item.category })}
-              className="break-inside-avoid relative w-full overflow-hidden rounded-2xl border border-zinc-800/80 bg-zinc-900 text-left group"
+    <section
+      className={`space-y-8 rounded-3xl px-4 sm:px-6 py-8 transition-colors duration-500 ${
+        currentDimension === 'creamy'
+          ? 'bg-[#FFF7C2]/40'
+          : currentDimension === 'arctic'
+          ? 'bg-[#20133A]/50'
+          : 'bg-zinc-900/20'
+      }`}
+      id="sandbox"
+    >
+      {/* HEADER — reveal from left */}
+      <ScrollReveal direction="left">
+        <div className="space-y-2">
+          <div className="flex items-center gap-4">
+            <h2
+              className={`text-2xl sm:text-3xl font-bold tracking-tight cursor-target ${pack.textPrimary}`}
             >
-              <img src={item.imageUrl} alt={item.title} className="w-full h-auto max-h-[320px] object-cover transition-transform duration-500 group-hover:scale-105" />
-              <div className="absolute inset-0 flex flex-col justify-end bg-linear-to-t from-black/90 via-black/30 to-transparent p-4 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300">
-                <span className={`text-[10px] font-mono font-semibold tracking-wider uppercase ${currentDimension === 'creamy' ? 'text-rose-500' : currentDimension === 'arctic' ? 'text-cyan-400' : 'text-emerald-400'}`}>{item.category}</span>
-                <h4 className={`text-sm font-bold mt-1 ${pack.textPrimary}`}>{item.title}</h4>
-              </div>
-            </button>
-          )
-        ))}
-      </div>
+              Memories & Milestones
+            </h2>
+            <div
+              className={`h-px flex-1 ${
+                currentDimension === 'creamy' ? 'bg-stone-400/40' : 'bg-zinc-800'
+              }`}
+            />
+          </div>
+          <p
+            className={`text-sm font-light max-w-xl leading-relaxed ${pack.textSecondary}`}
+          >
+            A visual archive of the moments that shaped my college experience.
+          </p>
+        </div>
+      </ScrollReveal>
 
+      {/* IMAGE GRID — staggered right reveals */}
+      <RevealGroup
+        direction="right"
+        baseDelay={0.06}
+        step={0.05}
+        className="columns-1 sm:columns-2 md:columns-3 gap-4 space-y-4 pt-4"
+      >
+        {gallery.map(
+          (item) =>
+            item.imageUrl && (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() =>
+                  setActiveImage({
+                    imageUrl: item.imageUrl!,
+                    title: item.title,
+                    category: item.category,
+                  })
+                }
+                className="break-inside-avoid relative w-full overflow-hidden rounded-2xl border border-zinc-800/80 bg-zinc-900 text-left group"
+              >
+                <img
+                  src={item.imageUrl}
+                  alt={item.title}
+                  className="w-full h-auto max-h-[320px] object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 flex flex-col justify-end bg-linear-to-t from-black/90 via-black/30 to-transparent p-4 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300">
+                  <span
+                    className={`text-[10px] font-mono font-semibold tracking-wider uppercase ${
+                      currentDimension === 'creamy'
+                        ? 'text-rose-500'
+                        : currentDimension === 'arctic'
+                        ? 'text-cyan-400'
+                        : 'text-emerald-400'
+                    }`}
+                  >
+                    {item.category}
+                  </span>
+                  <h4 className={`text-sm font-bold mt-1 ${pack.textPrimary}`}>
+                    {item.title}
+                  </h4>
+                </div>
+              </button>
+            )
+        )}
+      </RevealGroup>
+
+      {/* LIGHTBOX OVERLAY (unchanged) */}
       <AnimatePresence>
         {activeImage && (
           <motion.div
@@ -90,12 +141,32 @@ export function Gallery() {
             >
               <div className="flex items-center justify-between border-b border-white/10 px-4 py-3 sm:px-6">
                 <div>
-                  <p className={`text-[10px] font-mono uppercase tracking-[0.3em] ${currentDimension === 'creamy' ? 'text-rose-500' : currentDimension === 'arctic' ? 'text-cyan-400' : 'text-emerald-400'}`}>{activeImage.category}</p>
+                  <p
+                    className={`text-[10px] font-mono uppercase tracking-[0.3em] ${
+                      currentDimension === 'creamy'
+                        ? 'text-rose-500'
+                        : currentDimension === 'arctic'
+                        ? 'text-cyan-400'
+                        : 'text-emerald-400'
+                    }`}
+                  >
+                    {activeImage.category}
+                  </p>
                   <h3 className="text-lg font-semibold">{activeImage.title}</h3>
                 </div>
-                <button type="button" onClick={() => setActiveImage(null)} className="rounded-full border border-white/10 px-3 py-1 text-sm">✕</button>
+                <button
+                  type="button"
+                  onClick={() => setActiveImage(null)}
+                  className="rounded-full border border-white/10 px-3 py-1 text-sm"
+                >
+                  ✕
+                </button>
               </div>
-              <img src={activeImage.imageUrl} alt={activeImage.title} className="max-h-[70vh] w-full object-contain" />
+              <img
+                src={activeImage.imageUrl}
+                alt={activeImage.title}
+                className="max-h-[70vh] w-full object-contain"
+              />
             </motion.div>
           </motion.div>
         )}

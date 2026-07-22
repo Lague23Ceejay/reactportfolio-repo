@@ -1,10 +1,9 @@
-//src/components/layout/Navbar.tsx
+// src/components/layout/Navbar.tsx
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useThemeStore } from '../../store/themeStore';
 
 export function Navbar() {
-    // ... locate your hooks block at the top of the Navbar component:
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { currentDimension } = useThemeStore();
@@ -15,11 +14,6 @@ export function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  /* 
-    SENIOR DEV MOBILE OPTIMIZATION HOOK:
-    Listens directly to the mobile drawer state. When open, it injects a strict layout override 
-    onto the HTML body tag, forcing a full scroll freeze across all iOS and Android viewports.
-  */
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -28,14 +22,11 @@ export function Navbar() {
       document.body.style.overflow = '';
       document.body.style.height = '';
     }
-
-    // Clean up to prevent structural layout locking glitches when navigating away
     return () => {
       document.body.style.overflow = '';
       document.body.style.height = '';
     };
   }, [isOpen]);
-
 
   const navLinks = [
     { name: 'About', href: '#about' },
@@ -46,8 +37,8 @@ export function Navbar() {
 
   const currentConfig = {
     cosmic: {
-      headerScrolled: 'bg-zinc-950/70 backdrop-blur-md border-b border-zinc-900/50',
-      headerUnscrolled: 'bg-transparent',
+      headerScrolled: 'bg-zinc-950/80 backdrop-blur-md border-b border-zinc-900/50',
+      headerUnscrolled: 'bg-zinc-950/50 backdrop-blur-sm border-b border-zinc-900/50',
       logo: 'hover:text-emerald-400 text-zinc-100',
       logoDot: 'text-emerald-500',
       linksDefault: 'text-zinc-400 hover:text-zinc-100',
@@ -57,17 +48,17 @@ export function Navbar() {
     },
     arctic: {
       headerScrolled: 'bg-[#0a0514]/80 backdrop-blur-md border-b border-[#B069DB]/40 shadow-[0_4px_20px_rgba(176,105,219,0.15)]',
-      headerUnscrolled: 'bg-[#6E00B3]',
+      headerUnscrolled: 'bg-[#6E00B3] border-b border-[#B069DB]/30',
       logo: 'hover:text-cyan-400 text-slate-100',
       logoDot: 'text-[#B069DB]',
       linksDefault: 'text-slate-400 hover:text-cyan-400',
       linksActiveMobile: 'hover:text-cyan-400 text-slate-400',
-      mobileMenuBg: 'bg-[#030006]/95 backdrop-blur-lg border-b border-[#B069DB]/30',
+      mobileMenuBg: 'bg-[#030006]/95 backdrop-blur-lg',
       hamburger: 'text-slate-400 hover:text-[#B069DB]'
     },
     creamy: {
       headerScrolled: 'bg-[#FFFFC5] border-b border-stone-200/50 shadow-[0_4px_25px_rgba(255,238,140,0.5)] text-stone-900',
-      headerUnscrolled: 'bg-[#FFFFC5]', 
+      headerUnscrolled: 'bg-[#FFFFC5] border-b border-stone-200/40',
       logo: 'hover:text-stone-900 text-stone-800',
       logoDot: 'text-rose-500',
       linksDefault: 'text-stone-600 hover:text-stone-900',
@@ -76,8 +67,8 @@ export function Navbar() {
       hamburger: 'text-stone-600 hover:text-stone-900'
     }
   }[currentDimension] || {
-    headerScrolled: 'bg-zinc-950/70 backdrop-blur-md border-b border-zinc-900/50',
-    headerUnscrolled: 'bg-transparent',
+    headerScrolled: 'bg-zinc-950/80 backdrop-blur-md border-b border-zinc-900/50',
+    headerUnscrolled: 'bg-zinc-950/50 backdrop-blur-sm border-b border-zinc-900/50',
     logo: 'hover:text-emerald-400 text-zinc-100',
     logoDot: 'text-emerald-500',
     linksDefault: 'text-zinc-400 hover:text-zinc-100',
@@ -88,9 +79,11 @@ export function Navbar() {
 
   return (
     <>
-      <header className={`fixed top-0 inset-x-0 z-40 transition-all duration-300 ${
-        scrolled ? `${currentConfig.headerScrolled} py-4` : `${currentConfig.headerUnscrolled} py-6`
-      }`}>
+      <header
+        className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-300 ${
+          scrolled ? `${currentConfig.headerScrolled} py-4` : `${currentConfig.headerUnscrolled} py-4`
+        }`}
+      >
         <div className="max-w-6xl mx-auto px-4 flex items-center justify-between">
           <a href="#" className={`font-mono text-sm tracking-tight font-bold transition-colors ${currentConfig.logo}`}>
             Cejay<span className={`transition-colors ${currentConfig.logoDot}`}>.dev</span>
@@ -121,7 +114,6 @@ export function Navbar() {
         </div>
       </header>
 
-            {/* Responsive Mobile Drawer Sliding Overlay — Optimized for all smartphone heights */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -129,18 +121,9 @@ export function Navbar() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            /* 
-              SENIOR MOBILE OPTIMIZATION FIX:
-              Updated variable lookups from 'styleConfig' to 'currentConfig' to match 
-              your store map block perfectly and clear the name-not-found compile errors.
-            */
             className={`fixed inset-0 z-30 md:hidden flex flex-col justify-start pt-32 px-8 pb-12 overflow-hidden h-screen w-screen ${currentConfig.mobileMenuBg}`}
-            style={{ touchAction: 'none' }} // Stops accidental background scrolling/rubber-banding
+            style={{ touchAction: 'none' }}
           >
-            {/* 
-              SENIOR DEV FIX: Confines link gaps and forces a clean left-aligned text matrix 
-              for optimal mobile viewports.
-            */}
             <nav className={`flex flex-col gap-8 tracking-tight w-full ${
               currentDimension === 'creamy' ? 'text-stone-800' : 'text-zinc-100'
             }`}>
@@ -148,10 +131,10 @@ export function Navbar() {
                 <motion.a
                   initial={{ opacity: 0, x: -16 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: idx * 0.04 }} // Snappier sequencing on mobile
+                  transition={{ delay: idx * 0.04 }}
                   key={link.name}
                   href={link.href}
-                  onClick={() => setIsOpen(false)} // Safely collapses the overlay on link tap
+                  onClick={() => setIsOpen(false)}
                   className={`text-3xl font-bold transition-colors font-sans w-fit ${currentConfig.linksActiveMobile}`}
                 >
                   {link.name}

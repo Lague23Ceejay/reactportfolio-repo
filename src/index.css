@@ -1,4 +1,4 @@
-  /* ...utils/index.css */
+  /* ...src/index.css */
   /* 
     SENIOR DEV FIX: Cleared Tailwind v4 migration errors.
     Replaced legacy v3 @tailwind directives with a clean, single v4 import statement.
@@ -13,7 +13,18 @@
   /* Base resets apply directly in v4 (removed @layer base entirely) */
   html {
     scroll-behavior: smooth;
+    scroll-padding-top: 6rem;
     background-color: #09090b;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background-color: #09090b;
+  }
+
+  section[id], div[id] {
+    scroll-margin-top: 5rem;
   }
 
   /* Custom Scrollbar Utilities */
@@ -84,15 +95,6 @@
   .dimension-cursor .target-dot {
     box-shadow: 0 0 8px rgba(0,0,0,0.12);
   }
-
-  /*.dimension-cursor .target-cursor-corner {
-  box-sizing: border-box;
-  width: 12px;
-  height: 12px;
-  border-radius: 2px;
-}*/
-
-
 
 .cursor-target {
   position: relative; 

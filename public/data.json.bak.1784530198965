@@ -1,3 +1,4 @@
+
 {
   "hero": {
     "name": "Christian John K. Lague",
@@ -64,18 +65,9 @@
       "title": "Web-portfolio (non-React)",
       "description": "In-progress system architecture description summary.",
       "stack": [
-        {
-          "name": "Html",
-          "level": 100
-        },
-        {
-          "name": "JavaScript",
-          "level": 59
-        },
-        {
-          "name": "CSS",
-          "level": 93
-        }
+        { "name": "Html", "level": 100 },
+        { "name": "JavaScript", "level": 59 },
+        { "name": "CSS", "level": 93 }
       ],
       "liveUrl": "Development",
       "githubUrl": "Personal",

@@ -1,10 +1,16 @@
 // src/types/portfolio.ts
 
+export interface StackItem {
+  name: string;
+  level: number;
+  color?: string;
+}
+
 export interface ProjectItem {
   id: string;
   title: string;
   description: string;
-  stack: string[];      
+  stack: StackItem[];      
   liveUrl: string;      
   githubUrl: string;    
   featured: boolean;    

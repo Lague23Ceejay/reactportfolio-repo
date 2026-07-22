@@ -1,6 +1,11 @@
 // src/types/portfolioSchema.ts
 import { z } from "zod";
 
+const StackItem = z.object({
+  name: z.string(),
+  level: z.number().min(0).max(100)
+});
+
 export const PortfolioSchema = z.object({
   hero: z.object({
     name: z.string(),
@@ -19,11 +24,11 @@ export const PortfolioSchema = z.object({
     id: z.string(),
     title: z.string(),
     description: z.string(),
-    stack: z.array(z.string()),
+    stack: z.array(StackItem),
     liveUrl: z.string().url().optional(),
     githubUrl: z.string().url().optional(),
-    featured: z.boolean(),
-    deploymentUrl: z.string().url().optional(),
+    featured: z.boolean().optional(),
+    deploymentUrl: z.string().optional()
   })),
   gallery: z.array(z.object({
     id: z.string(),
