@@ -114,17 +114,6 @@ export default function App() {
       <DimensionCursor />
       <AdminOverlay />
 
-      {/* 👇 TargetCursor only for arctic */}
-      {currentDimension === 'arctic' && (
-        <TargetCursor
-          hideDefaultCursor
-          parallaxOn
-          hoverDuration={0.25}
-          cursorColor="#ffffff"
-          cursorColorOnTarget="#B497CF"
-          spinDuration={2}
-        />
-      )}
     </div>
   );
 }

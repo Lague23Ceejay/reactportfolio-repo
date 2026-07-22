@@ -10,23 +10,25 @@ export interface ProjectItem {
   id: string;
   title: string;
   description: string;
-  stack: StackItem[];      
-  liveUrl: string;      
-  githubUrl: string;    
-  featured: boolean;    
-  deploymentUrl?: string;     
-  sourceCodeUrl?: string;     
-  frameworksArray?: string[]; 
+  stack: StackItem[];
+  liveUrl: string;
+  githubUrl: string;
+  featured: boolean;
+  deploymentUrl?: string;
+  sourceCodeUrl?: string;
+  frameworksArray?: string[];
 }
 
+/** Gallery item used across Admin, Gallery, Lightbox and store */
 export interface GalleryItem {
-  id: string;
-  title: string;
-  category: string;
+  id: string | number;
+  title?: string;
+  subtitle?: string;
+  category?: string;
   imageUrl: string;
 }
 
-// 🎓 EXPORTED ALIGNMENT: Extracted from inline to standalone named interface
+/** Exported graduation data */
 export interface GraduationData {
   isEnabled: boolean;
   badgeText: string;
@@ -37,12 +39,29 @@ export interface GraduationData {
 }
 
 export interface PortfolioData {
-  hero: { name: string; title: string; tagline: string; profileImage: string; profileImageSecondary?: string; };
+  hero: {
+    name: string;
+    title: string;
+    tagline: string;
+    profileImage: string;
+    profileImageSecondary?: string;
+  };
   graduation?: GraduationData;
-  about: { bio: string; skills: { name: string; iconCode: string; description?: string; }[] };
+  about: {
+    bio: string;
+    skills: { name: string; iconCode: string; description?: string }[];
+  };
   projects: ProjectItem[];
   gallery: GalleryItem[];
-  contact: { email: string; github: string; linkedin: string; upwork: string; websiteUrl: string; resumeUrl?: string; resumeLabel?: string };
+  contact: {
+    email: string;
+    github: string;
+    linkedin: string;
+    upwork: string;
+    websiteUrl: string;
+    resumeUrl?: string;
+    resumeLabel?: string;
+  };
   settings: {
     theme: string;
     pinHash: string;
@@ -54,4 +73,3 @@ export interface PortfolioData {
     };
   };
 }
-

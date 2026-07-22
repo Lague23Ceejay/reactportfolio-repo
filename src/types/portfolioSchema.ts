@@ -1,9 +1,9 @@
 // src/types/portfolioSchema.ts
-import { z } from "zod";
+import { z } from 'zod';
 
 const StackItem = z.object({
   name: z.string(),
-  level: z.number().min(0).max(100)
+  level: z.number().min(0).max(100),
 });
 
 export const PortfolioSchema = z.object({
@@ -15,26 +15,34 @@ export const PortfolioSchema = z.object({
   }),
   about: z.object({
     bio: z.string(),
-    skills: z.array(z.object({
-      name: z.string(),
-      iconCode: z.string(),
-    })),
+    skills: z.array(
+      z.object({
+        name: z.string(),
+        iconCode: z.string(),
+      })
+    ),
   }),
-  projects: z.array(z.object({
-    id: z.string(),
-    title: z.string(),
-    description: z.string(),
-    stack: z.array(StackItem),
-    liveUrl: z.string().url().optional(),
-    githubUrl: z.string().url().optional(),
-    featured: z.boolean().optional(),
-    deploymentUrl: z.string().optional()
-  })),
-  gallery: z.array(z.object({
-    id: z.string(),
-    url: z.string().url(),
-    category: z.string().optional(),
-  })),
+  projects: z.array(
+    z.object({
+      id: z.string(),
+      title: z.string(),
+      description: z.string(),
+      stack: z.array(StackItem),
+      liveUrl: z.string().url().optional(),
+      githubUrl: z.string().url().optional(),
+      featured: z.boolean().optional(),
+      deploymentUrl: z.string().optional(),
+    })
+  ),
+  gallery: z.array(
+    z.object({
+      id: z.string(),
+      imageUrl: z.string().url(), // renamed from url -> imageUrl to match runtime types
+      title: z.string().optional(),
+      subtitle: z.string().optional(),
+      category: z.string().optional(),
+    })
+  ),
   settings: z.object({
     theme: z.string(),
     pinHash: z.string(),

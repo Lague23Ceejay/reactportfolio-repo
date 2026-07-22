@@ -1,176 +1,296 @@
 // src/components/sections/Gallery.tsx
-import { useEffect, useMemo, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import React, { useEffect, useMemo, useState } from 'react';
+import ReactDOM from 'react-dom';
+import Stack from '../ui/Stack';
 import { usePortfolioStore } from '../../store/portfolioStore';
-import { useThemeStore, dimensionPacks } from '../../store/themeStore';
-import { ScrollReveal } from '../ui/ScrollReveal';
-import { RevealGroup } from '../ui/RevealGroup';
 
-export function Gallery() {
-  const gallery = usePortfolioStore((state) => state.data?.gallery || []);
-  const { currentDimension } = useThemeStore();
-  const pack = dimensionPacks[currentDimension];
-  const [activeImage, setActiveImage] = useState<null | {
-    imageUrl: string;
-    title: string;
-    category: string;
-  }>(null);
+export type GalleryItem = {
+  id?: string | number;
+  imageUrl: string;
+  title?: string;
+  subtitle?: string;
+  category?: string;
+};
+
+function Lightbox({
+  images,
+  index,
+  onClose,
+  onPrev,
+  onNext
+}: {
+  images: GalleryItem[];
+  index: number;
+  onClose: () => void;
+  onPrev: () => void;
+  onNext: () => void;
+}) {
+  const [loaded, setLoaded] = useState(false);
+  const img = images[index];
 
   useEffect(() => {
-    document.body.style.overflow = activeImage ? 'hidden' : '';
-    document.body.style.height = activeImage ? '100dvh' : '';
-    return () => {
-      document.body.style.overflow = '';
-      document.body.style.height = '';
+    setLoaded(false);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+      if (e.key === 'ArrowLeft') onPrev();
+      if (e.key === 'ArrowRight') onNext();
     };
-  }, [activeImage]);
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [index, onClose, onPrev, onNext]);
 
-  const overlayTheme = useMemo(() => {
-    if (currentDimension === 'creamy') {
-      return 'bg-[#fffef3]/95 text-stone-900 border-stone-200';
+  if (!img) return null;
+
+  return ReactDOM.createPortal(
+    <div
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/85"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+    >
+      <div
+        className="relative max-h-[92vh] max-w-[92vw] flex flex-col items-center justify-center"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onPrev();
+          }}
+          className="absolute left-2 top-1/2 -translate-y-1/2 text-white bg-black/40 hover:bg-black/60 rounded-full p-2 z-50"
+          aria-label="Previous image"
+        >
+          ‹
+        </button>
+
+        <div className="flex flex-col items-center justify-center">
+          {!loaded && (
+            <div className="absolute inset-0 flex items-center justify-center z-40">
+              <div className="w-12 h-12 border-4 border-white/30 border-t-white rounded-full animate-spin" />
+            </div>
+          )}
+
+          <img
+            src={img.imageUrl}
+            alt={img.title ?? `image-${index}`}
+            className="rounded-lg max-h-[80vh] max-w-[80vw] object-contain shadow-lg z-50"
+            onLoad={() => setLoaded(true)}
+            onError={() => {
+              setLoaded(true);
+              // eslint-disable-next-line no-console
+              console.error('Lightbox image failed to load', img.imageUrl);
+            }}
+            draggable={false}
+          />
+
+          {/* Title & subtitle in lightbox */}
+          {(img.title || img.subtitle) && (
+            <div className="mt-4 text-center text-white max-w-[80vw]">
+              {img.title && <div className="text-lg font-semibold">{img.title}</div>}
+              {img.subtitle && <div className="text-sm text-white/80">{img.subtitle}</div>}
+            </div>
+          )}
+        </div>
+
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onNext();
+          }}
+          className="absolute right-2 top-1/2 -translate-y-1/2 text-white bg-black/40 hover:bg-black/60 rounded-full p-2 z-50"
+          aria-label="Next image"
+        >
+          ›
+        </button>
+
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onClose();
+          }}
+          className="absolute top-4 right-4 text-white text-2xl z-50"
+          aria-label="Close"
+        >
+          ✕
+        </button>
+      </div>
+    </div>,
+    document.body
+  );
+}
+
+export function Gallery(): JSX.Element {
+  const { data } = usePortfolioStore();
+  const gallery: GalleryItem[] = data?.gallery ?? [];
+
+  const categories = useMemo(() => {
+    const set = new Set<string>();
+    gallery.forEach((item) => set.add(item.category ?? 'General'));
+    return Array.from(set);
+  }, [gallery]);
+
+  const [activeCategory, setActiveCategory] = useState<string>(categories[0] ?? 'General');
+
+  useEffect(() => {
+    if (categories.length && !categories.includes(activeCategory)) {
+      setActiveCategory(categories[0]);
     }
-    if (currentDimension === 'arctic') {
-      return 'bg-[#130a23]/95 text-slate-100 border-cyan-400/20';
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [categories]);
+
+  const filteredImages = useMemo(
+    () => gallery.filter((item) => (item.category ?? 'General') === activeCategory),
+    [gallery, activeCategory]
+  );
+
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+
+  // lock body scroll while modal is open
+  useEffect(() => {
+    if (lightboxIndex !== null) {
+      const prev = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = prev || '';
+      };
     }
-    return 'bg-zinc-950/95 text-zinc-100 border-zinc-800';
-  }, [currentDimension]);
+    return;
+  }, [lightboxIndex]);
+
+  // open lightbox helper
+  const openLightbox = (index: number) => {
+    if (index < 0 || index >= filteredImages.length) return;
+    setLightboxIndex(index);
+  };
+
+  const showPrev = () => {
+    if (lightboxIndex === null) return;
+    setLightboxIndex((lightboxIndex - 1 + filteredImages.length) % filteredImages.length);
+  };
+
+  const showNext = () => {
+    if (lightboxIndex === null) return;
+    setLightboxIndex((lightboxIndex + 1) % filteredImages.length);
+  };
+
+  // visual tuning: container size and hover scale
+  const STACK_SIZE = 320; // increased from 260 to give more room for expansion
+  const HOVER_SCALE = 1.3; // 30% expansion for more visible effect
 
   return (
-    <section
-      className={`space-y-8 rounded-3xl px-4 sm:px-6 py-8 transition-colors duration-500 ${
-        currentDimension === 'creamy'
-          ? 'bg-[#FFF7C2]/40'
-          : currentDimension === 'arctic'
-          ? 'bg-[#20133A]/50'
-          : 'bg-zinc-900/20'
-      }`}
-      id="sandbox"
-    >
-      {/* HEADER — reveal from left */}
-      <ScrollReveal direction="left">
-        <div className="space-y-2">
-          <div className="flex items-center gap-4">
-            <h2
-              className={`text-2xl sm:text-3xl font-bold tracking-tight cursor-target ${pack.textPrimary}`}
-            >
-              Memories & Milestones
-            </h2>
-            <div
-              className={`h-px flex-1 ${
-                currentDimension === 'creamy' ? 'bg-stone-400/40' : 'bg-zinc-800'
-              }`}
-            />
-          </div>
-          <p
-            className={`text-sm font-light max-w-xl leading-relaxed ${pack.textSecondary}`}
-          >
-            A visual archive of the moments that shaped my college experience.
-          </p>
-        </div>
-      </ScrollReveal>
+    <section id="gallery" className="py-12 space-y-8">
+      <h2 className="text-2xl font-bold tracking-tight">Gallery</h2>
 
-      {/* IMAGE GRID — staggered right reveals */}
-      <RevealGroup
-        direction="right"
-        baseDelay={0.06}
-        step={0.05}
-        className="columns-1 sm:columns-2 md:columns-3 gap-4 space-y-4 pt-4"
-      >
-        {gallery.map(
-          (item) =>
-            item.imageUrl && (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() =>
-                  setActiveImage({
-                    imageUrl: item.imageUrl!,
-                    title: item.title,
-                    category: item.category,
-                  })
-                }
-                className="break-inside-avoid relative w-full overflow-hidden rounded-2xl border border-zinc-800/80 bg-zinc-900 text-left group"
+      {/* Tabs */}
+      <div className="flex flex-wrap gap-3">
+        {categories.map((cat) => (
+          <button
+            key={cat}
+            onClick={() => {
+              setActiveCategory(cat);
+              setLightboxIndex(null);
+            }}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              activeCategory === cat
+                ? 'bg-emerald-500 text-white'
+                : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
+            }`}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+
+      {/* Stack */}
+      <div className="flex justify-center">
+        {/* wrapper must allow overflow so hovered card can grow beyond the fixed box */}
+        <div style={{ width: STACK_SIZE, height: STACK_SIZE, overflow: 'visible' }}>
+          <Stack
+            randomRotation
+            sensitivity={180}
+            sendToBackOnClick={false}
+            cards={filteredImages.map((img, i) => (
+              // group wrapper enables hover transform on inner element
+              <div
+                key={img.id ?? `${i}-${img.imageUrl}`}
+                className="w-full h-full cursor-pointer group relative"
+                onClick={(e) => {
+                  // ensure Stack's drag/click logic doesn't intercept
+                  e.stopPropagation();
+                  openLightbox(i);
+                }}
+                // allow the hovered card to visually escape siblings
+                style={{ overflow: 'visible' }}
               >
-                <img
-                  src={item.imageUrl}
-                  alt={item.title}
-                  className="w-full h-auto max-h-[320px] object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 flex flex-col justify-end bg-linear-to-t from-black/90 via-black/30 to-transparent p-4 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300">
-                  <span
-                    className={`text-[10px] font-mono font-semibold tracking-wider uppercase ${
-                      currentDimension === 'creamy'
-                        ? 'text-rose-500'
-                        : currentDimension === 'arctic'
-                        ? 'text-cyan-400'
-                        : 'text-emerald-400'
-                    }`}
-                  >
-                    {item.category}
-                  </span>
-                  <h4 className={`text-sm font-bold mt-1 ${pack.textPrimary}`}>
-                    {item.title}
-                  </h4>
-                </div>
-              </button>
-            )
-        )}
-      </RevealGroup>
-
-      {/* LIGHTBOX OVERLAY (unchanged) */}
-      <AnimatePresence>
-        {activeImage && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[80] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
-          >
-            <motion.button
-              type="button"
-              aria-label="Close gallery detail"
-              className="absolute inset-0"
-              onClick={() => setActiveImage(null)}
-            />
-            <motion.div
-              initial={{ y: 24, opacity: 0, scale: 0.97 }}
-              animate={{ y: 0, opacity: 1, scale: 1 }}
-              exit={{ y: 24, opacity: 0, scale: 0.97 }}
-              transition={{ type: 'spring', stiffness: 180, damping: 20 }}
-              className={`relative z-10 w-full max-w-3xl overflow-hidden rounded-[2rem] border ${overlayTheme}`}
-            >
-              <div className="flex items-center justify-between border-b border-white/10 px-4 py-3 sm:px-6">
-                <div>
-                  <p
-                    className={`text-[10px] font-mono uppercase tracking-[0.3em] ${
-                      currentDimension === 'creamy'
-                        ? 'text-rose-500'
-                        : currentDimension === 'arctic'
-                        ? 'text-cyan-400'
-                        : 'text-emerald-400'
-                    }`}
-                  >
-                    {activeImage.category}
-                  </p>
-                  <h3 className="text-lg font-semibold">{activeImage.title}</h3>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setActiveImage(null)}
-                  className="rounded-full border border-white/10 px-3 py-1 text-sm"
+                <div
+                  className="w-full h-full rounded-xl transition-transform duration-300 ease-out transform-gpu origin-center"
+                  style={{
+                    willChange: 'transform',
+                    transformOrigin: 'center center',
+                    // apply hover scale via inline style to use HOVER_SCALE constant
+                  }}
                 >
-                  ✕
-                </button>
+                  {/* inner wrapper that actually scales on hover and raises z-index */}
+                  <div
+                    className="w-full h-full overflow-visible rounded-xl"
+                    style={{
+                      transition: 'transform 300ms ease-out',
+                    }}
+                    // apply hover effect via onMouseEnter/onMouseLeave to ensure consistent behavior
+                    onMouseEnter={(e) => {
+                      const el = e.currentTarget as HTMLDivElement;
+                      el.style.transform = `scale(${HOVER_SCALE})`;
+                      el.style.zIndex = '60';
+                    }}
+                    onMouseLeave={(e) => {
+                      const el = e.currentTarget as HTMLDivElement;
+                      el.style.transform = 'scale(1)';
+                      el.style.zIndex = '';
+                    }}
+                  >
+                    <img
+                      src={img.imageUrl}
+                      alt={img.title ?? `image-${i}`}
+                      className="w-full h-full object-cover rounded-xl select-none"
+                      draggable={false}
+                      style={{ display: 'block', pointerEvents: 'auto' }}
+                    />
+
+                    {/* Title & subtitle overlay (visible on hover) */}
+                    {(img.title || img.subtitle) && (
+                      <div className="pointer-events-none absolute left-1/2 bottom-3 -translate-x-1/2 w-[90%] text-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                        {img.title && (
+                          <div className="bg-black/70 text-white text-sm font-semibold px-3 py-1 rounded-md inline-block">
+                            {img.title}
+                          </div>
+                        )}
+                        {img.subtitle && (
+                          <div className="mt-1 text-xs text-white/80">
+                            {img.subtitle}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
-              <img
-                src={activeImage.imageUrl}
-                alt={activeImage.title}
-                className="max-h-[70vh] w-full object-contain"
-              />
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            ))}
+          />
+        </div>
+      </div>
+
+      {/* Lightbox (portal) */}
+      {lightboxIndex !== null && filteredImages[lightboxIndex] && (
+        <Lightbox
+          images={filteredImages}
+          index={lightboxIndex}
+          onClose={() => setLightboxIndex(null)}
+          onPrev={showPrev}
+          onNext={showNext}
+        />
+      )}
     </section>
   );
 }
+
+export default Gallery;
