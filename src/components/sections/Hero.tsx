@@ -1,5 +1,4 @@
 // src/components/sections/Hero.tsx
-import React from 'react';
 import { useThemeStore, dimensionPacks } from '../../store/themeStore';
 import { usePortfolioStore } from '../../store/portfolioStore';
 import { PixelImageTransition } from '../../components/ui/PixelImageTransition';

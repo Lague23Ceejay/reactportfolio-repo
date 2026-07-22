@@ -1,5 +1,5 @@
 // src/components/ui/Lightbox.tsx
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 export type LightboxImage = {
@@ -57,7 +57,7 @@ export default function Lightbox({ images, index, onClose, onPrev, onNext }: Lig
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/85"
+      className="fixed inset-0 z-9999 flex items-center justify-center bg-black/85"
       onClick={onClose}
       role="dialog"
       aria-modal="true"

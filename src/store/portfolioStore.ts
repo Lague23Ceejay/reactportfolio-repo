@@ -25,7 +25,7 @@ interface PortfolioState {
   removeGalleryItem: (id: string | number) => void;
 }
 
-export const usePortfolioStore = create<PortfolioState>((set, get) => {
+export const usePortfolioStore = create<PortfolioState>((set) => {
   const ensureData = (data: PortfolioData | null): PortfolioData => {
     if (data) return data;
     return {

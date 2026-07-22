@@ -1,5 +1,5 @@
 // src/components/ui/LoadingScreen.tsx
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
 export default function LoadingScreen(): JSX.Element {
   useEffect(() => {
@@ -13,7 +13,7 @@ export default function LoadingScreen(): JSX.Element {
 
   return (
     <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90"
+      className="fixed inset-0 z-9999 flex items-center justify-center bg-black/90"
       aria-hidden="true"
     >
       <div className="flex flex-col items-center gap-6">

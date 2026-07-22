@@ -1,14 +1,9 @@
 // src/components/ui/CustomCursorController.tsx
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 type HoverState = {
   target: Element | null;
   key?: string | null;
-};
-
-const isCursorTarget = (el: Element | null) => {
-  if (!el) return false;
-  return !!el.closest('.cursor-target');
 };
 
 export default function CustomCursorController(): null {

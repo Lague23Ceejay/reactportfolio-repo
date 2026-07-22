@@ -1,5 +1,5 @@
 // src/components/layout/Navbar.tsx
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useThemeStore } from '../../store/themeStore';
 
@@ -82,7 +82,7 @@ export function Navbar(): JSX.Element {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-300 ${
+        className={`fixed top-0 left-0 right-0 z-100 transition-all duration-300 ${
           scrolled ? `${currentConfig.headerScrolled} py-4` : `${currentConfig.headerUnscrolled} py-4`
         }`}
       >

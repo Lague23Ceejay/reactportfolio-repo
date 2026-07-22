@@ -1,5 +1,5 @@
 // src/components/sections/Gallery.tsx
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import ReactDOM from 'react-dom';
 import Stack from '../ui/Stack';
 import { usePortfolioStore } from '../../store/portfolioStore';
@@ -44,7 +44,7 @@ function Lightbox({
 
   return ReactDOM.createPortal(
     <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/85"
+      className="fixed inset-0 z-9999 flex items-center justify-center bg-black/85"
       onClick={onClose}
       role="dialog"
       aria-modal="true"

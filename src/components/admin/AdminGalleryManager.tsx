@@ -1,5 +1,5 @@
 // src/components/sections/AdminGalleryManager.tsx
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { usePortfolioStore } from '../../store/portfolioStore';
 
 type GalleryItem = {
@@ -11,7 +11,7 @@ type GalleryItem = {
 };
 
 export function AdminGalleryManager(): JSX.Element {
-  const { data, updateGalleryItem, addGalleryItem, removeGalleryItem } = usePortfolioStore();
+  const { data, updateGalleryItem, removeGalleryItem } = usePortfolioStore();
   const gallery: GalleryItem[] = data?.gallery ?? [];
 
   const categories = useMemo(() => {
@@ -144,7 +144,7 @@ export function AdminGalleryManager(): JSX.Element {
           return (
             <div key={item.id} className="bg-zinc-900 p-4 rounded-lg border border-zinc-800">
               <div className="flex gap-4">
-                <div className="w-28 h-20 bg-zinc-800 rounded overflow-hidden flex-shrink-0">
+                <div className="w-28 h-20 bg-zinc-800 rounded overflow-hidden shrink-0">
                   {item.imageUrl ? (
                     // eslint-disable-next-line jsx-a11y/img-redundant-alt
                     <img src={item.imageUrl} alt={item.title ?? 'gallery image'} className="w-full h-full object-cover" />

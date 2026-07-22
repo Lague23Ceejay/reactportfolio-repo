@@ -6,6 +6,7 @@
 */
 @import "tailwindcss";
 
+/* stylelint-disable-next-line -- @theme is a valid Tailwind v4 feature */
 @theme {
   --color-emerald-500: #10b981;
   --color-zinc-950: #09090b;
