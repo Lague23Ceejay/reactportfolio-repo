@@ -1,75 +1,51 @@
 // src/types/portfolio.ts
 
-export interface StackItem {
-  name: string;
-  level: number;
-  color?: string;
-}
+export type GraduationData = {
+  school?: string;
+  degree?: string;
+  year?: string;
+};
 
-export interface ProjectItem {
-  id: string;
-  title: string;
-  description: string;
-  stack: StackItem[];
-  liveUrl: string;
-  githubUrl: string;
-  featured: boolean;
-  deploymentUrl?: string;
-  sourceCodeUrl?: string;
-  frameworksArray?: string[];
-}
-
-/** Gallery item used across Admin, Gallery, Lightbox and store */
-export interface GalleryItem {
-  id: string | number;
+export type GalleryItem = {
+  id?: string | number; // optional to allow temporary items before persisted id
+  imageUrl: string;
   title?: string;
   subtitle?: string;
   category?: string;
-  imageUrl: string;
-}
+};
 
-/** Exported graduation data */
-export interface GraduationData {
-  isEnabled: boolean;
-  badgeText: string;
+export type Project = {
+  id?: string | number;
   title: string;
-  subtitle: string;
-  message: string;
-  gcashUrl: string;
-}
+  description?: string;
+  url?: string;
+  repo?: string;
+  tags?: string[];
+};
 
-export interface PortfolioData {
+export type PortfolioData = {
   hero: {
     name: string;
     title: string;
     tagline: string;
     profileImage: string;
-    profileImageSecondary?: string;
   };
-  graduation?: GraduationData;
   about: {
     bio: string;
-    skills: { name: string; iconCode: string; description?: string }[];
+    skills: string[];
   };
-  projects: ProjectItem[];
+  projects: Project[];
   gallery: GalleryItem[];
+  categories: string[]; // <-- categories are now part of the data model
   contact: {
-    email: string;
-    github: string;
-    linkedin: string;
-    upwork: string;
-    websiteUrl: string;
-    resumeUrl?: string;
-    resumeLabel?: string;
+    email?: string;
+    github?: string;
+    linkedin?: string;
+    upwork?: string;
+    websiteUrl?: string;
   };
   settings: {
     theme: string;
-    pinHash: string;
-    audioTracks?: {
-      cosmic?: string;
-      creamy?: string;
-      arctic?: string;
-      [key: string]: string | undefined;
-    };
+    pinHash?: string;
   };
-}
+};
