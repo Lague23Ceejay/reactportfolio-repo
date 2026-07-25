@@ -21,16 +21,25 @@ This project is a single-page portfolio experience with:
 
 ## Tech Stack
 
-- React 18
-- TypeScript
-- Vite
-- Tailwind CSS
-- Zustand
-- Framer Motion
-- GSAP
-- Three.js / OGL
-- @vercel/blob
-- @octokit/rest
+- **React 18** — The core UI framework that powers all interactive components and manages the component lifecycle. Used throughout all sections and UI components for rendering and state updates.
+
+- **TypeScript** — Provides static type checking and development-time safety. Ensures type correctness across the entire project through strict configuration in `tsconfig.json`.
+
+- **Vite** — Fast build tool and development server (`vite.config.ts`). Provides instant hot module replacement during development and optimized production builds.
+
+- **Tailwind CSS** — Utility-first CSS framework configured in `tailwind.config.js`. Powers responsive styling and theme-based visual variations across all components. Global utilities and theme variables are defined in `src/index.css` and `src/App.css`.
+
+- **Zustand** — Lightweight state management library. Manages portfolio content state (`src/store/portfolioStore.ts`) and theme/animation state (`src/store/themeStore.ts`) for dimension switching and visual effects.
+
+- **Framer Motion** — Animation library used for smooth scroll reveals and interactive component animations. Integrated into `src/components/ui/ScrollReveal.tsx`, `src/components/ui/MagnetEffect.tsx`, and various section components for motion effects.
+
+- **GSAP** — Professional animation and interaction library providing advanced timeline control and tweening. Powers complex animations in custom cursor effects, particle systems, and dynamic visual elements throughout the UI components.
+
+- **Three.js / OGL** — 3D graphics rendering library for creating immersive visual experiences. Supports the 3D visual elements and theme-specific backgrounds in `src/components/ui/AnimatedBackground.tsx` and other dimensional UI components.
+
+- **@vercel/blob** — File storage service by Vercel for managing media uploads. Connected to `api/upload-image.ts` to handle image asset uploads and storage as part of the admin content workflow.
+
+- **@octokit/rest** — GitHub API client library. Connected to `api/save-content.ts` to enable admin saves that persist portfolio content directly to GitHub repositories via Vercel serverless functions.
 
 ## Getting Started
 
