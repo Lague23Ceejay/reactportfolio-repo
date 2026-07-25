@@ -21,8 +21,8 @@ export function AdminGalleryManager(): JSX.Element {
     removeCategory
   } = usePortfolioStore();
 
-  const gallery: StoreGalleryItem[] = data?.gallery ?? [];
-  const categories: string[] = data?.categories ?? ['General'];
+  const gallery: StoreGalleryItem[] = Array.isArray(data?.gallery) ? data.gallery : [];
+  const categories: string[] = Array.isArray(data?.categories) && data.categories.length > 0 ? data.categories : ['General'];
 
   const [editingId, setEditingId] = useState<string | number | null>(null);
   const [localItems, setLocalItems] = useState<LocalGalleryItem[]>([]);
@@ -118,8 +118,8 @@ export function AdminGalleryManager(): JSX.Element {
   };
 
   const handleRemoveCategory = (name: string) => {
-    if (name === 'General') {
-      alert('Cannot remove the General category.');
+    if (name === 'All') {
+      alert('Cannot remove the All category.');
       return;
     }
     if (!confirm(`Delete category "${name}"? Items in this category will be reset to General.`)) return;
@@ -179,7 +179,7 @@ export function AdminGalleryManager(): JSX.Element {
               {c}
             </button>
 
-            {c !== 'General' && (
+            {c !== 'All' && (
               <button
                 onClick={() => handleRemoveCategory(c)}
                 className="px-2 py-1 bg-red-900/30 text-red-400 rounded text-xs"

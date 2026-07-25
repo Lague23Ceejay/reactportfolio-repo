@@ -29,8 +29,19 @@ interface PortfolioState {
 }
 
 export const usePortfolioStore = create<PortfolioState>((set) => {
+  const normalizePortfolioData = (data: PortfolioData | null): PortfolioData | null => {
+    if (!data) return null;
+
+    return {
+      ...data,
+      gallery: Array.isArray(data.gallery) ? data.gallery : [],
+      categories: Array.isArray(data.categories) && data.categories.length > 0 ? data.categories : ['General']
+    } as PortfolioData;
+  };
+
   const ensureData = (data: PortfolioData | null): PortfolioData => {
-    if (data) return data;
+    const normalized = normalizePortfolioData(data);
+    if (normalized) return normalized;
     return {
       hero: { name: '', title: '', tagline: '', profileImage: '' },
       about: { bio: '', skills: [] },
