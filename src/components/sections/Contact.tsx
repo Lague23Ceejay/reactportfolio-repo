@@ -101,9 +101,9 @@ export function Contact() {
                 </a>
               )}
 
-              {data.linkedin && (
+              {data.Indeed && (
                 <a
-                  href={data.linkedin}
+                  href={data.Indeed}
                   target="_blank"
                   rel="noreferrer"
                   className={`transition-colors font-medium ${
@@ -112,13 +112,13 @@ export function Contact() {
                       : 'text-zinc-300 hover:text-white cursor-target'
                   }`}
                 >
-                  ↳ LinkedIn
+                  ↳ Indeed
                 </a>
               )}
 
-              {data.upwork && (
+              {data.Facebook && (
                 <a
-                  href={data.upwork}
+                  href={data.Facebook}
                   target="_blank"
                   rel="noreferrer"
                   className={`transition-colors font-medium ${
@@ -127,7 +127,7 @@ export function Contact() {
                       : 'text-zinc-300 hover:text-white cursor-target'
                   }`}
                 >
-                  ↳ Upwork
+                  ↳ Facebook
                 </a>
               )}
             </div>

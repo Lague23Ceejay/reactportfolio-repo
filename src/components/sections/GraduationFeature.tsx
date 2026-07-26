@@ -53,8 +53,8 @@ export function GraduationFeature() {
             </h3>
 
             <div className="space-y-4 max-w-2xl">
-              <pre className={`text-base leading-relaxed whitespace-pre-wrap break-words font-mono ${pack.textSecondary}`}>
-                {decodeMessage(graduation.message)}
+              <pre className={`text-base leading-relaxed whitespace-pre-wrap wrap-break-word font-mono ${pack.textSecondary}`}>
+                {decodeMessage(graduation.message || '')}
               </pre>
               <p className={`text-sm italic font-medium flex items-center gap-1.5 ${pack.textSecondary}`}>
                 <FiHeart className="inline text-rose-500" /> Congratulations on Graduation!

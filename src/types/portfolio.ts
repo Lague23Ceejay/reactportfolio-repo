@@ -1,6 +1,13 @@
 // src/types/portfolio.ts
 
 export type GraduationData = {
+  isEnabled?: boolean;
+  badgeText?: string;
+  title?: string;
+  subtitle?: string;
+  message?: string;
+  gcashUrl?: string;
+  // legacy fields, kept optional for backwards compatibility
   school?: string;
   degree?: string;
   year?: string;
@@ -14,6 +21,11 @@ export type GalleryItem = {
   category?: string;
 };
 
+export type StackItem = {
+  name: string;
+  level: number;
+};
+
 export type Project = {
   id?: string | number;
   title: string;
@@ -21,6 +33,19 @@ export type Project = {
   url?: string;
   repo?: string;
   tags?: string[];
+  stack?: StackItem[];
+  githubUrl?: string;
+  liveUrl?: string;
+  deploymentUrl?: string;
+  sourceCodeUrl?: string;
+  featured?: boolean;
+  frameworksArray?: string[];
+};
+
+export type SkillItem = {
+  name: string;
+  iconCode: string;
+  description?: string;
 };
 
 export type PortfolioData = {
@@ -29,10 +54,11 @@ export type PortfolioData = {
     title: string;
     tagline: string;
     profileImage: string;
+    profileImageSecondary?: string;
   };
   about: {
     bio: string;
-    skills: string[];
+    skills: SkillItem[];
   };
   projects: Project[];
   gallery: GalleryItem[];
@@ -40,12 +66,19 @@ export type PortfolioData = {
   contact: {
     email?: string;
     github?: string;
-    linkedin?: string;
-    upwork?: string;
+    Indeed?: string;
+    Facebook?: string;
     websiteUrl?: string;
+    resumeUrl?: string;
   };
+  graduation?: GraduationData;
   settings: {
     theme: string;
     pinHash?: string;
+    audioTracks?: {
+      cosmic?: string;
+      arctic?: string;
+      creamy?: string;
+    };
   };
 };

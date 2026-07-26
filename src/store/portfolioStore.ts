@@ -48,7 +48,7 @@ export const usePortfolioStore = create<PortfolioState>((set) => {
       projects: [],
       gallery: [],
       categories: ['General'], // initialize categories
-      contact: { email: '', github: '', linkedin: '', upwork: '', websiteUrl: '' },
+      contact: { email: '', github: '', Indeed: '', Facebook: '', websiteUrl: '' },
       settings: { theme: 'cosmic', pinHash: '' }
     } as PortfolioData;
   };

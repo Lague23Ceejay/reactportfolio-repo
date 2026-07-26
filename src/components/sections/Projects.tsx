@@ -65,6 +65,9 @@ export function Projects() {
               ? Math.round(stackItems.reduce((acc, item) => acc + item.level, 0) / stackItems.length)
               : 0;
 
+          // Precompute the repo link once so the JSX below stays a plain, valid anchor tag
+          const repoUrl = project.sourceCodeUrl || project.githubUrl || '';
+
           // Determine card background and border styling based on the active dimension
           const cardLayoutClass =
             currentDimension === 'creamy'
@@ -175,7 +178,7 @@ export function Projects() {
                 )}
 
                 {/* REDIRECT ACTION ANCHOR LINKS FOOTER */}
-                {(project.deploymentUrl || project.sourceCodeUrl || project.githubUrl) && (
+                {(project.deploymentUrl || repoUrl) && (
                   <div
                     className={`flex gap-4 pt-3 border-t text-xs font-mono font-bold transition-colors ${
                       currentDimension === 'creamy' ? 'border-stone-200' : 'border-zinc-900/60'
@@ -193,15 +196,16 @@ export function Projects() {
                         Live Demo →
                       </a>
                     )}
-                    {(project.sourceCodeUrl || project.githubUrl) && (
+                    {repoUrl && (
                       <a
-                        href={(project.sourceCodeUrl || project.githubUrl).startsWith('http') ? (project.sourceCodeUrl || project.githubUrl) : `https://${project.sourceCodeUrl || project.githubUrl}`}
+                        href={repoUrl.startsWith('http') ? repoUrl : `https://${repoUrl}`}
                         target="_blank"
                         rel="noreferrer"
                         className={`cursor-pointer transition-colors ${
                           currentDimension === 'creamy' ? 'text-stone-500 hover:text-stone-900' : 'text-zinc-500 hover:text-zinc-300'
                         }`}
                       >
+                        Source →
                       </a>
                     )}
                   </div>

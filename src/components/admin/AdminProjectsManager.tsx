@@ -249,7 +249,9 @@ export function AdminProjectsManager() {
                     type="button"
                     onClick={() =>
                       updateDraft((d) => {
-                        d.projects[index].stack.push({ name: 'NewTech', level: 50 });
+                        const proj = d.projects[index];
+                        proj.stack = proj.stack || [];
+                        proj.stack.push({ name: 'NewTech', level: 50 });
                       })
                     }
                     className="text-[10px] font-mono bg-zinc-800 hover:bg-zinc-700 text-zinc-300 px-2 py-1 rounded border border-zinc-700/60 transition-colors cursor-pointer"
@@ -269,7 +271,8 @@ export function AdminProjectsManager() {
                           updateDraft((d) => {
                             const updatedName = e.target.value.replace(':', '');
                             const currentLevel = item.value;
-                            d.projects[index].stack[tIdx] = { name: updatedName, level: currentLevel };
+                            const proj = d.projects[index];
+                            if (proj.stack) proj.stack[tIdx] = { name: updatedName, level: currentLevel };
                           })
                         }
                         className="bg-zinc-950 border border-zinc-800/80 p-1.5 rounded-lg text-xs font-mono text-emerald-400 outline-none focus:border-emerald-500/20"
@@ -284,7 +287,8 @@ export function AdminProjectsManager() {
                           value={item.value}
                           onChange={(e) =>
                             updateDraft((d) => {
-                              d.projects[index].stack[tIdx] = { name: item.name, level: parseInt(e.target.value, 10) };
+                             const proj = d.projects[index];
+                              if (proj.stack) proj.stack[tIdx] = { name: item.name, level: parseInt(e.target.value, 10) };
                             })
                           }
                           className="flex-1 h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-emerald-500"
@@ -296,7 +300,7 @@ export function AdminProjectsManager() {
                           type="button"
                           onClick={() =>
                             updateDraft((d) => {
-                              d.projects[index].stack.splice(tIdx, 1);
+                             d.projects[index].stack?.splice(tIdx, 1);
                             })
                           }
                           className="text-zinc-600 hover:text-red-400 text-xs font-mono px-1 ml-1 cursor-pointer"

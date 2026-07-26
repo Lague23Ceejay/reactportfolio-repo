@@ -134,14 +134,14 @@ export function AdminGalleryManager(): JSX.Element {
 
   return (
     <section id="admin-gallery" className="py-8 space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <h2 className="text-xl font-semibold">Gallery Manager</h2>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           <select
             value={filterCategory}
             onChange={e => setFilterCategory(e.target.value)}
-            className="bg-zinc-900 text-sm px-3 py-2 rounded"
+            className="bg-zinc-900 text-sm px-3 py-2 rounded flex-1 sm:flex-none min-w-0"
             aria-label="Filter gallery by category"
           >
             <option value="All">All categories</option>
@@ -155,12 +155,12 @@ export function AdminGalleryManager(): JSX.Element {
             value={newCategoryName}
             onChange={e => setNewCategoryName(e.target.value)}
             placeholder="New category"
-            className="bg-zinc-900 text-sm px-2 py-1 rounded"
+            className="bg-zinc-900 text-sm px-2 py-2 rounded flex-1 sm:flex-none min-w-0"
             aria-label="New category name"
           />
           <button
             onClick={handleAddCategory}
-            className="bg-emerald-500 text-white px-3 py-2 rounded text-sm"
+            className="bg-emerald-500 text-white px-3 py-2 rounded text-sm shrink-0 whitespace-nowrap"
             aria-label="Add category"
           >
             + Add category
