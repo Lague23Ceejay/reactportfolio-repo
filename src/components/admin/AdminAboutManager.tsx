@@ -1,5 +1,6 @@
 // src/components/admin/AdminAboutManager.tsx
 
+import { useEffect, useRef } from 'react';
 import { usePortfolioStore } from '../../store/portfolioStore';
 import { renderIconSVG } from '../../utils/renderIconSVG';
 
@@ -7,6 +8,18 @@ import { renderIconSVG } from '../../utils/renderIconSVG';
 
 export function AdminAboutManager() {
   const { draft, updateDraft } = usePortfolioStore();
+  const bioRef = useRef<HTMLDivElement>(null);
+
+  // Set the initial content once on mount. We intentionally do NOT re-sync
+  // on every keystroke — that's what was resetting the caret to the start
+  // of the line on every input, since dangerouslySetInnerHTML re-injects
+  // the whole HTML blob (and the cursor position) on every render.
+  useEffect(() => {
+    if (bioRef.current) {
+      bioRef.current.innerHTML = draft?.about.bio || '';
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (!draft) return null;
 
@@ -30,13 +43,13 @@ export function AdminAboutManager() {
             
             {/* Core Contenteditable Node Sync Container */}
             <div 
+              ref={bioRef}
               contentEditable
               suppressContentEditableWarning
               onInput={(e) => {
                 const htmlContent = e.currentTarget.innerHTML;
                 updateDraft(d => { d.about.bio = htmlContent; });
               }}
-              dangerouslySetInnerHTML={{ __html: draft.about.bio }}
               className="w-full min-h-35 p-4 text-sm outline-none text-zinc-300 leading-relaxed max-h-62.5 overflow-y-auto custom-scrollbar"
             />
           </div>
