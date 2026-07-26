@@ -97,7 +97,7 @@ export function Contact() {
                       : 'text-zinc-300 hover:text-white cursor-target'
                   }`}
                 >
-                  ↳ Fiverr
+                  ↳ Github
                 </a>
               )}
 
