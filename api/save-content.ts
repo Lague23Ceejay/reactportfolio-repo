@@ -1,7 +1,7 @@
 // api/save-content.ts
 import { VercelRequest, VercelResponse } from '@vercel/node';
 import { Octokit } from '@octokit/rest';
-import { PortfolioSchema } from '../src/types/portfolioSchema'; // ✅ new schema file
+import { PortfolioSchema } from '../src/types/portfolioSchema.js'; // ✅ new schema file
 
 const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 
