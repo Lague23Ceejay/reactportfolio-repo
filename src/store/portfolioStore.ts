@@ -84,58 +84,64 @@ export const usePortfolioStore = create<PortfolioState>((set) => {
 
     updateGalleryItem: (item) => {
       set((state) => {
-        const base = ensureData(state.data);
+        if (!state.draft) return {};
+        const newDraft = structuredClone(state.draft);
+        const base = ensureData(newDraft);
         const prevGallery = Array.isArray(base.gallery) ? base.gallery : [];
         // require id to be present for update
         if (item.id === undefined || item.id === null) {
-          return { data: base };
+          return { draft: base };
         }
-        const updatedGallery = prevGallery.map((g: GalleryItem) =>
+        base.gallery = prevGallery.map((g: GalleryItem) =>
           g.id === item.id ? ({ ...g, ...item } as GalleryItem) : g
         );
-        const newData: PortfolioData = { ...base, gallery: updatedGallery };
-        return { data: newData };
+        return { draft: base };
       });
     },
 
     addGalleryItem: (item) => {
       set((state) => {
-        const base = ensureData(state.data);
+        if (!state.draft) return {};
+        const newDraft = structuredClone(state.draft);
+        const base = ensureData(newDraft);
         const prevGallery = Array.isArray(base.gallery) ? base.gallery : [];
-        const updatedGallery = [item, ...prevGallery];
-        const newData: PortfolioData = { ...base, gallery: updatedGallery };
-        return { data: newData };
+        base.gallery = [item, ...prevGallery];
+        return { draft: base };
       });
     },
 
     removeGalleryItem: (id) => {
       set((state) => {
-        const base = ensureData(state.data);
+        if (!state.draft) return {};
+        const newDraft = structuredClone(state.draft);
+        const base = ensureData(newDraft);
         const prevGallery = Array.isArray(base.gallery) ? base.gallery : [];
-        const updatedGallery = prevGallery.filter((g: GalleryItem) => g.id !== id);
-        const newData: PortfolioData = { ...base, gallery: updatedGallery };
-        return { data: newData };
+        base.gallery = prevGallery.filter((g: GalleryItem) => g.id !== id);
+        return { draft: base };
       });
     },
 
     addCategory: (name) => {
       set((state) => {
-        const base = ensureData(state.data);
-        if (base.categories.includes(name)) return { data: base };
-        const newData: PortfolioData = { ...base, categories: [...base.categories, name] };
-        return { data: newData };
+        if (!state.draft) return {};
+        const newDraft = structuredClone(state.draft);
+        const base = ensureData(newDraft);
+        if (base.categories.includes(name)) return { draft: base };
+        base.categories = [...base.categories, name];
+        return { draft: base };
       });
     },
 
     removeCategory: (name) => {
       set((state) => {
-        const base = ensureData(state.data);
-        const updatedCategories = base.categories.filter((c) => c !== name);
-        const updatedGallery = base.gallery.map((item) =>
+        if (!state.draft) return {};
+        const newDraft = structuredClone(state.draft);
+        const base = ensureData(newDraft);
+        base.categories = base.categories.filter((c) => c !== name);
+        base.gallery = base.gallery.map((item) =>
           item.category === name ? { ...item, category: 'General' } : item
         );
-        const newData: PortfolioData = { ...base, categories: updatedCategories, gallery: updatedGallery };
-        return { data: newData };
+        return { draft: base };
       });
     }
   };

@@ -13,7 +13,7 @@ type LocalGalleryItem = {
 
 export function AdminGalleryManager(): JSX.Element {
   const {
-    data,
+    draft,
     updateGalleryItem,
     removeGalleryItem,
     addGalleryItem,
@@ -21,8 +21,8 @@ export function AdminGalleryManager(): JSX.Element {
     removeCategory
   } = usePortfolioStore();
 
-  const gallery: StoreGalleryItem[] = Array.isArray(data?.gallery) ? data.gallery : [];
-  const categories: string[] = Array.isArray(data?.categories) && data.categories.length > 0 ? data.categories : ['General'];
+  const gallery: StoreGalleryItem[] = Array.isArray(draft?.gallery) ? draft.gallery : [];
+  const categories: string[] = Array.isArray(draft?.categories) && draft.categories.length > 0 ? draft.categories : ['General'];
 
   const [editingId, setEditingId] = useState<string | number | null>(null);
   const [localItems, setLocalItems] = useState<LocalGalleryItem[]>([]);
