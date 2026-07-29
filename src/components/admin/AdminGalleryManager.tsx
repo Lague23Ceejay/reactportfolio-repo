@@ -240,27 +240,17 @@ export function AdminGalleryManager(): JSX.Element {
                   ) : (
                     <div className="space-y-2">
                       <label className="text-xs text-zinc-400">Image</label>
-                      <div className="flex items-center gap-3">
-                        <div className="w-16 h-12 bg-zinc-800 rounded overflow-hidden shrink-0 border border-zinc-700">
-                          {item.imageUrl ? (
-                            // eslint-disable-next-line jsx-a11y/img-redundant-alt
-                            <img src={item.imageUrl} alt={item.title ?? 'preview'} className="w-full h-full object-cover" />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center text-[10px] text-zinc-500">No image</div>
-                          )}
-                        </div>
-                        <label className={`flex-1 flex items-center justify-center bg-zinc-800 hover:bg-zinc-700 text-center text-zinc-100 px-2 py-1.5 rounded text-sm border border-zinc-700 cursor-pointer ${isUploadingImage ? 'opacity-50 pointer-events-none' : ''}`}>
-                          <span>{isUploadingImage ? 'Uploading...' : item.imageUrl ? 'Change Image' : 'Upload Image'}</span>
-                          <input
-                            type="file"
-                            accept="image/*"
-                            className="hidden"
-                            disabled={isUploadingImage}
-                            onChange={(e) => handleImageFileChange(item.id!, e)}
-                            aria-label="Upload image"
-                          />
-                        </label>
-                      </div>
+                      <label className={`flex items-center justify-center gap-2 bg-zinc-800 hover:bg-zinc-700 text-center text-zinc-100 px-2 py-1.5 rounded text-sm border border-zinc-700 cursor-pointer ${isUploadingImage ? 'opacity-50 pointer-events-none' : ''}`}>
+                        <span>{isUploadingImage ? 'Uploading...' : item.imageUrl ? 'Change Image' : 'Upload Image'}</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          disabled={isUploadingImage}
+                          onChange={(e) => handleImageFileChange(item.id!, e)}
+                          aria-label="Upload image"
+                        />
+                      </label>
 
                       <label className="text-xs text-zinc-400">Title</label>
                       <input
