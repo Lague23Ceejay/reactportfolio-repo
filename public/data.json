@@ -85,6 +85,13 @@
   ],
   "gallery": [
     {
+      "id": "17bfac04-e757-4dce-af63-f7e29e5bb1db",
+      "imageUrl": "https://w4huipym72sb25c6.public.blob.vercel-storage.com/1785308349758-1000149368-Jq1gM1PoBD76q6bJqxZVszOeHXYX8Z.webp",
+      "title": "@Cebu",
+      "subtitle": "2026",
+      "category": "Friends"
+    },
+    {
       "id": "6bde4bd4-7a88-45e7-8c89-4be3a4d5bd9d",
       "imageUrl": "https://w4huipym72sb25c6.public.blob.vercel-storage.com/1783011777849-1000030183-EoyflHmlQ1COFeLvt61w7CukU0QVRj.webp",
       "title": "@mcdo",
