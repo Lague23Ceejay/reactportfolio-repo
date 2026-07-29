@@ -1,6 +1,7 @@
 // src/components/sections/AdminGalleryManager.tsx
 import { useEffect, useState } from 'react';
 import { usePortfolioStore } from '../../store/portfolioStore';
+import { useImageUpload } from '../../hooks/useImageUpload';
 import type { GalleryItem as StoreGalleryItem } from '../../types/portfolio';
 
 type LocalGalleryItem = {
@@ -29,6 +30,7 @@ export function AdminGalleryManager(): JSX.Element {
   const [isSaving, setIsSaving] = useState(false);
   const [filterCategory, setFilterCategory] = useState<string | 'All'>('All');
   const [newCategoryName, setNewCategoryName] = useState('');
+  const { uploadImage, isUploading: isUploadingImage } = useImageUpload();
 
   // keep a local editable copy
   useEffect(() => {
@@ -45,6 +47,18 @@ export function AdminGalleryManager(): JSX.Element {
 
   const onChangeField = (id: string | number, field: keyof LocalGalleryItem, value: string) => {
     setLocalItems(prev => prev.map(p => (p.id === id ? { ...p, [field]: value } : p)));
+  };
+
+  const handleImageFileChange = async (id: string | number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = ''; // allow re-selecting the same file later
+    if (!file) return;
+    const uploadedUrl = await uploadImage(file, 1200, 0.8);
+    if (uploadedUrl) {
+      onChangeField(id, 'imageUrl', uploadedUrl);
+    } else {
+      alert('Image upload failed. Please try again.');
+    }
   };
 
   const onAddNew = () => {
@@ -141,7 +155,7 @@ export function AdminGalleryManager(): JSX.Element {
           <select
             value={filterCategory}
             onChange={e => setFilterCategory(e.target.value)}
-            className="bg-zinc-900 text-sm px-3 py-2 rounded flex-1 sm:flex-none min-w-0"
+            className="bg-zinc-900 text-sm px-3 py-2 rounded flex-1 sm:flex-none min-w-0 text-zinc-100"
             aria-label="Filter gallery by category"
           >
             <option value="All">All categories</option>
@@ -155,7 +169,7 @@ export function AdminGalleryManager(): JSX.Element {
             value={newCategoryName}
             onChange={e => setNewCategoryName(e.target.value)}
             placeholder="New category"
-            className="bg-zinc-900 text-sm px-2 py-2 rounded flex-1 sm:flex-none min-w-0"
+            className="bg-zinc-900 text-sm px-2 py-2 rounded flex-1 sm:flex-none min-w-0 text-zinc-100 placeholder-zinc-500"
             aria-label="New category name"
           />
           <button
@@ -225,19 +239,34 @@ export function AdminGalleryManager(): JSX.Element {
                     </div>
                   ) : (
                     <div className="space-y-2">
-                      <label className="text-xs text-zinc-400">Image URL</label>
-                      <input
-                        value={item.imageUrl}
-                        onChange={e => onChangeField(item.id!, 'imageUrl', e.target.value)}
-                        className="w-full bg-zinc-800 px-2 py-1 rounded text-sm"
-                        aria-label="Image URL"
-                      />
+                      <label className="text-xs text-zinc-400">Image</label>
+                      <div className="flex items-center gap-3">
+                        <div className="w-16 h-12 bg-zinc-800 rounded overflow-hidden shrink-0 border border-zinc-700">
+                          {item.imageUrl ? (
+                            // eslint-disable-next-line jsx-a11y/img-redundant-alt
+                            <img src={item.imageUrl} alt={item.title ?? 'preview'} className="w-full h-full object-cover" />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-[10px] text-zinc-500">No image</div>
+                          )}
+                        </div>
+                        <label className={`flex-1 flex items-center justify-center bg-zinc-800 hover:bg-zinc-700 text-center text-zinc-100 px-2 py-1.5 rounded text-sm border border-zinc-700 cursor-pointer ${isUploadingImage ? 'opacity-50 pointer-events-none' : ''}`}>
+                          <span>{isUploadingImage ? 'Uploading...' : item.imageUrl ? 'Change Image' : 'Upload Image'}</span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            disabled={isUploadingImage}
+                            onChange={(e) => handleImageFileChange(item.id!, e)}
+                            aria-label="Upload image"
+                          />
+                        </label>
+                      </div>
 
                       <label className="text-xs text-zinc-400">Title</label>
                       <input
                         value={item.title ?? ''}
                         onChange={e => onChangeField(item.id!, 'title', e.target.value)}
-                        className="w-full bg-zinc-800 px-2 py-1 rounded text-sm"
+                        className="w-full bg-zinc-800 px-2 py-1 rounded text-sm text-zinc-100 placeholder-zinc-500"
                         maxLength={80}
                         aria-label="Title"
                       />
@@ -246,7 +275,7 @@ export function AdminGalleryManager(): JSX.Element {
                       <input
                         value={item.subtitle ?? ''}
                         onChange={e => onChangeField(item.id!, 'subtitle', e.target.value)}
-                        className="w-full bg-zinc-800 px-2 py-1 rounded text-sm"
+                        className="w-full bg-zinc-800 px-2 py-1 rounded text-sm text-zinc-100 placeholder-zinc-500"
                         maxLength={140}
                         aria-label="Subtitle"
                       />
@@ -255,7 +284,7 @@ export function AdminGalleryManager(): JSX.Element {
                       <select
                         value={item.category ?? 'General'}
                         onChange={e => onChangeField(item.id!, 'category', e.target.value)}
-                        className="w-full bg-zinc-800 px-2 py-1 rounded text-sm"
+                        className="w-full bg-zinc-800 px-2 py-1 rounded text-sm text-zinc-100 placeholder-zinc-500"
                         aria-label="Category"
                       >
                         {categories.map((c: string) => (
