@@ -87,15 +87,23 @@
     {
       "id": "6bde4bd4-7a88-45e7-8c89-4be3a4d5bd9d",
       "imageUrl": "https://w4huipym72sb25c6.public.blob.vercel-storage.com/1783011777849-1000030183-EoyflHmlQ1COFeLvt61w7CukU0QVRj.webp",
-      "title": "Untitled Layout Asset",
-      "category": "General Sandbox"
+      "title": "@mcdo",
+      "subtitle": "2025",
+      "category": "Friends"
     },
     {
       "id": "f8fd1306-c0e3-4c64-a870-c491cd07b367",
       "imageUrl": "https://w4huipym72sb25c6.public.blob.vercel-storage.com/1783011816363-1000019699-N8k5ZqZAPtcUdnyKozSCa5IynIK37w.webp",
-      "title": "Untitled Layout Asset",
-      "category": "General Sandbox"
+      "title": "Swimming with friends",
+      "subtitle": "2025",
+      "category": "Friends"
     }
+  ],
+  "categories": [
+    "Certificates",
+    "Family",
+    "Friends",
+    "College Life"
   ],
   "contact": {
     "email": "laguejayjay@gmail.com",
