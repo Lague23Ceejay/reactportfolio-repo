@@ -1,219 +1,172 @@
 // src/components/ui/Stack.tsx
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+// Adapted from the reactbits.dev "Stack" component reference implementation.
+// Using `framer-motion` (already a project dependency) instead of the newer
+// `motion/react` package name — framer-motion v11 exports the identical API
+// (motion, useMotionValue, useTransform, PanInfo), so no new dependency is needed.
+import { motion, useMotionValue, useTransform, type PanInfo } from 'framer-motion';
+import { useState, useEffect } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 
-type StackProps = {
-  cards: ReactNode[];
+interface CardRotateProps {
+  children: React.ReactNode;
+  onSendToBack: () => void;
+  sensitivity: number;
+  disableDrag?: boolean;
+}
+
+function CardRotate({ children, onSendToBack, sensitivity, disableDrag = false }: CardRotateProps) {
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const rotateX = useTransform(y, [-100, 100], [60, -60]);
+  const rotateY = useTransform(x, [-100, 100], [-60, 60]);
+
+  function handleDragEnd(_event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) {
+    if (Math.abs(info.offset.x) > sensitivity || Math.abs(info.offset.y) > sensitivity) {
+      onSendToBack();
+    } else {
+      x.set(0);
+      y.set(0);
+    }
+  }
+
+  if (disableDrag) {
+    return (
+      <motion.div className="absolute inset-0 cursor-pointer" style={{ x: 0, y: 0 }}>
+        {children}
+      </motion.div>
+    );
+  }
+
+  return (
+    <motion.div
+      className="absolute inset-0 cursor-grab"
+      style={{ x, y, rotateX, rotateY }}
+      drag
+      dragConstraints={{ top: 0, right: 0, bottom: 0, left: 0 }}
+      dragElastic={0.6}
+      whileTap={{ cursor: 'grabbing' }}
+      onDragEnd={handleDragEnd}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+interface StackProps {
   randomRotation?: boolean;
-  sendToBackOnClick?: boolean;
   sensitivity?: number;
+  sendToBackOnClick?: boolean;
+  cards?: ReactNode[];
+  animationConfig?: { stiffness: number; damping: number };
+  autoplay?: boolean;
+  autoplayDelay?: number;
+  pauseOnHover?: boolean;
   mobileClickOnly?: boolean;
-  className?: string;
+  mobileBreakpoint?: number;
+  // Extra props so callers (e.g. Gallery.tsx) can size/position the container
+  // the same way any other block-level element would be sized.
   style?: CSSProperties;
-};
+  className?: string;
+}
 
 export default function Stack({
-  cards,
-  randomRotation = true,
-  sendToBackOnClick = true,
-  sensitivity = 120,
+  randomRotation = false,
+  sensitivity = 200,
+  cards = [],
+  animationConfig = { stiffness: 260, damping: 20 },
+  sendToBackOnClick = false,
+  autoplay = false,
+  autoplayDelay = 3000,
+  pauseOnHover = false,
   mobileClickOnly = false,
-  className = '',
-  style = {}
+  mobileBreakpoint = 768,
+  style,
+  className = ''
 }: StackProps) {
-  const [order, setOrder] = useState<number[]>(() => cards.map((_, i) => i));
-
-  const rotations = useMemo(() => {
-    return cards.map(() => {
-      if (!randomRotation) return 0;
-      return Math.round((Math.random() * 16 - 8) * 10) / 10;
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cards.length, randomRotation]);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
-    setOrder(prev => {
-      const max = cards.length - 1;
-      const filtered = prev.filter(i => i <= max);
-      for (let i = 0; i <= max; i++) {
-        if (!filtered.includes(i)) filtered.push(i);
-      }
-      return filtered;
-    });
-  }, [cards.length]);
-
-  const draggingRef = useRef<{
-    index: number | null;
-    startX: number;
-    startY: number;
-    lastX: number;
-    lastY: number;
-    pointerId?: number;
-  }>({ index: null, startX: 0, startY: 0, lastX: 0, lastY: 0 });
-
-  const [transforms, setTransforms] = useState<Record<number, { x: number; y: number }>>({});
-  const rafRef = useRef<number | null>(null);
-  const pendingRef = useRef<Record<number, { x: number; y: number }>>({});
-
-  const flushPending = useCallback(() => {
-    if (rafRef.current != null) {
-      cancelAnimationFrame(rafRef.current);
-      rafRef.current = null;
-    }
-    setTransforms(prev => ({ ...prev, ...pendingRef.current }));
-    pendingRef.current = {};
-  }, []);
-
-  const scheduleFlush = useCallback(() => {
-    if (rafRef.current == null) {
-      rafRef.current = requestAnimationFrame(() => {
-        flushPending();
-      });
-    }
-  }, [flushPending]);
-
-  useEffect(() => {
-    return () => {
-      if (rafRef.current != null) cancelAnimationFrame(rafRef.current);
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < mobileBreakpoint);
     };
-  }, []);
 
-  const onPointerDown = useCallback(
-    (e: React.PointerEvent, cardIndex: number) => {
-      if (mobileClickOnly && e.pointerType !== 'touch') return;
-      (e.target as Element).setPointerCapture?.(e.pointerId);
-      draggingRef.current = {
-        index: cardIndex,
-        startX: e.clientX,
-        startY: e.clientY,
-        lastX: e.clientX,
-        lastY: e.clientY,
-        pointerId: e.pointerId
-      };
-    },
-    [mobileClickOnly]
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, [mobileBreakpoint]);
+
+  const shouldDisableDrag = mobileClickOnly && isMobile;
+  const shouldEnableClick = sendToBackOnClick || shouldDisableDrag;
+
+  const [stack, setStack] = useState<{ id: number; content: ReactNode }[]>(() =>
+    cards.map((content, index) => ({ id: index + 1, content }))
   );
 
-  const onPointerMove = useCallback(
-    (e: React.PointerEvent) => {
-      const d = draggingRef.current;
-      if (d.index === null) return;
-      if (d.pointerId != null && e.pointerId !== d.pointerId) return;
+  useEffect(() => {
+    setStack(cards.map((content, index) => ({ id: index + 1, content })));
+  }, [cards]);
 
-      const dx = (e.clientX - d.lastX) / (sensitivity / 100);
-      const dy = (e.clientY - d.lastY) / (sensitivity / 100);
-      d.lastX = e.clientX;
-      d.lastY = e.clientY;
+  const sendToBack = (id: number) => {
+    setStack(prev => {
+      const newStack = [...prev];
+      const index = newStack.findIndex(card => card.id === id);
+      const [card] = newStack.splice(index, 1);
+      newStack.unshift(card);
+      return newStack;
+    });
+  };
 
-      const prev = transforms[d.index] ?? { x: 0, y: 0 };
-      pendingRef.current[d.index] = { x: prev.x + dx, y: prev.y + dy };
-      scheduleFlush();
-    },
-    [sensitivity, transforms, scheduleFlush]
-  );
+  useEffect(() => {
+    if (autoplay && stack.length > 1 && !isPaused) {
+      const interval = setInterval(() => {
+        const topCardId = stack[stack.length - 1].id;
+        sendToBack(topCardId);
+      }, autoplayDelay);
 
-  const onPointerUp = useCallback(
-    (e: React.PointerEvent, cardIndex: number) => {
-      (e.target as Element).releasePointerCapture?.(e.pointerId);
-
-      const d = draggingRef.current;
-      const moved =
-        d.index !== null &&
-        (Math.abs(d.lastX - d.startX) > 4 || Math.abs(d.lastY - d.startY) > 4);
-
-      draggingRef.current = { index: null, startX: 0, startY: 0, lastX: 0, lastY: 0 };
-
-      if (!moved) {
-        if (sendToBackOnClick) {
-          setOrder(prev => {
-            const idx = prev.indexOf(cardIndex);
-            if (idx === -1) return prev;
-            const copy = prev.slice();
-            copy.splice(idx, 1);
-            copy.push(cardIndex);
-            return copy;
-          });
-        }
-        setTransforms(prev => {
-          const copy = { ...prev };
-          delete copy[cardIndex];
-          return copy;
-        });
-        return;
-      }
-
-      setTransforms(prev => {
-        const copy = { ...prev };
-        copy[cardIndex] = { x: 0, y: 0 };
-        return copy;
-      });
-    },
-    [sendToBackOnClick]
-  );
-
-  const handlePointerDown = useCallback((e: React.PointerEvent, idx: number) => onPointerDown(e, idx), [onPointerDown]);
-  const handlePointerMove = useCallback((e: React.PointerEvent) => onPointerMove(e), [onPointerMove]);
-  const handlePointerUp = useCallback((e: React.PointerEvent, idx: number) => onPointerUp(e, idx), [onPointerUp]);
+      return () => clearInterval(interval);
+    }
+    return undefined;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoplay, autoplayDelay, stack, isPaused]);
 
   return (
     <div
-      className={`relative inline-block ${className}`}
+      className={`relative w-full h-full ${className}`}
       style={{
-        overflow: 'visible',
-        touchAction: 'none',
-        WebkitTapHighlightColor: 'transparent',
+        perspective: 600,
         ...style
       }}
+      onMouseEnter={() => pauseOnHover && setIsPaused(true)}
+      onMouseLeave={() => pauseOnHover && setIsPaused(false)}
     >
-      {order.map((cardIndex, stackPosition) => {
-        const node = cards[cardIndex];
-        const rotation = rotations[cardIndex] ?? 0;
-        const zIndex = 100 + stackPosition;
-        const transform = transforms[cardIndex];
-        const translate = transform ? `translate(${transform.x}px, ${transform.y}px)` : '';
-        const isDragging = draggingRef.current.index === cardIndex;
-
-        const baseStyle: CSSProperties = {
-          position: 'absolute',
-          inset: 0,
-          display: 'block',
-          width: '100%',
-          height: '100%',
-          userSelect: 'none',
-          touchAction: 'none',
-          transform: `${translate} rotate(${rotation}deg)`,
-          transition: transform ? 'transform 120ms linear' : 'transform 220ms cubic-bezier(.2,.9,.2,1)',
-          zIndex,
-          pointerEvents: 'auto',
-          overflow: 'visible',
-          willChange: 'transform',
-          cursor: isDragging ? 'grabbing' : 'grab'
-        };
-
+      {stack.map((card, index) => {
+        const randomRotate = randomRotation ? Math.random() * 10 - 5 : 0;
         return (
-          <div
-            key={cardIndex}
-            style={baseStyle}
-            onPointerDown={(e) => handlePointerDown(e, cardIndex)}
-            onPointerMove={(e) => handlePointerMove(e)}
-            onPointerUp={(e) => handlePointerUp(e, cardIndex)}
-            onClick={() => {
-              /* intentionally empty to allow parent handlers */
-            }}
+          <CardRotate
+            key={card.id}
+            onSendToBack={() => sendToBack(card.id)}
+            sensitivity={sensitivity}
+            disableDrag={shouldDisableDrag}
           >
-            <div
-              style={{
-                width: '100%',
-                height: '100%',
-                overflow: 'visible',
-                display: 'block',
-                position: 'relative',
-                pointerEvents: 'auto'
+            <motion.div
+              className="rounded-2xl overflow-hidden w-full h-full"
+              onClick={() => shouldEnableClick && sendToBack(card.id)}
+              animate={{
+                rotateZ: (stack.length - index - 1) * 4 + randomRotate,
+                scale: 1 + index * 0.06 - stack.length * 0.06,
+                transformOrigin: '90% 90%'
+              }}
+              initial={false}
+              transition={{
+                type: 'spring',
+                stiffness: animationConfig.stiffness,
+                damping: animationConfig.damping
               }}
             >
-              <div style={{ width: '100%', height: '100%', pointerEvents: 'auto' }}>{node}</div>
-            </div>
-          </div>
+              {card.content}
+            </motion.div>
+          </CardRotate>
         );
       })}
     </div>

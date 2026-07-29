@@ -1,6 +1,7 @@
 // src/components/sections/Gallery.tsx
 import { useEffect, useMemo, useState } from 'react';
 import ReactDOM from 'react-dom';
+import { motion, useMotionValue, useTransform, type PanInfo } from 'framer-motion';
 import Stack from '../ui/Stack';
 import { usePortfolioStore } from '../../store/portfolioStore';
 import Tabs from '../ui/Tabs';
@@ -12,6 +13,10 @@ export type GalleryItem = {
   subtitle?: string;
   category?: string;
 };
+
+// Swipe past this many pixels (or with enough velocity) to trigger prev/next.
+const SWIPE_DISTANCE_THRESHOLD = 90;
+const SWIPE_VELOCITY_THRESHOLD = 500;
 
 function Lightbox({
   images,
@@ -28,6 +33,26 @@ function Lightbox({
 }) {
   const [loaded, setLoaded] = useState(false);
   const img = images[index];
+
+  // Drag-to-swipe support: mirrors the tilt/feel of the homepage card Stack,
+  // while the existing ‹ › buttons keep working exactly as before.
+  const dragX = useMotionValue(0);
+  const dragRotate = useTransform(dragX, [-200, 200], [-12, 12]);
+  const dragOpacity = useTransform(dragX, [-250, 0, 250], [0.4, 1, 0.4]);
+
+  const handleDragEnd = (_e: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+    const distance = info.offset.x;
+    const velocity = info.velocity.x;
+
+    if (distance <= -SWIPE_DISTANCE_THRESHOLD || velocity <= -SWIPE_VELOCITY_THRESHOLD) {
+      onNext();
+    } else if (distance >= SWIPE_DISTANCE_THRESHOLD || velocity >= SWIPE_VELOCITY_THRESHOLD) {
+      onPrev();
+    }
+    // Snap back to center either way — the index change (if any) mounts a
+    // fresh image, and dragX resets naturally since it's keyed per-index below.
+    dragX.set(0);
+  };
 
   useEffect(() => {
     setLoaded(false);
@@ -71,10 +96,11 @@ function Lightbox({
             </div>
           )}
 
-          <img
+          <motion.img
+            key={index}
             src={img.imageUrl}
             alt={img.title ?? `image-${index}`}
-            className="rounded-lg max-h-[80vh] max-w-[80vw] object-contain shadow-lg z-50"
+            className="rounded-lg max-h-[80vh] max-w-[80vw] object-contain shadow-lg z-50 cursor-grab active:cursor-grabbing"
             onLoad={() => setLoaded(true)}
             onError={() => {
               setLoaded(true);
@@ -82,6 +108,12 @@ function Lightbox({
               console.error('Lightbox image failed to load', img.imageUrl);
             }}
             draggable={false}
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={0.6}
+            style={{ x: dragX, rotate: dragRotate, opacity: dragOpacity }}
+            onDragEnd={handleDragEnd}
+            onClick={(e) => e.stopPropagation()}
           />
 
           {/* Title & subtitle in lightbox */}
@@ -175,7 +207,7 @@ export function Gallery(): JSX.Element {
   };
 
   // visual tuning: container size and hover scale
-  const STACK_SIZE = 320; // increased from 260 to give more room for expansion
+  const STACK_SIZE = 380; // increased from 320 so preview cards have more room
   const HOVER_SCALE = 1.3; // 30% expansion for more visible effect
 
   return (
@@ -225,7 +257,7 @@ export function Gallery(): JSX.Element {
                 >
                   {/* inner wrapper that actually scales on hover and raises z-index */}
                   <div
-                    className="w-full h-full overflow-visible rounded-xl"
+                    className="w-full h-full overflow-visible rounded-xl bg-zinc-950 flex items-center justify-center"
                     style={{
                       transition: 'transform 300ms ease-out',
                     }}
@@ -244,7 +276,7 @@ export function Gallery(): JSX.Element {
                     <img
                       src={img.imageUrl}
                       alt={img.title ?? `image-${i}`}
-                      className="w-full h-full object-cover rounded-xl select-none"
+                      className="w-full h-full object-contain rounded-xl select-none"
                       draggable={false}
                       style={{ display: 'block', pointerEvents: 'auto' }}
                     />
