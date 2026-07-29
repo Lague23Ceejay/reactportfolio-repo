@@ -7,54 +7,52 @@
     "profileImageSecondary": "https://w4huipym72sb25c6.public.blob.vercel-storage.com/1782880644316-1000150381-Hrf7zxrEcHfaTQu8pLCjBeC7xBkSxz.webp"
   },
   "about": {
-    "bio": "Passionate developer focusing on scalable web apps and smooth user experiences.",
+    "bio": "<span class=\"a_GcMg font-feature-liga-off font-feature-clig-off font-feature-calt-off text-decoration-none text-strikethrough-none\" style=\"color: rgba(255,255,255,var(--O42jJQ,1)); caret-color: rgb(255, 255, 255); --Ys-XuQ: none; font-kerning: none;\">Information Systems graduate seeking a Junior Full-Stack Web Developer position, focusing on C# development alongside frontend experience in React, TypeScript, and Tailwind. Experienced in reading codebases comprehensively to diagnose issues contextually, I leverage AI-assisted tools for debugging and automated testing while maintaining a strict habit of utilizing Git and GitHub pipelines for continuous project backup, supported by foundational Cisco training in secure networking concepts.</span>",
     "skills": [
       {
         "name": "React Frame Core",
-        "iconCode": "react"
+        "iconCode": "react",
+        "description": "React is a popular, open-source JavaScript library developed by Meta for building user interfaces, specifically for single-page applications. It allows developers to create reusable UI components and efficiently manages application states using a virtual DOM."
       },
       {
         "name": "TypeScript Typing",
-        "iconCode": "typescript"
+        "iconCode": "typescript",
+        "description": "TypeScript is a free, open-source programming language developed by Microsoft that builds on JavaScript by adding static type definitions. It acts as a strict syntactical superset of JavaScript, meaning all valid JavaScript code is also valid TypeScript. The TypeScript compiler checked code for errors before deploying, which helps developers catch bugs early during development."
       },
       {
         "name": "Tailwind Grid Layouts",
-        "iconCode": "tailwind"
+        "iconCode": "tailwind",
+        "description": "Tailwind CSS is a utility-first CSS framework designed for rapid UI development. Instead of writing custom CSS files or using pre-built components, you style elements by applying pre-defined utility classes directly into your HTML or JSX structure."
       },
       {
         "name": "C#",
         "iconCode": "csharp",
-        "description": "Experience building APIs with ASP.NET Core."
+        "description": "C# (C-Sharp) is a modern, object-oriented programming language developed by Microsoft and powered by the .NET framework. It is used to build cross-platform desktop, web, and mobile apps, as well as 3D video games using the Unity engine."
       },
       {
         "name": "HTML",
         "iconCode": "html",
-        "description": "Semantic markup and accessibility best practices."
+        "description": "HTML (HyperText Markup Language) is the standard markup language used to create and structure content on the web. It acts as the skeleton of any website, defining elements like headings, paragraphs, links, and images."
       },
       {
         "name": "CSS",
         "iconCode": "css",
-        "description": "Responsive layouts with Flexbox and Grid."
+        "description": "CSS (Cascading Style Sheets) is the language used to style and layout webpages. While HTML creates the structure, CSS controls the visual presentation, including colors, fonts, spacing, and responsive layouts."
       },
       {
         "name": "PostgreSQL",
         "iconCode": "postgresql",
-        "description": "Schema design, migrations, and role management."
-      },
-      {
-        "name": "Dart",
-        "iconCode": "dart",
-        "description": "Code language use to build Mobile Application "
+        "description": "PostgreSQL is an advanced, open-source object-relational database management system (RDBMS). It uses SQL to safely store and scale complex data workloads."
       },
       {
         "name": "Python",
         "iconCode": "python",
-        "description": "Programming language simpler syntax "
+        "description": "Python is a high-level, interpreted programming language known for its clear syntax and readability. It is widely used for web development, data science, artificial intelligence, and automation."
       },
       {
         "name": "JavaScript",
         "iconCode": "javascript",
-        "description": "Programming language widely used for web-development"
+        "description": "JavaScript is a high-level, interpreted programming language that powers dynamic behavior on webpages. Alongside HTML and CSS, it is a core technology of the World Wide Web, running natively inside web browsers."
       }
     ]
   },
@@ -62,7 +60,7 @@
     {
       "id": "06ef1b25-38dc-4ce1-a450-4474279dcb2b",
       "title": "Web-portfolio (non-React)",
-      "description": "In-progress system architecture description summary.",
+      "description": "Static HTML/CSS/JS portfolio with a PIN-gated admin panel and a console for\nediting content. Images upload to Vercel Blob through a small serverless\nfunction.",
       "stack": [
         {
           "name": "Html",
@@ -77,7 +75,7 @@
           "level": 100
         }
       ],
-      "liveUrl": "Development",
+      "liveUrl": "Released",
       "githubUrl": "Personal",
       "featured": true,
       "deploymentUrl": "https://lw-webportfolio.vercel.app/"
@@ -117,7 +115,8 @@
     "github": "https://github.com",
     "Indeed": "https://profile.indeed.com/p/christianjohnl-sjlzmvy",
     "Facebook": "https://www.facebook.com/christian.john.lague.2024/",
-    "websiteUrl": "https://laguereactportfolio-repo.vercel.app/"
+    "websiteUrl": "https://laguereactportfolio-repo.vercel.app/",
+    "resumeUrl": "https://w4huipym72sb25c6.public.blob.vercel-storage.com/1785330048589-Lague-Resume-cvMbvm5D0FlNO30nqnPRq9zj5NTgaV.png"
   },
   "settings": {
     "theme": "dark",
