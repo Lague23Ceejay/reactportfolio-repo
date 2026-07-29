@@ -70,31 +70,31 @@
         },
         {
           "name": "JavaScript",
-          "level": 59
+          "level": 100
         },
         {
           "name": "CSS",
-          "level": 93
+          "level": 100
         }
       ],
       "liveUrl": "Development",
       "githubUrl": "Personal",
-      "featured": false,
-      "deploymentUrl": "portfoliocjl-portfolio.vercel.app"
+      "featured": true,
+      "deploymentUrl": "https://lw-webportfolio.vercel.app/"
     }
   ],
   "gallery": [
     {
       "id": "6bde4bd4-7a88-45e7-8c89-4be3a4d5bd9d",
+      "imageUrl": "https://w4huipym72sb25c6.public.blob.vercel-storage.com/1783011777849-1000030183-EoyflHmlQ1COFeLvt61w7CukU0QVRj.webp",
       "title": "Untitled Layout Asset",
-      "category": "General Sandbox",
-      "imageUrl": "https://w4huipym72sb25c6.public.blob.vercel-storage.com/1783011777849-1000030183-EoyflHmlQ1COFeLvt61w7CukU0QVRj.webp"
+      "category": "General Sandbox"
     },
     {
       "id": "f8fd1306-c0e3-4c64-a870-c491cd07b367",
+      "imageUrl": "https://w4huipym72sb25c6.public.blob.vercel-storage.com/1783011816363-1000019699-N8k5ZqZAPtcUdnyKozSCa5IynIK37w.webp",
       "title": "Untitled Layout Asset",
-      "category": "General Sandbox",
-      "imageUrl": "https://w4huipym72sb25c6.public.blob.vercel-storage.com/1783011816363-1000019699-N8k5ZqZAPtcUdnyKozSCa5IynIK37w.webp"
+      "category": "General Sandbox"
     }
   ],
   "contact": {
@@ -109,14 +109,9 @@
     "pinHash": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
     "audioTracks": {
       "cosmic": "/audio/cosmic.mp3",
-      "creamy": "/audio/creamy.mp3",
-      "arctic": "/audio/arctic.mp3"
+      "arctic": "/audio/arctic.mp3",
+      "creamy": "/audio/creamy.mp3"
     }
-  },
-  "theme": {
-    "currentDimension": "cosmic",
-    "isTransitioning": false,
-    "isAudioMuted": false
   },
   "graduation": {
     "isEnabled": true,
