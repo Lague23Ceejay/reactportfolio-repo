@@ -198,6 +198,7 @@ export function Gallery(): JSX.Element {
         {/* wrapper must allow overflow so hovered card can grow beyond the fixed box */}
         <div style={{ width: STACK_SIZE, height: STACK_SIZE, overflow: 'visible' }}>
           <Stack
+            style={{ width: '100%', height: '100%' }}
             randomRotation
             sensitivity={180}
             sendToBackOnClick={false}
