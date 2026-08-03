@@ -1,10 +1,13 @@
 // src/App.tsx
-import React, { Suspense } from 'react';
+import React from 'react';
 import { usePortfolioData } from './hooks/usePortfolioData';
 import { usePortfolioStore } from './store/portfolioStore';
 import { Hero } from './components/sections/Hero';
 import { About } from './components/sections/About';
 import { Contact } from './components/sections/Contact';
+import { Projects } from './components/sections/Projects';
+import { Gallery } from './components/sections/Gallery';
+import { GraduationFeature } from './components/sections/GraduationFeature';
 import { AdminOverlay } from './components/admin/AdminOverlay';
 import { AnimatedBackground } from './components/ui/AnimatedBackground';
 import { ScrollReveal } from './components/ui/ScrollReveal';
@@ -18,18 +21,15 @@ import { SnowParticles } from './components/ui/SnowParticles';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import LoadingScreen from './components/ui/LoadingScreen';
 
-// ✅ Lazy imports
-const Projects = React.lazy(() =>
-  import('./components/sections/Projects').then(mod => ({ default: mod.Projects }))
-);
-
-const Gallery = React.lazy(() =>
-  import('./components/sections/Gallery').then(mod => ({ default: mod.Gallery }))
-);
-
-const GraduationFeature = React.lazy(() =>
-  import('./components/sections/GraduationFeature').then(mod => ({ default: mod.GraduationFeature }))
-);
+// Note: Projects, Gallery, and GraduationFeature used to be React.lazy()-loaded
+// behind a <Suspense> fallback. They're small (a few KB each) so the bundle-size
+// savings were negligible, but the fallback's tiny placeholder height meant the
+// page was much shorter than its real height for a moment after load. Anchor
+// links (#work, #contact, etc.) clicked during that window would jump to a
+// pixel position based on the *temporary* short layout — then, once the real
+// content mounted and the page grew taller, everything below shifted down
+// without the browser re-correcting the scroll position, landing the user on
+// the wrong section entirely. Importing them normally avoids that layout shift.
 
 export default function App() {
   usePortfolioData();
@@ -37,15 +37,12 @@ export default function App() {
   const { currentDimension, isTransitioning } = useThemeStore();
   const pack = dimensionPacks[currentDimension];
 
-  // root theme class: keep pack classes but also add explicit theme class for CSS variables
   const themeClass = currentDimension === 'arctic' ? 'theme-arctic' : currentDimension === 'creamy' ? 'theme-creamy' : 'theme-cosmic';
 
   return (
     <div className={`${themeClass} relative min-h-screen overflow-x-hidden ${pack.bgClass} ${pack.fontClass} ${pack.textPrimary}`}>
-      {/* Loading overlay shown while initial data loads */}
       {isLoading && <LoadingScreen />}
 
-      {/* Particles only for cosmic (kept tuned) */}
       {currentDimension === 'cosmic' && (
         <Particles
           particleColors={['#ffffff', '#f8fafc', '#cbd5e1']}
@@ -81,31 +78,21 @@ export default function App() {
 
             <ScrollReveal delay={0.15}>
               <div id="graduation">
-                <Suspense fallback={<div>Loading graduation…</div>}>
-                  <GraduationFeature />
-                </Suspense>
+                <GraduationFeature />
               </div>
             </ScrollReveal>
 
-            <ScrollReveal><div id="about"><About /></div></ScrollReveal>
+            {/* About, Projects ("work"), Gallery, and Contact each set their own
+                id on their root <section>, so no wrapper id is added here —
+                that previously created duplicate ids in the DOM (invalid HTML
+                and unreliable for anchor navigation / getElementById lookups). */}
+            <ScrollReveal><About /></ScrollReveal>
 
-            <ScrollReveal>
-              <div id="work">
-                <Suspense fallback={<div>Loading projects…</div>}>
-                  <Projects />
-                </Suspense>
-              </div>
-            </ScrollReveal>
+            <ScrollReveal><Projects /></ScrollReveal>
 
-            <ScrollReveal>
-              <div id="sandbox">
-                <Suspense fallback={<div>Loading gallery…</div>}>
-                  <Gallery />
-                </Suspense>
-              </div>
-            </ScrollReveal>
+            <ScrollReveal><Gallery /></ScrollReveal>
 
-            <ScrollReveal><div id="contact"><Contact /></div></ScrollReveal>
+            <ScrollReveal><Contact /></ScrollReveal>
           </main>
 
           <Footer />
@@ -113,7 +100,6 @@ export default function App() {
       </ErrorBoundary>
 
       <CircularSwitcher />
-      {/* Single cursor manager: DimensionCursor controls which cursor variant is rendered */}
       <DimensionCursor />
       <AdminOverlay />
     </div>

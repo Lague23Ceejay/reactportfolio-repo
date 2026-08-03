@@ -11,8 +11,6 @@ export function About() {
   const { currentDimension } = useThemeStore();
   const pack = dimensionPacks[currentDimension];
 
-  if (!data) return null;
-
   return (
     <section
       className={`space-y-8 py-10 rounded-3xl px-4 sm:px-6 transition-colors duration-500 ${
@@ -40,33 +38,44 @@ export function About() {
         </div>
       </ScrollReveal>
 
-      {/* GRID DISPLAY BIOGRAPHY — reveal from up */}
-      <ScrollReveal direction="up" delay={0.06}>
-        <div className="grid md:grid-cols-5 gap-8 items-start">
-          <div
-            dangerouslySetInnerHTML={{ __html: data.bio }}
-            className={`md:col-span-5 leading-relaxed text-base sm:text-lg font-normal space-y-4 transition-colors duration-500 ${pack.textSecondary}`}
-          />
-        </div>
-      </ScrollReveal>
+      {/* Section id/shell above always mounts immediately (so anchor nav and
+          scroll-spy always have a valid target), but the data-dependent
+          content below waits for the portfolio fetch — same pattern as the
+          layout-shift fix for Projects/Gallery, just at the component level
+          instead of the App-level lazy-loading level. */}
+      {!data ? (
+        <div className={`text-sm font-mono ${pack.textSecondary}`}>Loading…</div>
+      ) : (
+        <>
+          {/* GRID DISPLAY BIOGRAPHY — reveal from up */}
+          <ScrollReveal direction="up" delay={0.06}>
+            <div className="grid md:grid-cols-5 gap-8 items-start">
+              <div
+                dangerouslySetInnerHTML={{ __html: data.bio }}
+                className={`md:col-span-5 leading-relaxed text-base sm:text-lg font-normal space-y-4 transition-colors duration-500 ${pack.textSecondary}`}
+              />
+            </div>
+          </ScrollReveal>
 
-      {/* SKILLS CARD DECK — staggered right reveal */}
-      <RevealGroup direction="right" baseDelay={0.1} step={0.05}>
-        <div className="w-full pt-4 relative">
-          <span className="text-[10px] font-mono tracking-widest uppercase opacity-40 mb-2 block">
-            🫳 • Click stack to extract data profiles
-          </span>
+          {/* SKILLS CARD DECK — staggered right reveal */}
+          <RevealGroup direction="right" baseDelay={0.1} step={0.05}>
+            <div className="w-full pt-4 relative">
+              <span className="text-[10px] font-mono tracking-widest uppercase opacity-40 mb-2 block">
+                🫳 • Click stack to extract data profiles
+              </span>
 
-          {/* Restore looping CardSwap, but mark cards with cursor-target */}
-          <CardSwap
-            skills={(data.skills || []).map(skill => ({
-              ...skill,
-              // 👇 CardSwapDeck should render this class on each card
-              className: 'cursor-target group',
-            }))}
-          />
-        </div>
-      </RevealGroup>
+              {/* Restore looping CardSwap, but mark cards with cursor-target */}
+              <CardSwap
+                skills={(data.skills || []).map(skill => ({
+                  ...skill,
+                  // 👇 CardSwapDeck should render this class on each card
+                  className: 'cursor-target group',
+                }))}
+              />
+            </div>
+          </RevealGroup>
+        </>
+      )}
     </section>
   );
 }
