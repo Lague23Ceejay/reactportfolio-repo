@@ -1,17 +1,17 @@
 // src/components/sections/Projects.tsx
 
+import { useState } from 'react';
 import { usePortfolioStore } from '../../store/portfolioStore';
 import { useThemeStore, dimensionPacks } from '../../store/themeStore';
 import { SpotlightCard } from '../ui/SpotlightCard';
+import { ProjectDetailModal } from './ProjectDetailModal';
+import type { Project } from '../../types/portfolio';
 
 export function Projects() {
-  /* ==========================================================================
-     1. GLOBAL RUNTIME & STATE CONTROLLER SUBSCRIPTIONS
-     ========================================================================== */
   const projects = usePortfolioStore((state) => state.data?.projects || []);
   const { currentDimension } = useThemeStore();
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
-  // Extract your current contrast utility style pack classes dynamically
   const pack = dimensionPacks[currentDimension];
 
   return (
@@ -25,7 +25,6 @@ export function Projects() {
       }`}
       id="work"
     >
-      {/* SECTION HEADER BLOCK */}
       <div className="flex items-center gap-4">
         <h2
           className={`text-2xl sm:text-3xl font-bold tracking-tight transition-colors duration-500 ${pack.textPrimary}`}
@@ -39,21 +38,14 @@ export function Projects() {
         />
       </div>
 
-      {/* CARD DESKTOP DISPATCH RENDERING MATRIX */}
       <div className="grid sm:grid-cols-2 gap-6">
         {projects.map((project) => {
-          /**
-           * Normalize stack format:
-           * - Accept legacy strings like "Html:100"
-           * - Accept structured objects { name, level }
-           */
           const stackItems = (project.stack || []).map((s: any) => {
             if (typeof s === 'string') {
               const [name = 'Tech', val = '0'] = s.split(':');
               const level = Number.parseInt(val.trim() || '0', 10) || 0;
               return { name: name.trim(), level };
             }
-            // assume already structured
             return {
               name: (s.name as string) || 'Tech',
               level: typeof s.level === 'number' ? s.level : Number(s.level) || 0
@@ -65,10 +57,8 @@ export function Projects() {
               ? Math.round(stackItems.reduce((acc, item) => acc + item.level, 0) / stackItems.length)
               : 0;
 
-          // Precompute the repo link once so the JSX below stays a plain, valid anchor tag
           const repoUrl = project.sourceCodeUrl || project.githubUrl || '';
 
-          // Determine card background and border styling based on the active dimension
           const cardLayoutClass =
             currentDimension === 'creamy'
               ? 'bg-white border-stone-200/80 text-stone-900 shadow-md hover:border-rose-400/40'
@@ -79,7 +69,6 @@ export function Projects() {
               key={project.id}
               className={`group transition-all duration-300 p-6 flex flex-col justify-between space-y-6 rounded-2xl border ${cardLayoutClass}`}
             >
-              {/* TOP BLOCK: CAPTION LABELS & METADATA DESCRIPTION */}
               <div className="space-y-3">
                 <div className="flex items-start justify-between gap-4">
                   <div className="space-y-1.5">
@@ -123,11 +112,9 @@ export function Projects() {
                 </p>
               </div>
 
-              {/* BOTTOM BLOCK: METRIC STACK SLIDERS & LIVE REDIRECT LINKS */}
               <div className="space-y-3 pt-2">
                 {stackItems.length > 0 && (
                   <>
-                    {/* Skill pills */}
                     <div className="flex flex-wrap gap-1.5">
                       {stackItems.map((item, idx) => (
                         <span
@@ -143,7 +130,6 @@ export function Projects() {
                       ))}
                     </div>
 
-                    {/* PROGRESS BAR TRACK MODULE CONTAINER */}
                     <div className="space-y-1.5">
                       <div
                         className={`h-1.5 w-full rounded-full overflow-hidden flex border ${
@@ -157,7 +143,6 @@ export function Projects() {
                           const activeColors = currentDimension === 'creamy' ? creamyColors : darkColors;
                           const currentColor = activeColors[barIdx % activeColors.length];
 
-                          // Each bar represents the skill's percentage (0-100)
                           const barWidth = `${Math.max(0, Math.min(100, item.level))}%`;
 
                           return (
@@ -177,44 +162,52 @@ export function Projects() {
                   </>
                 )}
 
-                {/* REDIRECT ACTION ANCHOR LINKS FOOTER */}
-                {(project.deploymentUrl || repoUrl) && (
-                  <div
-                    className={`flex gap-4 pt-3 border-t text-xs font-mono font-bold transition-colors ${
-                      currentDimension === 'creamy' ? 'border-stone-200' : 'border-zinc-900/60'
+                <div
+                  className={`flex gap-4 pt-3 border-t text-xs font-mono font-bold transition-colors ${
+                    currentDimension === 'creamy' ? 'border-stone-200' : 'border-zinc-900/60'
+                  }`}
+                >
+                  {project.deploymentUrl && (
+                    <a href={project.deploymentUrl.startsWith('http') ? project.deploymentUrl : `https://${project.deploymentUrl}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className={`cursor-pointer transition-colors cursor-target ${
+                        currentDimension === 'creamy' ? 'text-rose-600 hover:text-rose-700 underline' : 'text-emerald-400 hover:underline'
+                      }`}
+                    >
+                      Live Demo →
+                    </a>
+                  )}
+                  {repoUrl && (
+                    <a href={repoUrl.startsWith('http') ? repoUrl : `https://${repoUrl}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className={`cursor-pointer transition-colors ${
+                        currentDimension === 'creamy' ? 'text-stone-500 hover:text-stone-900' : 'text-zinc-500 hover:text-zinc-300'
+                      }`}
+                    >
+                      Source →
+                    </a>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => setSelectedProject(project)}
+                    className={`cursor-pointer cursor-target transition-colors ml-auto ${
+                      currentDimension === 'creamy' ? 'text-stone-700 hover:text-stone-900' : 'text-zinc-300 hover:text-zinc-100'
                     }`}
                   >
-                    {project.deploymentUrl && (
-                      <a
-                        href={project.deploymentUrl.startsWith('http') ? project.deploymentUrl : `https://${project.deploymentUrl}`}
-                        target="_blank"
-                        rel="noreferrer"
-                        className={`cursor-pointer transition-colors cursor-target ${
-                          currentDimension === 'creamy' ? 'text-rose-600 hover:text-rose-700 underline' : 'text-emerald-400 hover:underline'
-                        }`}
-                      >
-                        Live Demo →
-                      </a>
-                    )}
-                    {repoUrl && (
-                      <a
-                        href={repoUrl.startsWith('http') ? repoUrl : `https://${repoUrl}`}
-                        target="_blank"
-                        rel="noreferrer"
-                        className={`cursor-pointer transition-colors ${
-                          currentDimension === 'creamy' ? 'text-stone-500 hover:text-stone-900' : 'text-zinc-500 hover:text-zinc-300'
-                        }`}
-                      >
-                        Source →
-                      </a>
-                    )}
-                  </div>
-                )}
+                    Details →
+                  </button>
+                </div>
               </div>
             </SpotlightCard>
           );
         })}
       </div>
+
+      {selectedProject && (
+        <ProjectDetailModal project={selectedProject} onClose={() => setSelectedProject(null)} />
+      )}
     </section>
   );
 }

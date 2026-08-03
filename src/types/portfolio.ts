@@ -30,6 +30,9 @@ export type Project = {
   id?: string | number;
   title: string;
   description?: string;
+  longDescription?: string;
+  screenshots?: string[];
+  videoUrl?: string;
   url?: string;
   repo?: string;
   tags?: string[];
@@ -66,8 +69,8 @@ export type PortfolioData = {
   contact: {
     email?: string;
     github?: string;
-    Indeed?: string;
-    Facebook?: string;
+    linkedin?: string;
+    upwork?: string;
     websiteUrl?: string;
     resumeUrl?: string;
   };

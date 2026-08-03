@@ -8,12 +8,14 @@ export const useImageUpload = () => {
   const [uploadError, setUploadError] = useState<string | null>(null);
 
   const uploadImage = async (file: File, maxWidth = 1200, quality = 0.8): Promise<string | null> => {
-    // 🚀 FIXED ARCHITECTURE: Support both standard web graphics AND loopable background audio tracks
+    // 🚀 FIXED ARCHITECTURE: Support standard web graphics, loopable background
+    // audio tracks, and short project demo/screen-recording video clips.
     const isImage = file.type.startsWith('image/');
     const isAudio = file.type.startsWith('audio/');
+    const isVideo = file.type.startsWith('video/');
 
-    if (!isImage && !isAudio) {
-      setUploadError('Invalid File Protocol: Provide a supported image or audio asset track.');
+    if (!isImage && !isAudio && !isVideo) {
+      setUploadError('Invalid File Protocol: Provide a supported image, audio, or video asset track.');
       return null;
     }
 
@@ -28,27 +30,32 @@ export const useImageUpload = () => {
       const cleanName = file.name.replace(/\.[^/.]+$/, "").replace(/[^a-zA-Z0-9]/g, "-");
 
       /* ==========================================================================
-         A. CONDITIONAL ENGESTION ROUTING FOR GRAPHICS VS SOUND
+         A. CONDITIONAL ENGESTION ROUTING FOR GRAPHICS VS SOUND VS VIDEO
          ========================================================================== */
       if (isImage) {
         // Run your lightweight browser canvas compression loop to protect your serverless limits
         binaryPayload = await optimizeImage(file, maxWidth, quality);
         filename = `${Date.now()}-${cleanName}.webp`;
-      } else {
+      } else if (isAudio) {
         // For audio (.mp3, .ogg), skip image optimization completely and use raw file body binaries
         binaryPayload = file;
         filename = `audio-${Date.now()}-${cleanName}.${file.name.split('.').pop() || 'mp3'}`;
+      } else {
+        // Video (.mp4, .webm, .mov screen recordings) — stream raw, no browser-side
+        // re-encoding (that requires much heavier tooling than a canvas resize).
+        binaryPayload = file;
+        filename = `video-${Date.now()}-${cleanName}.${file.name.split('.').pop() || 'mp4'}`;
       }
 
       /* ==========================================================================
          B. UNIFIED CDN STREAM INGESTION LIFECYCLE
          ========================================================================== */
-      // Your backend proxy API route streams both image blobs and audio payloads effortlessly
+      // Your backend proxy API route streams image, audio, and video payloads effortlessly
       const response = await fetch('/api/upload-image', {
         method: 'POST',
         headers: {
           'x-filename': filename,
-          'Content-Type': isImage ? 'image/webp' : file.type || 'audio/mpeg',
+          'Content-Type': isImage ? 'image/webp' : (file.type || (isAudio ? 'audio/mpeg' : 'video/mp4')),
         },
         body: binaryPayload, // Streams the correct binary context straight up to Vercel Blob
       });

@@ -1,8 +1,12 @@
 // src/components/admin/AdminProjectsManager.tsx
 import { usePortfolioStore } from '../../store/portfolioStore';
+import { useImageUpload } from '../../hooks/useImageUpload';
+
+const MAX_VIDEO_BYTES = 20 * 1024 * 1024; // 20MB — keep serverless upload requests small & fast
 
 export function AdminProjectsManager() {
   const { draft, updateDraft } = usePortfolioStore();
+  const { uploadImage, isUploading } = useImageUpload();
 
   if (!draft) return null;
 
@@ -239,6 +243,135 @@ export function AdminProjectsManager() {
                 </div>
               </div>
 
+              {/* Expanded detail view content: long description, screenshots, demo video —
+                  all of this feeds the public "Details" modal on the project card. */}
+              <div className="bg-zinc-900/40 p-4 border border-zinc-800/60 rounded-xl space-y-4">
+                <span className="text-xs font-mono font-medium text-zinc-400 block pb-2 border-b border-zinc-800/40">
+                  Expanded Project Detail View
+                </span>
+
+                <div className="space-y-1">
+                  <label className="text-[11px] font-mono text-zinc-500">
+                    Full Write-up (shown in the "Details" popup, not on the card itself)
+                  </label>
+                  <textarea
+                    rows={4}
+                    value={project.longDescription || ''}
+                    placeholder="A longer, in-depth write-up: what problem this solves, technical decisions, challenges, etc."
+                    onChange={(e) =>
+                      updateDraft((d) => {
+                        d.projects[index].longDescription = e.target.value;
+                      })
+                    }
+                    className="w-full bg-zinc-950 border border-zinc-800 p-2 rounded-xl text-sm outline-none resize-none focus:border-emerald-500/30 text-zinc-100 leading-relaxed placeholder-zinc-600"
+                  />
+                </div>
+
+                {/* Screenshots */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="text-[11px] font-mono text-zinc-500">Screenshots</label>
+                    <label className={`text-[10px] font-mono bg-zinc-800 hover:bg-zinc-700 text-zinc-300 px-2 py-1 rounded border border-zinc-700/60 transition-colors cursor-pointer ${isUploading ? 'opacity-50 pointer-events-none' : ''}`}>
+                      {isUploading ? 'Uploading...' : '+ Add Screenshot'}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        disabled={isUploading}
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          e.target.value = '';
+                          if (!file) return;
+                          const url = await uploadImage(file, 1600, 0.82);
+                          if (url) {
+                            updateDraft((d) => {
+                              const proj = d.projects[index];
+                              proj.screenshots = [...(proj.screenshots || []), url];
+                            });
+                          } else {
+                            alert('Screenshot upload failed. Please try again.');
+                          }
+                        }}
+                      />
+                    </label>
+                  </div>
+
+                  {project.screenshots && project.screenshots.length > 0 ? (
+                    <div className="flex flex-wrap gap-2">
+                      {project.screenshots.map((shot, sIdx) => (
+                        <div key={`${shot}-${sIdx}`} className="relative w-20 h-14 rounded-lg overflow-hidden border border-zinc-800 group/shot">
+                          <img src={shot} alt={`Screenshot ${sIdx + 1}`} className="w-full h-full object-cover" />
+                          <button
+                            type="button"
+                            onClick={() =>
+                              updateDraft((d) => {
+                                d.projects[index].screenshots?.splice(sIdx, 1);
+                              })
+                            }
+                            className="absolute inset-0 bg-black/60 opacity-0 group-hover/shot:opacity-100 flex items-center justify-center text-red-400 text-xs font-mono transition-opacity"
+                            aria-label={`Remove screenshot ${sIdx + 1}`}
+                          >
+                            ✕ Remove
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-[11px] text-zinc-600 font-mono">No screenshots added yet.</p>
+                  )}
+                </div>
+
+                {/* Demo / screen-recording video */}
+                <div className="space-y-2">
+                  <label className="text-[11px] font-mono text-zinc-500 block">
+                    Demo / Screen Recording Video (max 20MB)
+                  </label>
+                  {project.videoUrl ? (
+                    <div className="flex items-center gap-3">
+                      <video src={project.videoUrl} className="w-28 h-16 rounded-lg border border-zinc-800 bg-black object-cover" muted />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          updateDraft((d) => {
+                            d.projects[index].videoUrl = undefined;
+                          })
+                        }
+                        className="text-[10px] font-mono text-zinc-500 hover:text-red-400 px-2 py-1 rounded border border-zinc-800 hover:border-red-500/40 transition-colors cursor-pointer"
+                      >
+                        Remove Video
+                      </button>
+                    </div>
+                  ) : (
+                    <label className={`inline-flex items-center justify-center bg-zinc-800 hover:bg-zinc-700 text-zinc-100 px-3 py-2 rounded-lg text-xs font-mono border border-zinc-700 cursor-pointer ${isUploading ? 'opacity-50 pointer-events-none' : ''}`}>
+                      {isUploading ? 'Uploading...' : 'Upload Video'}
+                      <input
+                        type="file"
+                        accept="video/*"
+                        className="hidden"
+                        disabled={isUploading}
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          e.target.value = '';
+                          if (!file) return;
+                          if (file.size > MAX_VIDEO_BYTES) {
+                            alert('That video is too large (max 20MB). Try a shorter clip or compress it first.');
+                            return;
+                          }
+                          const url = await uploadImage(file);
+                          if (url) {
+                            updateDraft((d) => {
+                              d.projects[index].videoUrl = url;
+                            });
+                          } else {
+                            alert('Video upload failed. Please try again.');
+                          }
+                        }}
+                      />
+                    </label>
+                  )}
+                </div>
+              </div>
+
               {/* Dynamic Real-Time Sliders Stack Dashboard Area */}
               <div className="bg-zinc-900/40 p-4 border border-zinc-800/60 rounded-xl space-y-4">
                 <div className="flex justify-between items-center pb-2 border-b border-zinc-800/40">
@@ -287,7 +420,7 @@ export function AdminProjectsManager() {
                           value={item.value}
                           onChange={(e) =>
                             updateDraft((d) => {
-                             const proj = d.projects[index];
+                              const proj = d.projects[index];
                               if (proj.stack) proj.stack[tIdx] = { name: item.name, level: parseInt(e.target.value, 10) };
                             })
                           }
@@ -300,7 +433,7 @@ export function AdminProjectsManager() {
                           type="button"
                           onClick={() =>
                             updateDraft((d) => {
-                             d.projects[index].stack?.splice(tIdx, 1);
+                              d.projects[index].stack?.splice(tIdx, 1);
                             })
                           }
                           className="text-zinc-600 hover:text-red-400 text-xs font-mono px-1 ml-1 cursor-pointer"
