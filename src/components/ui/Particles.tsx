@@ -280,6 +280,7 @@ export const Particles: React.FC<ParticlesProps> = ({
   return (
     <div 
       ref={containerRef} 
+      className={className}
       style={{ 
         position: 'fixed',
         top: 0,

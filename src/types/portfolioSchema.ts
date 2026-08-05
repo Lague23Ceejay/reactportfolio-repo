@@ -54,8 +54,8 @@ export const PortfolioSchema = z.object({
   contact: z.object({
     email: z.string().optional(),
     github: z.string().optional(),
-    linkedin: z.string().optional(),
-    upwork: z.string().optional(),
+    indeed: z.string().optional(),
+    facebook: z.string().optional(),
     websiteUrl: z.string().optional(),
     resumeUrl: z.string().optional(),
   }),

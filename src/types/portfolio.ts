@@ -69,8 +69,8 @@ export type PortfolioData = {
   contact: {
     email?: string;
     github?: string;
-    linkedin?: string;
-    upwork?: string;
+    indeed?: string;
+    facebook?: string;
     websiteUrl?: string;
     resumeUrl?: string;
   };

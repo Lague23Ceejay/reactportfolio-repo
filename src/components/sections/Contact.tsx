@@ -100,13 +100,13 @@ export function Contact() {
                         : 'text-zinc-300 hover:text-white cursor-target'
                     }`}
                   >
-                    ↳ Fiverr
+                    ↳ Github
                   </a>
                 )}
 
-                {data.linkedin && (
+                {data.indeed && (
                   <a
-                    href={data.linkedin}
+                    href={data.indeed}
                     target="_blank"
                     rel="noreferrer"
                     className={`transition-colors font-medium ${
@@ -115,13 +115,13 @@ export function Contact() {
                         : 'text-zinc-300 hover:text-white cursor-target'
                     }`}
                   >
-                    ↳ LinkedIn
+                    ↳ Indeed
                   </a>
                 )}
 
-                {data.upwork && (
+                {data.facebook && (
                   <a
-                    href={data.upwork}
+                    href={data.facebook}
                     target="_blank"
                     rel="noreferrer"
                     className={`transition-colors font-medium ${
@@ -130,9 +130,10 @@ export function Contact() {
                         : 'text-zinc-300 hover:text-white cursor-target'
                     }`}
                   >
-                    ↳ Upwork
+                    ↳ Facebook
                   </a>
                 )}
+
               </div>
             </RevealGroup>
           </div>

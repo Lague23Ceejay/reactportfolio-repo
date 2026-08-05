@@ -1,5 +1,4 @@
 // src/App.tsx
-import React from 'react';
 import { usePortfolioData } from './hooks/usePortfolioData';
 import { usePortfolioStore } from './store/portfolioStore';
 import { Hero } from './components/sections/Hero';
@@ -37,12 +36,15 @@ export default function App() {
   const { currentDimension, isTransitioning } = useThemeStore();
   const pack = dimensionPacks[currentDimension];
 
+  // root theme class: keep pack classes but also add explicit theme class for CSS variables
   const themeClass = currentDimension === 'arctic' ? 'theme-arctic' : currentDimension === 'creamy' ? 'theme-creamy' : 'theme-cosmic';
 
   return (
     <div className={`${themeClass} relative min-h-screen overflow-x-hidden ${pack.bgClass} ${pack.fontClass} ${pack.textPrimary}`}>
+      {/* Loading overlay shown while initial data loads */}
       {isLoading && <LoadingScreen />}
 
+      {/* Particles only for cosmic (kept tuned) */}
       {currentDimension === 'cosmic' && (
         <Particles
           particleColors={['#ffffff', '#f8fafc', '#cbd5e1']}
@@ -100,6 +102,7 @@ export default function App() {
       </ErrorBoundary>
 
       <CircularSwitcher />
+      {/* Single cursor manager: DimensionCursor controls which cursor variant is rendered */}
       <DimensionCursor />
       <AdminOverlay />
     </div>

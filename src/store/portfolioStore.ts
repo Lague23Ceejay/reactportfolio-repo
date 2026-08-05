@@ -29,11 +29,26 @@ interface PortfolioState {
 }
 
 export const usePortfolioStore = create<PortfolioState>((set) => {
+  const normalizeContactData = (contact?: PortfolioData['contact']) => {
+    const legacyContact = contact as (PortfolioData['contact'] & { Indeed?: string; Facebook?: string }) | undefined;
+
+    return {
+      ...contact,
+      email: contact?.email ?? '',
+      github: contact?.github ?? '',
+      indeed: contact?.indeed ?? legacyContact?.Indeed ?? '',
+      facebook: contact?.facebook ?? legacyContact?.Facebook ?? '',
+      websiteUrl: contact?.websiteUrl ?? '',
+      resumeUrl: contact?.resumeUrl ?? ''
+    };
+  };
+
   const normalizePortfolioData = (data: PortfolioData | null): PortfolioData | null => {
     if (!data) return null;
 
     return {
       ...data,
+      contact: normalizeContactData(data.contact),
       gallery: Array.isArray(data.gallery) ? data.gallery : [],
       categories: Array.isArray(data.categories) && data.categories.length > 0 ? data.categories : ['General']
     } as PortfolioData;
@@ -48,7 +63,7 @@ export const usePortfolioStore = create<PortfolioState>((set) => {
       projects: [],
       gallery: [],
       categories: ['General'], // initialize categories
-      contact: { email: '', github: '', Indeed: '', Facebook: '', websiteUrl: '' },
+      contact: { email: '', github: '', indeed: '', facebook: '', websiteUrl: '' },
       settings: { theme: 'cosmic', pinHash: '' }
     } as PortfolioData;
   };
@@ -61,12 +76,16 @@ export const usePortfolioStore = create<PortfolioState>((set) => {
     isLoading: true,
     error: null,
 
-    setPortfolioData: (data) =>
-      set({
-        data,
-        draft: structuredClone(data),
+    setPortfolioData: (data) => {
+      const normalized = normalizePortfolioData(data);
+      const safeData = normalized ?? ensureData(data);
+
+      return set({
+        data: safeData,
+        draft: structuredClone(safeData),
         isLoading: false
-      }),
+      });
+    },
 
     updateDraft: (updater) =>
       set((state) => {
