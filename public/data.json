@@ -79,6 +79,58 @@
       "githubUrl": "Personal",
       "featured": true,
       "deploymentUrl": "https://lw-webportfolio.vercel.app/"
+    },
+    {
+      "id": "83a0b41f-7f4c-447c-b456-a6ee21939313",
+      "title": "GG Gadgets — Inventory & Ordering System",
+      "description": "A full-stack e-commerce platform for a gadgets/electronics retailer: a public storefront for\nbrowsing and checkout, and a role-gated admin panel for managing products, orders, customers,\ninventory, staff accounts, and homepage promotions.",
+      "longDescription": "Built as an academic capstone/thesis project, structured with production-grade practices:\nrole-based access control, audit logging, database-level data integrity (triggers, stored\nprocedures, constraints), and a real three-service cloud deployment.\n\n## 1. System Overview\n\n**Storefront (public):**\n- Curated homepage — featured \"Best Sellers\" and \"On Sale\" product showcases, plus an\n  admin-managed promotional events carousel (banner images, discount callouts, e.g. \"Weekend\n  Deal — Save up to 60%\")\n- Full shop catalog with search and category filtering\n- Product detail pages with specifications, images, and sale pricing\n- Cart with out-of-stock protection (items with zero stock are greyed out and block checkout)\n- Guest checkout (no account required) — returning customers are recognized by email\n- Guest order tracking via order number + email (no login needed)\n\n**Admin panel (role-gated):**\n- Three roles with different permission scopes: **Super Admin**, **Store Manager**,\n  **Fulfillment Specialist**\n- Products: full CRUD, multi-image uploads with captions, specifications list, flat or\n  percentage-based discounts, \"featured\" flag for homepage placement\n- Categories, Customers: full CRUD\n- Orders: view, update status (pending/completed/cancelled), manage line items, see customer\n  contact info for fulfillment\n- Inventory: stock levels, manual stock adjustment logs with reasons, automatic audit trail on\n  every stock change (order placed, order cancelled, manual adjustment)\n- Homepage promotional events: create/pause/archive banner events shown in the storefront\n  carousel\n- Staff accounts: create, edit, archive staff logins (Super Admin only)\n- Activity log: audit trail of staff actions across the admin panel (Super Admin only)\n- Dark/light theme toggle throughout, fully responsive down to mobile viewports\n\n**Role permissions summary:**\n\n| Capability | Super Admin | Store Manager | Fulfillment |\n|---|:---:|:---:|:---:|\n| Dashboard, Orders (view), Inventory | ✅ | ✅ | ✅ |\n| Update order status | ✅ | ✅ | ✅ |\n| Add/remove order line items, archive orders | ✅ | ✅ | ❌ |\n| Products, Categories, Customers (CRUD) | ✅ | ✅ | ❌ |\n| Homepage promo events | ✅ | ✅ | ❌ |\n| Staff accounts (create/edit/archive) | ✅ | ❌ | ❌ |\n| Activity log | ✅ | ❌ | ❌ |",
+      "screenshots": [
+        "https://w4huipym72sb25c6.public.blob.vercel-storage.com/1786359254616-Screenshot-2026-08-09-161452-lQVT1IvTzqrW0hF7oKkrfWi4CZMn34.webp",
+        "https://w4huipym72sb25c6.public.blob.vercel-storage.com/1786359273181-Screenshot-2026-08-09-162339-1ix1KCM2hGF7vf2m2T1DQXJBY7DVl5.webp"
+      ],
+      "stack": [
+        {
+          "name": "React",
+          "level": 100
+        },
+        {
+          "name": "TypeScript",
+          "level": 100
+        },
+        {
+          "name": "Tailwind",
+          "level": 100
+        },
+        {
+          "name": "JavaScript(backend)",
+          "level": 100
+        },
+        {
+          "name": "PosgreSQL(Database)",
+          "level": 100
+        },
+        {
+          "name": "Vercel(frontendliveservice)",
+          "level": 100
+        },
+        {
+          "name": "Node.js(backendserver)",
+          "level": 100
+        },
+        {
+          "name": "Vite",
+          "level": 100
+        }
+      ],
+      "liveUrl": "Development",
+      "githubUrl": "Personal",
+      "sourceCodeUrl": "https://github.com/Lague23Ceejay/GG_Gadgets.git",
+      "featured": false,
+      "deploymentUrl": "https://gg-gadgets.vercel.app/",
+      "frameworksArray": [
+        "Expressjs."
+      ]
     }
   ],
   "gallery": [
@@ -113,8 +165,8 @@
   "contact": {
     "email": "laguejayjay@gmail.com",
     "github": "https://github.com",
-    "Indeed": "https://profile.indeed.com/p/christianjohnl-sjlzmvy",
-    "Facebook": "https://www.facebook.com/christian.john.lague.2024/",
+    "indeed": "https://profile.indeed.com/p/christianjohnl-sjlzmvy",
+    "facebook": "https://www.facebook.com/christian.john.lague.2024/",
     "websiteUrl": "https://laguereactportfolio-repo.vercel.app/",
     "resumeUrl": "https://w4huipym72sb25c6.public.blob.vercel-storage.com/1785330048589-Lague-Resume-cvMbvm5D0FlNO30nqnPRq9zj5NTgaV.png"
   },
