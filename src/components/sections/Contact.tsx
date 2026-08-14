@@ -82,7 +82,7 @@ export function Contact() {
                   href={`mailto:${data.email}`}
                   className={`font-bold transition-all ${
                     currentDimension === 'creamy'
-                      ? 'text-rose-600 hover:text-rose-700 underline cursor-target'
+                      ? 'text-blue-400 hover:text-rose-700 underline cursor-target'
                       : 'text-emerald-400 hover:underline cursor-target'
                   }`}
                 >

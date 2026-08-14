@@ -79,7 +79,7 @@ export function Projects() {
                       <span
                         className={`text-[10px] font-mono px-2 py-0.5 rounded border ${
                           currentDimension === 'creamy'
-                            ? 'text-rose-600 bg-rose-50 border-rose-200/40'
+                            ? 'text-blue-4  00 bg-rose-50 border-rose-200/40'
                             : 'text-emerald-400/80 bg-emerald-500/5 border-emerald-500/10'
                         }`}
                       >
@@ -89,7 +89,7 @@ export function Projects() {
 
                     <h3
                       className={`text-xl font-bold tracking-tight transition-colors pt-1 ${pack.textPrimary} ${
-                        currentDimension === 'creamy' ? 'group-hover:text-rose-600' : 'group-hover:text-emerald-400'
+                        currentDimension === 'creamy' ? 'group-hover:text-blue-400' : 'group-hover:text-emerald-400'
                       }`}
                     >
                       {project.title}
@@ -172,7 +172,7 @@ export function Projects() {
                       target="_blank"
                       rel="noreferrer"
                       className={`cursor-pointer transition-colors cursor-target ${
-                        currentDimension === 'creamy' ? 'text-rose-600 hover:text-rose-700 underline' : 'text-emerald-400 hover:underline'
+                        currentDimension === 'creamy' ? 'text-blue-400 hover:text-rose-700 underline' : 'text-emerald-400 hover:underline'
                       }`}
                     >
                       Live Demo →

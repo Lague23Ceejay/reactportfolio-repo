@@ -29,7 +29,7 @@ export function GraduationFeature() {
   const cardStyles = {
     cosmic: { accentText: 'text-emerald-400', badgeBg: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' },
     arctic: { accentText: 'text-cyan-400', badgeBg: 'bg-[#B069DB]/10 text-fuchsia-300 border-[#B069DB]/30' },
-    creamy: { accentText: 'text-rose-500', badgeBg: 'bg-[#FFEE8C] text-stone-900 border-stone-300' }
+    creamy: { accentText: 'text-blue-500', badgeBg: 'bg-[#FFEE8C] text-stone-900 border-stone-300' }
   }[currentDimension] || { accentText: 'text-emerald-400', badgeBg: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' };
 
   return (
@@ -57,7 +57,7 @@ export function GraduationFeature() {
                 {decodeMessage(graduation.message || '')}
               </pre>
               <p className={`text-sm italic font-medium flex items-center gap-1.5 ${pack.textSecondary}`}>
-                <FiHeart className="inline text-rose-500" /> Congratulations on Graduation!
+                <FiHeart className="inline text-blue-500" /> Congratulations to me!
               </p>
             </div>
           </div>
