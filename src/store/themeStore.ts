@@ -37,7 +37,7 @@ import type { DimensionType, ThemePack } from '../types/theme';
     accentClass: 'border-[#5e79c4] text-stone-900 shadow-[0_4px_20px_rgba(255,238,140,0.45)]',
     cardClass: 'bg-white border-stone-200/80 shadow-[0_12px_40px_rgba(120,110,100,0.06)] backdrop-blur-sm',
     fontClass: 'font-sans tracking-normal',
-    cursor: { type: 'snowflake', color: '#e11d48', glow: '0 4px 14px rgba(225,29,72,0.2)', trail: false },
+    cursor: { type: 'swarm', color: '#ffffff', glow: '0 4px 14px rgba(255,255,255,0.35)', trail: true },
     motionSpeed: 1.2,
     ease: 'elastic.out(1, 0.75)',
     textPrimary: 'text-stone-900 font-extrabold', 

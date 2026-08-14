@@ -12,7 +12,7 @@ export interface ThemePack {
   cardClass: string;
   fontClass: string;
   cursor: {
-    type: 'line' | 'target' | 'snowflake';
+    type: 'line' | 'target' | 'snowflake' | 'swarm';
     color: string;
     glow: string;
     trail: boolean;

@@ -12,12 +12,10 @@ export function usePortfolioData() {
         setLoading(true);
 
         /* ==========================================================================
-           🚀 SENIOR DEV FIX: EDGE CDN CACHE BUSTER OVERRIDE
+           🚀 Live content endpoint — reads straight from Blob storage, no rebuild
+           required. Cache headers are still set defensively client-side.
            ========================================================================== */
-        // Appending a unique timestamp string (?t=171829...) at the end of the file path 
-        // forces Vercel's global CDN network and the browser to skip their local 
-        // cache memory and load the freshest, newly committed data straight from the disk.
-        const freshUrl = `/data.json?t=${Date.now()}`;
+        const freshUrl = `/api/get-content?t=${Date.now()}`;
 
         const response = await fetch(freshUrl, {
           headers: {

@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Local-only dev content (emulated /api storage, do not commit)
+.local-data/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

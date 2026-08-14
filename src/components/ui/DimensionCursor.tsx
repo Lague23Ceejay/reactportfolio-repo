@@ -5,6 +5,7 @@ import { usePortfolioStore } from '../../store/portfolioStore';
 import { gsap } from 'gsap';
 
 import TargetCursor from './TargetCursor';
+import SwarmCursor from './SwarmCursor';
 
 const isInteractiveElement = (target: EventTarget | null) => {
   if (!(target instanceof HTMLElement)) return false;
@@ -24,7 +25,7 @@ export const DimensionCursor: React.FC = () => {
 
   const { type, color, glow } = activePack.cursor;
   const spinAnimation =
-    type === 'snowflake'
+    type === 'snowflake' || type === 'swarm'
       ? 'dimension-cursor-spin 6s linear infinite'
       : type === 'line'
       ? 'dimension-cursor-spin 1.8s linear infinite'
@@ -185,6 +186,75 @@ export const DimensionCursor: React.FC = () => {
         cursorColor={color}
         cursorColorOnTarget={glow ? glow : '#B497CF'}
       />
+    );
+  }
+
+  if (type === 'swarm') {
+    return (
+      <>
+        {/* Trailing swarm particles, positioned behind the leader glyph */}
+        <div
+          aria-hidden="true"
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 99998,
+            pointerEvents: 'none',
+          }}
+        >
+          <SwarmCursor
+            trackViewport
+            color="#ffffff"
+            accentColor="#ffffff"
+            count={6}
+            size={5}
+            merge={0.82}
+            glow={0.45}
+            opacity={1}
+            spread={75}
+            separation={0.15}
+            speed={2.5}
+            wander={0.25}
+            trail={0.21}
+            scatterOnClick
+            enabled
+          />
+        </div>
+
+        {/* Leader glyph — the rotating snowflake the swarm follows/orbits */}
+        <div
+          ref={cursorRef}
+          className="dimension-cursor hidden md:block"
+          aria-hidden="true"
+          style={{
+            position: 'fixed',
+            left: 0,
+            top: 0,
+            zIndex: 99999,
+            pointerEvents: 'none',
+            willChange: 'transform,opacity',
+          }}
+        >
+          <div
+            className={`dimension-cursor-target ${isHoveredLink ? 'is-target' : ''}`}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: isHoveredLink ? 20 : 16,
+              color,
+              transition: 'font-size 0.18s, color 0.18s',
+              pointerEvents: 'none',
+              animation: spinAnimation,
+              transformOrigin: 'center center',
+            }}
+          >
+            <span aria-hidden="true" style={{ lineHeight: 1 }}>
+              ❄️
+            </span>
+          </div>
+        </div>
+      </>
     );
   }
 

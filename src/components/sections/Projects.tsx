@@ -182,7 +182,7 @@ export function Projects() {
                     <a href={repoUrl.startsWith('http') ? repoUrl : `https://${repoUrl}`}
                       target="_blank"
                       rel="noreferrer"
-                      className={`cursor-pointer transition-colors ${
+                      className={`cursor-pointer transition-colors cursor-target ${
                         currentDimension === 'creamy' ? 'text-stone-500 hover:text-stone-900' : 'text-zinc-500 hover:text-zinc-300'
                       }`}
                     >

@@ -20,6 +20,10 @@ interface PortfolioState {
   setError: (error: string | null) => void;
   resetDraft: () => void;
 
+  saveSection: (keys: (keyof PortfolioData)[]) => Promise<void>;
+  discardSection: (keys: (keyof PortfolioData)[]) => void;
+  isSectionDirty: (keys: (keyof PortfolioData)[]) => boolean;
+
   updateGalleryItem: (item: Partial<GalleryItem> & { id: string | number }) => void;
   addGalleryItem: (item: GalleryItem) => void;
   removeGalleryItem: (id: string | number) => void;
@@ -28,7 +32,7 @@ interface PortfolioState {
   removeCategory: (name: string) => void;
 }
 
-export const usePortfolioStore = create<PortfolioState>((set) => {
+export const usePortfolioStore = create<PortfolioState>((set, get) => {
   const normalizeContactData = (contact?: PortfolioData['contact']) => {
     const legacyContact = contact as (PortfolioData['contact'] & { Indeed?: string; Facebook?: string }) | undefined;
 
@@ -100,6 +104,64 @@ export const usePortfolioStore = create<PortfolioState>((set) => {
     setLoading: (status) => set({ isLoading: status }),
     setError: (error) => set({ error }),
     resetDraft: () => set((state) => ({ draft: state.data ? structuredClone(state.data) : null })),
+
+    isSectionDirty: (keys) => {
+      const { data, draft } = get();
+      if (!data || !draft) return false;
+      return keys.some((k) => JSON.stringify(draft[k]) !== JSON.stringify(data[k]));
+    },
+
+    discardSection: (keys) => {
+      set((state) => {
+        if (!state.data || !state.draft) return {};
+        const newDraft = structuredClone(state.draft);
+        keys.forEach((k) => {
+          (newDraft as any)[k] = structuredClone((state.data as any)[k]);
+        });
+        return { draft: newDraft };
+      });
+    },
+
+    saveSection: async (keys) => {
+      const { draft } = get();
+      if (!draft) return;
+
+      const sections: Record<string, unknown> = {};
+      keys.forEach((k) => {
+        sections[k as string] = draft[k];
+      });
+
+      set({ isSaving: true, error: null });
+      try {
+        const response = await fetch('/api/save-content', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sections })
+        });
+
+        const body = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          throw new Error(body?.details || body?.error || `Save failed (${response.status})`);
+        }
+
+        const content = body.content as PortfolioData;
+        set((state) => {
+          if (!state.data || !state.draft) return {};
+          const newData = structuredClone(state.data);
+          const newDraft = structuredClone(state.draft);
+          keys.forEach((k) => {
+            (newData as any)[k] = (content as any)[k];
+            (newDraft as any)[k] = (content as any)[k];
+          });
+          return { data: newData, draft: newDraft };
+        });
+      } catch (err: any) {
+        set({ error: err?.message ?? 'Failed to save section.' });
+        throw err;
+      } finally {
+        set({ isSaving: false });
+      }
+    },
 
     updateGalleryItem: (item) => {
       set((state) => {

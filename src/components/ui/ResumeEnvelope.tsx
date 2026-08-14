@@ -1,6 +1,7 @@
 //src/components/ui/ResumeEnvelope.tsx
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useMemo, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useThemeStore, dimensionPacks } from '../../store/themeStore';
 
 interface ResumeEnvelopeProps {
@@ -68,7 +69,8 @@ export function ResumeEnvelope({ resumeUrl, resumeLabel = 'Resume' }: ResumeEnve
         {resumeLabel}
       </motion.button>
 
-      <AnimatePresence>
+      {createPortal(
+        <AnimatePresence>
         {isOpen && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -181,7 +183,9 @@ export function ResumeEnvelope({ resumeUrl, resumeLabel = 'Resume' }: ResumeEnve
             </motion.div>
           </motion.div>
         )}
-      </AnimatePresence>
+        </AnimatePresence>,
+        document.body
+      )}
     </div>
   );
 }

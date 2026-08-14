@@ -3,8 +3,11 @@ import { useEffect, useMemo, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { motion, useMotionValue, useTransform, type PanInfo } from 'framer-motion';
 import Stack from '../ui/Stack';
+import DriftWall from '../ui/DriftWall';
 import { usePortfolioStore } from '../../store/portfolioStore';
 import Tabs from '../ui/Tabs';
+
+type GalleryViewMode = 'stack' | 'drift';
 
 export type GalleryItem = {
   id?: string | number;
@@ -18,18 +21,28 @@ export type GalleryItem = {
 const SWIPE_DISTANCE_THRESHOLD = 90;
 const SWIPE_VELOCITY_THRESHOLD = 500;
 
+const cx = (...parts: (string | false | undefined)[]) => parts.filter(Boolean).join(' ');
+
 function Lightbox({
   images,
   index,
   onClose,
   onPrev,
-  onNext
+  onNext,
+  variant = 'full'
 }: {
   images: GalleryItem[];
   index: number;
   onClose: () => void;
   onPrev: () => void;
   onNext: () => void;
+  /**
+   * 'full'  — near-fullscreen preview (used by the Stack view).
+   * 'float' — compact panel centered at ~50% of the viewport, sized so
+   *           the image always fits inside it (no internal scrolling),
+   *           with mobile-safe max dimensions.
+   */
+  variant?: 'full' | 'float';
 }) {
   const [loaded, setLoaded] = useState(false);
   const img = images[index];
@@ -67,15 +80,21 @@ function Lightbox({
 
   if (!img) return null;
 
+  const isFloat = variant === 'float';
+
   return ReactDOM.createPortal(
     <div
-      className="fixed inset-0 z-9999 flex items-center justify-center bg-black/85"
+      className="fixed inset-0 z-9999 flex items-center justify-center bg-black/85 p-4 overflow-hidden overscroll-none touch-none"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
     >
       <div
-        className="relative max-h-[92vh] max-w-[92vw] flex flex-col items-center justify-center"
+        className={
+          isFloat
+            ? 'relative flex flex-col items-center justify-center rounded-2xl border border-white/10 bg-zinc-950/70 backdrop-blur-md shadow-[0_20px_70px_rgba(0,0,0,0.55)] p-4 sm:p-6 w-[92vw] max-w-[560px] h-[68vh] max-h-[620px] sm:w-[60vw] sm:h-[58vh] overflow-hidden'
+            : 'relative max-h-[92vh] max-w-[92vw] flex flex-col items-center justify-center'
+        }
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -89,7 +108,7 @@ function Lightbox({
           ‹
         </button>
 
-        <div className="flex flex-col items-center justify-center">
+        <div className={cx('flex flex-col items-center justify-center', isFloat && 'min-h-0 flex-1 w-full')}>
           {!loaded && (
             <div className="absolute inset-0 flex items-center justify-center z-40">
               <div className="w-12 h-12 border-4 border-white/30 border-t-white rounded-full animate-spin" />
@@ -100,7 +119,10 @@ function Lightbox({
             key={index}
             src={img.imageUrl}
             alt={img.title ?? `image-${index}`}
-            className="rounded-lg max-h-[80vh] max-w-[80vw] object-contain shadow-lg z-50 cursor-grab active:cursor-grabbing"
+            className={cx(
+              'rounded-lg object-contain shadow-lg z-50 cursor-grab active:cursor-grabbing',
+              isFloat ? 'max-h-full max-w-full h-auto w-auto' : 'max-h-[80vh] max-w-[80vw]'
+            )}
             onLoad={() => setLoaded(true)}
             onError={() => {
               setLoaded(true);
@@ -118,9 +140,9 @@ function Lightbox({
 
           {/* Title & subtitle in lightbox */}
           {(img.title || img.subtitle) && (
-            <div className="mt-4 text-center text-white max-w-[80vw]">
-              {img.title && <div className="text-lg font-semibold">{img.title}</div>}
-              {img.subtitle && <div className="text-sm text-white/80">{img.subtitle}</div>}
+            <div className={cx('mt-3 text-center text-white flex-none', isFloat ? 'max-w-full' : 'max-w-[80vw]')}>
+              {img.title && <div className={cx('font-semibold', isFloat ? 'text-sm' : 'text-lg')}>{img.title}</div>}
+              {img.subtitle && <div className="text-xs sm:text-sm text-white/80">{img.subtitle}</div>}
             </div>
           )}
         </div>
@@ -176,6 +198,7 @@ export function Gallery(): JSX.Element {
     return gallery.filter((item) => (item.category ?? 'General') === activeCategory);
   }, [gallery, activeCategory]);
 
+  const [viewMode, setViewMode] = useState<GalleryViewMode>('stack');
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   // lock body scroll while modal is open
@@ -215,17 +238,53 @@ export function Gallery(): JSX.Element {
       <h2 className="text-2xl font-bold tracking-tight">Gallery</h2>
 
 
-       <Tabs
-        tabs={['All', ...categories]}
-        active={activeCategory}
-        onChange={(t) => {
-          setActiveCategory(t);
-          setLightboxIndex(null); // close lightbox when switching tabs
-        }}
-        className="mb-4"
-      />
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+        <Tabs
+          tabs={['All', ...categories]}
+          active={activeCategory}
+          onChange={(t) => {
+            setActiveCategory(t);
+            setLightboxIndex(null); // close lightbox when switching tabs
+          }}
+        />
 
-      {/* Stack */}
+        {/* Stack / Drift view toggle */}
+        <div className="cursor-target inline-flex items-center rounded-full border border-white/10 bg-zinc-900/60 p-1 text-xs font-medium">
+          {(['stack', 'drift'] as GalleryViewMode[]).map((mode) => (
+            <button
+              key={mode}
+              type="button"
+              onClick={() => {
+                setViewMode(mode);
+                setLightboxIndex(null); // close lightbox when switching views
+              }}
+              className={cx(
+                'rounded-full px-3 py-1.5 capitalize transition-colors',
+                viewMode === mode ? 'bg-white text-zinc-900' : 'text-zinc-300 hover:text-white'
+              )}
+              aria-pressed={viewMode === mode}
+            >
+              {mode === 'stack' ? 'Stack' : 'Drift Wall'}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {viewMode === 'drift' ? (
+        /* Drift Wall */
+        <div className="flex justify-center">
+          <div className="w-full max-w-3xl h-[420px] sm:h-[480px] rounded-2xl overflow-hidden bg-zinc-950/40 border border-white/5">
+            <DriftWall
+              items={filteredImages.map((img) => ({ image: img.imageUrl, title: img.title }))}
+              columns={4}
+              tileWidth={170}
+              tileHeight={112}
+              onItemClick={(_item, i) => openLightbox(i)}
+            />
+          </div>
+        </div>
+      ) : (
+      /* Stack */
       <div className="flex justify-center">
         {/* wrapper must allow overflow so hovered card can grow beyond the fixed box */}
         <div style={{ width: STACK_SIZE, height: STACK_SIZE, overflow: 'visible' }}>
@@ -303,6 +362,7 @@ export function Gallery(): JSX.Element {
           />
         </div>
       </div>
+      )}
 
       {/* Lightbox (portal) */}
       {lightboxIndex !== null && filteredImages[lightboxIndex] && (
@@ -312,6 +372,7 @@ export function Gallery(): JSX.Element {
           onClose={() => setLightboxIndex(null)}
           onPrev={showPrev}
           onNext={showNext}
+          variant="full"
         />
       )}
     </section>

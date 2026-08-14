@@ -12,6 +12,18 @@ import { useImageUpload } from '../../hooks/useImageUpload';
 // Strict mapping type dictionary for application workspace tab-routing matrices
 type AdminTab = 'hero' | 'graduation' | 'about' | 'projects' | 'gallery' | 'settings';
 
+// Which top-level PortfolioData keys each tab is responsible for. A tab's
+// Save/Discard bar only touches these keys, so saving one tab never sends
+// or overwrites another tab's data.
+const TAB_SECTIONS: Record<AdminTab, (keyof import('../../types/portfolio').PortfolioData)[]> = {
+  hero: ['hero'],
+  graduation: ['graduation'],
+  about: ['about'],
+  projects: ['projects'],
+  gallery: ['gallery', 'categories'],
+  settings: ['contact', 'settings']
+};
+
 export function AdminOverlay() {
   /* ==========================================================================
      1. APPLICATION CORE RUNTIME VARIABLES & HOOK STATES
@@ -26,7 +38,8 @@ export function AdminOverlay() {
   // Destructure central reactive application Zustand state engines
   const { 
     isAuthenticated, setAuthenticated, draft, updateDraft, 
-    data, isSaving, setSaving, setPortfolioData 
+    data, isSaving,
+    saveSection, discardSection, isSectionDirty, error
   } = usePortfolioStore();
 
   /* ==========================================================================
@@ -169,31 +182,21 @@ export function AdminOverlay() {
   };
 
   /* ==========================================================================
-     5. UPSTREAM PRODUCTION COMMIT GENERATION CONTROLLER
+     5. INSTANT PER-SECTION SAVE CONTROLLER
+     Saves only the current tab's top-level keys to Blob storage — no git
+     commit, no rebuild. Live on the main page as soon as it resolves.
      ========================================================================== */
-  const handleSaveChanges = async () => {
-    if (!draft) return;
-    if (!window.confirm('Commit modifications and trigger production rebuild deployment?')) return;
-
+  const handleSaveTab = async (tab: AdminTab) => {
     try {
-      setSaving(true);
-      
-      // Transmit sanitized text-only JSON structures via Git proxy serverless architectures
-      const response = await fetch('/api/save-content', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: draft }),
-      });
-      if (!response.ok) throw new Error('Could not persist content modifications upstream.');
-      
-      // Merge active local production data view state layouts with validated changes immediately
-      setPortfolioData(draft);
-      alert('Content synchronized successfully. Deployment triggered.');
+      await saveSection(TAB_SECTIONS[tab]);
     } catch (err: any) {
-      alert(`Synchronization Failure: ${err.message}`);
-    } finally {
-      setSaving(false);
+      alert(`Save failed: ${err?.message ?? 'Unknown error'}`);
     }
+  };
+
+  const handleDiscardTab = (tab: AdminTab) => {
+    if (!window.confirm('Discard unsaved changes in this section?')) return;
+    discardSection(TAB_SECTIONS[tab]);
   };
 
     /* ==========================================================================
@@ -265,32 +268,65 @@ export function AdminOverlay() {
             <p className="text-xs font-mono text-emerald-400/80 mt-1">Live staging sandbox session active</p>
           </div>
           <div className="flex gap-3 w-full sm:w-auto">
-            <button onClick={() => { setAuthenticated(false); window.location.hash = ''; }} className="flex-1 sm:flex-none px-4 py-2 border border-zinc-800 hover:bg-zinc-800 text-zinc-300 rounded-xl font-medium text-sm transition-colors">
-              Discard & Close
-            </button>
-            <button onClick={handleSaveChanges} disabled={isSaving} className="flex-1 sm:flex-none px-5 py-2 bg-emerald-500 hover:bg-emerald-600 disabled:bg-zinc-800 text-zinc-950 rounded-xl font-semibold text-sm transition-colors flex items-center justify-center gap-2">
-              {isSaving ? 'Synchronizing...' : 'Commit Updates'}
+            <button onClick={() => { window.location.hash = ''; }} className="flex-1 sm:flex-none px-4 py-2 border border-zinc-800 hover:bg-zinc-800 text-zinc-300 rounded-xl font-medium text-sm transition-colors">
+              Close
             </button>
           </div>
         </div>
 
         {/* SECTION 7.2: DYNAMIC NAVIGATION ROUTER INTERACTIVE TABS */}
         <div className="flex flex-wrap gap-2 border-b border-zinc-800/60 pb-4">
-          {tabsConfig.map((tab) => (
-            <button
-              key={tab.id}
-              type="button"
-              onClick={() => setActiveTab(tab.id)}
-              className={`px-4 py-2 rounded-xl text-xs font-mono font-medium border transition-all ${
-                activeTab === tab.id
-                  ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 shadow-sm shadow-emerald-500/5'
-                  : 'bg-zinc-950/40 border-zinc-800/80 text-zinc-400 hover:text-zinc-200 hover:border-zinc-700'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
+          {tabsConfig.map((tab) => {
+            const dirty = isSectionDirty(TAB_SECTIONS[tab.id]);
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setActiveTab(tab.id)}
+                className={`relative px-4 py-2 rounded-xl text-xs font-mono font-medium border transition-all ${
+                  activeTab === tab.id
+                    ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 shadow-sm shadow-emerald-500/5'
+                    : 'bg-zinc-950/40 border-zinc-800/80 text-zinc-400 hover:text-zinc-200 hover:border-zinc-700'
+                }`}
+              >
+                {tab.label}
+                {dirty && (
+                  <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-amber-400" title="Unsaved changes" />
+                )}
+              </button>
+            );
+          })}
         </div>
+
+        {/* SECTION 7.2b: PER-SECTION SAVE / DISCARD BAR — applies only to the active tab's data */}
+        <div className="flex flex-wrap items-center justify-between gap-3 -mt-2 px-1">
+          <p className="text-[11px] font-mono text-zinc-500">
+            {isSectionDirty(TAB_SECTIONS[activeTab])
+              ? 'Unsaved changes in this section — nothing on the live page has changed yet.'
+              : 'No unsaved changes in this section.'}
+          </p>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => handleDiscardTab(activeTab)}
+              disabled={!isSectionDirty(TAB_SECTIONS[activeTab]) || isSaving}
+              className="px-3 py-1.5 border border-zinc-800 hover:bg-zinc-800 disabled:opacity-30 disabled:pointer-events-none text-zinc-300 rounded-lg font-medium text-xs transition-colors"
+            >
+              Discard
+            </button>
+            <button
+              type="button"
+              onClick={() => handleSaveTab(activeTab)}
+              disabled={!isSectionDirty(TAB_SECTIONS[activeTab]) || isSaving}
+              className="px-4 py-1.5 bg-emerald-500 hover:bg-emerald-600 disabled:bg-zinc-800 disabled:text-zinc-500 text-zinc-950 rounded-lg font-semibold text-xs transition-colors flex items-center gap-2"
+            >
+              {isSaving ? 'Saving…' : 'Save Section'}
+            </button>
+          </div>
+        </div>
+        {error && (
+          <p className="text-[11px] font-mono text-red-400 px-1 -mt-4">{error}</p>
+        )}
 
         {/* SECTION 7.3: CONDITIONAL SUB-MANAGER CONTENT CONTROLLERS */}
         {draft && (
@@ -649,4 +685,3 @@ export function AdminOverlay() {
     </div>
   );
 }
-
