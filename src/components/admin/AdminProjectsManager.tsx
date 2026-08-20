@@ -1,14 +1,55 @@
 // src/components/admin/AdminProjectsManager.tsx
+import { useState } from 'react';
 import { usePortfolioStore } from '../../store/portfolioStore';
 import { useImageUpload } from '../../hooks/useImageUpload';
 
 const MAX_VIDEO_BYTES = 20 * 1024 * 1024; // 20MB — keep serverless upload requests small & fast
+const MAX_DOCUMENT_BYTES = 10 * 1024 * 1024; // 10MB — case studies/specs/PDFs
 
 export function AdminProjectsManager() {
   const { draft, updateDraft } = usePortfolioStore();
   const { uploadImage, isUploading } = useImageUpload();
+  const [isUploadingDoc, setIsUploadingDoc] = useState(false);
 
   if (!draft) return null;
+
+  // Documents (PDF/DOC/etc.) aren't image/audio/video, so they go straight to
+  // the upload endpoint directly — same pattern used for the Contact tab's
+  // resume upload — rather than through useImageUpload's media-only hook.
+  const handleDocumentUpload = async (index: number, file: File) => {
+    if (file.size > MAX_DOCUMENT_BYTES) {
+      alert('That file is too large (max 10MB). Try compressing it first.');
+      return;
+    }
+    try {
+      setIsUploadingDoc(true);
+      const cleanName = file.name.replace(/\.[^/.]+$/, '').replace(/[^a-zA-Z0-9]/g, '-');
+      const ext = file.name.includes('.') ? file.name.slice(file.name.lastIndexOf('.')) : '';
+      const filename = `${Date.now()}-${cleanName}${ext}`;
+
+      const response = await fetch('/api/upload-image', {
+        method: 'POST',
+        headers: {
+          'x-filename': filename,
+          'Content-Type': file.type || 'application/octet-stream',
+        },
+        body: file,
+      });
+      if (!response.ok) throw new Error(`Upload failed (${response.status})`);
+      const blobResult = await response.json();
+
+      updateDraft((d) => {
+        d.projects[index].documentUrl = blobResult.url;
+        if (!d.projects[index].documentLabel) {
+          d.projects[index].documentLabel = file.name.replace(/\.[^/.]+$/, '');
+        }
+      });
+    } catch (err: any) {
+      alert(`Document upload failed: ${err?.message ?? 'Unknown error'}`);
+    } finally {
+      setIsUploadingDoc(false);
+    }
+  };
 
   return (
     <div className="space-y-6 pt-4 animate-fadeIn">
@@ -365,6 +406,68 @@ export function AdminProjectsManager() {
                           } else {
                             alert('Video upload failed. Please try again.');
                           }
+                        }}
+                      />
+                    </label>
+                  )}
+                </div>
+
+                {/* Attached document (case study, spec, PDF, etc.) */}
+                <div className="space-y-2">
+                  <label className="text-[11px] font-mono text-zinc-500 block">
+                    Attached Document (PDF, DOC, etc. — max 10MB)
+                  </label>
+                  {project.documentUrl ? (
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-3">
+                        <div className="flex-1 min-w-0 bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2">
+                          <a
+                            href={project.documentUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-[11px] font-mono text-emerald-400 hover:underline truncate block"
+                          >
+                            {project.documentUrl}
+                          </a>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            updateDraft((d) => {
+                              d.projects[index].documentUrl = undefined;
+                              d.projects[index].documentLabel = undefined;
+                            })
+                          }
+                          className="text-[10px] font-mono text-zinc-500 hover:text-red-400 px-2 py-2 rounded border border-zinc-800 hover:border-red-500/40 transition-colors cursor-pointer whitespace-nowrap"
+                        >
+                          Remove Document
+                        </button>
+                      </div>
+                      <input
+                        type="text"
+                        value={project.documentLabel || ''}
+                        placeholder="Button label shown on the site (e.g. Case Study, Spec Sheet)"
+                        onChange={(e) =>
+                          updateDraft((d) => {
+                            d.projects[index].documentLabel = e.target.value;
+                          })
+                        }
+                        className="w-full bg-zinc-950 border border-zinc-800 p-2 rounded-xl text-xs font-mono outline-none text-zinc-300 focus:border-emerald-500/30 placeholder-zinc-600"
+                      />
+                    </div>
+                  ) : (
+                    <label className={`inline-flex items-center justify-center bg-zinc-800 hover:bg-zinc-700 text-zinc-100 px-3 py-2 rounded-lg text-xs font-mono border border-zinc-700 cursor-pointer ${isUploadingDoc ? 'opacity-50 pointer-events-none' : ''}`}>
+                      {isUploadingDoc ? 'Uploading...' : '+ Upload Document'}
+                      <input
+                        type="file"
+                        accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                        className="hidden"
+                        disabled={isUploadingDoc}
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          e.target.value = '';
+                          if (!file) return;
+                          await handleDocumentUpload(index, file);
                         }}
                       />
                     </label>

@@ -126,7 +126,7 @@ export function ProjectDetailModal({ project, onClose }: ProjectDetailModalProps
               </div>
             )}
 
-            {(liveUrl || repoUrl) && (
+            {(liveUrl || repoUrl || project.documentUrl) && (
               <div className="flex flex-wrap gap-4 pt-2 border-t border-zinc-900/60 text-sm font-mono font-bold">
                 {liveUrl && (
                   <a href={liveUrl.startsWith('http') ? liveUrl : `https://${liveUrl}`}
@@ -144,6 +144,15 @@ export function ProjectDetailModal({ project, onClose }: ProjectDetailModalProps
                     className="text-zinc-500 hover:text-zinc-300"
                   >
                     Source →
+                  </a>
+                )}
+                {project.documentUrl && (
+                  <a href={project.documentUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-zinc-300 hover:text-emerald-400"
+                  >
+                    {project.documentLabel || 'View Document'} →
                   </a>
                 )}
               </div>

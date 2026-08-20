@@ -32,6 +32,8 @@ export const PortfolioSchema = z.object({
       longDescription: z.string().optional(),
       screenshots: z.array(z.string()).optional(),
       videoUrl: z.string().optional(),
+      documentUrl: z.string().optional(),
+      documentLabel: z.string().optional(),
       stack: z.array(StackItem).optional(),
       liveUrl: z.string().optional(),
       githubUrl: z.string().optional(),

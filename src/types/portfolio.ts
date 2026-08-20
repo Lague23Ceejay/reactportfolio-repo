@@ -33,6 +33,8 @@ export type Project = {
   longDescription?: string;
   screenshots?: string[];
   videoUrl?: string;
+  documentUrl?: string;
+  documentLabel?: string;
   url?: string;
   repo?: string;
   tags?: string[];
