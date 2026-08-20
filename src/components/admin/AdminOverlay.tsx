@@ -1,6 +1,7 @@
 // src/components/admin/AdminOverlay.tsx
 
 import { useState, useEffect } from 'react';
+import { upload } from '@vercel/blob/client';
 import { usePortfolioStore } from '../../store/portfolioStore';
 import { AdminProjectsManager } from './AdminProjectsManager';
 import { AdminGalleryManager } from './AdminGalleryManager';
@@ -115,17 +116,13 @@ export function AdminOverlay() {
       const cleanName = file.name.replace(/\.[^/.]+$/, '').replace(/[^a-zA-Z0-9]/g, '-');
       const filename = `${Date.now()}-${cleanName}${file.name.includes('.') ? file.name.slice(file.name.lastIndexOf('.')) : ''}`;
 
-      const response = await fetch('/api/upload-image', {
-        method: 'POST',
-        headers: {
-          'x-filename': filename,
-          'Content-Type': file.type || 'application/octet-stream',
-        },
-        body: file,
+      // Direct-to-Blob client upload — bypasses the Vercel serverless
+      // function body size limit (~4.5MB) that a normal fetch() POST hits.
+      const blobResult = await upload(filename, file, {
+        access: 'public',
+        handleUploadUrl: '/api/upload-token',
+        contentType: file.type || 'application/octet-stream',
       });
-
-      if (!response.ok) throw new Error(`Upload processing failed (${response.status})`);
-      const blobResult = await response.json();
 
       updateDraft((draftState) => {
         draftState.contact.resumeUrl = blobResult.url;
@@ -156,18 +153,12 @@ export function AdminOverlay() {
       const cleanName = file.name.replace(/\.[^/.]+$/, "").replace(/[^a-zA-Z0-9]/g, "-");
       const filename = `${Date.now()}-${cleanName}.webp`;
 
-      // Dispatch binary body payload directly onto local Vercel Serverless proxy API uploads endpoint
-      const response = await fetch('/api/upload-image', {
-        method: 'POST',
-        headers: {
-          'x-filename': filename,
-          'Content-Type': 'image/webp',
-        },
-        body: optimizedBlob,
+      // Dispatch binary body payload directly to Blob via a client-direct upload
+      const blobResult = await upload(filename, optimizedBlob, {
+        access: 'public',
+        handleUploadUrl: '/api/upload-token',
+        contentType: 'image/webp',
       });
-
-      if (!response.ok) throw new Error(`Upload processing failed (${response.status})`);
-      const blobResult = await response.json();
 
       // Mutate local state tree parameters mapping values safely to the hosted Vercel Blob public asset URL
       updateDraft(d => { 
@@ -578,17 +569,11 @@ export function AdminOverlay() {
                                     const cleanName = file.name.replace(/[^a-zA-Z0-9.]/g, "-");
                                     const filename = `audio-${track.key}-${Date.now()}-${cleanName}`;
 
-                                    const response = await fetch('/api/upload-image', {
-                                      method: 'POST',
-                                      headers: {
-                                        'x-filename': filename,
-                                        'Content-Type': file.type || 'audio/mpeg',
-                                      },
-                                      body: file,
+                                    const uploadResult = await upload(filename, file, {
+                                      access: 'public',
+                                      handleUploadUrl: '/api/upload-token',
+                                      contentType: file.type || 'audio/mpeg',
                                     });
-
-                                    if (!response.ok) throw new Error(`Media pipeline rejected file: ${response.status}`);
-                                    const uploadResult = await response.json();
 
                                     updateDraft(d => {
                                       if (!d.settings.audioTracks) {

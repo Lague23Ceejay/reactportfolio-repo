@@ -1,9 +1,10 @@
 // src/components/admin/AdminProjectsManager.tsx
 import { useState } from 'react';
+import { upload } from '@vercel/blob/client';
 import { usePortfolioStore } from '../../store/portfolioStore';
 import { useImageUpload } from '../../hooks/useImageUpload';
 
-const MAX_VIDEO_BYTES = 20 * 1024 * 1024; // 20MB — keep serverless upload requests small & fast
+const MAX_VIDEO_BYTES = 20 * 1024 * 1024; // 20MB — keep uploads reasonably fast
 const MAX_DOCUMENT_BYTES = 10 * 1024 * 1024; // 10MB — case studies/specs/PDFs
 
 export function AdminProjectsManager() {
@@ -14,8 +15,8 @@ export function AdminProjectsManager() {
   if (!draft) return null;
 
   // Documents (PDF/DOC/etc.) aren't image/audio/video, so they go straight to
-  // the upload endpoint directly — same pattern used for the Contact tab's
-  // resume upload — rather than through useImageUpload's media-only hook.
+  // Blob from the browser via the same client-direct-upload token endpoint —
+  // this bypasses the Vercel serverless function body size limit entirely.
   const handleDocumentUpload = async (index: number, file: File) => {
     if (file.size > MAX_DOCUMENT_BYTES) {
       alert('That file is too large (max 10MB). Try compressing it first.');
@@ -27,16 +28,11 @@ export function AdminProjectsManager() {
       const ext = file.name.includes('.') ? file.name.slice(file.name.lastIndexOf('.')) : '';
       const filename = `${Date.now()}-${cleanName}${ext}`;
 
-      const response = await fetch('/api/upload-image', {
-        method: 'POST',
-        headers: {
-          'x-filename': filename,
-          'Content-Type': file.type || 'application/octet-stream',
-        },
-        body: file,
+      const blobResult = await upload(filename, file, {
+        access: 'public',
+        handleUploadUrl: '/api/upload-token',
+        contentType: file.type || 'application/octet-stream',
       });
-      if (!response.ok) throw new Error(`Upload failed (${response.status})`);
-      const blobResult = await response.json();
 
       updateDraft((d) => {
         d.projects[index].documentUrl = blobResult.url;

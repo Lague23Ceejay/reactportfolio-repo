@@ -1,5 +1,6 @@
 // src/components/admin/AdminGraduationManager.tsx
 import React, { useState } from 'react';
+import { upload } from '@vercel/blob/client';
 import { usePortfolioStore } from '../../store/portfolioStore';
 import { FiAward, FiEye, FiEyeOff, FiUpload } from 'react-icons/fi';
 import { optimizeImage } from '../../utils/imageOptimizer'; // Imported utility
@@ -50,20 +51,13 @@ export function AdminGraduationManager() {
       const cleanName = file.name.replace(/\.[^/.]+$/, "").replace(/[^a-zA-Z0-9]/g, "-");
       const filename = `${Date.now()}-${cleanName}.webp`;
 
-      // 3. Post binary data straight to Vercel Blob API route
-      const response = await fetch('/api/upload-image', {
-        method: 'POST',
-        headers: {
-          'x-filename': filename,
-          'Content-Type': 'image/webp',
-        },
-        body: optimizedBlob,
+      // 3. Direct-to-Blob client upload
+      const blobResult = await upload(filename, optimizedBlob, {
+        access: 'public',
+        handleUploadUrl: '/api/upload-token',
+        contentType: 'image/webp',
       });
 
-      if (!response.ok) throw new Error(`Upload failed (${response.status})`);
-      
-      const blobResult = await response.json();
-      
       // 4. Save clean URL directly to Zustand draft
       handleFieldUpdate('gcashUrl', blobResult.url);
       

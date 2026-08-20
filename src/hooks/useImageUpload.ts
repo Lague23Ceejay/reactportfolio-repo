@@ -1,6 +1,7 @@
 // src/hooks/useImageUpload.ts
 
 import { useState } from 'react';
+import { upload } from '@vercel/blob/client';
 import { optimizeImage } from '../utils/imageOptimizer';
 
 export const useImageUpload = () => {
@@ -8,8 +9,8 @@ export const useImageUpload = () => {
   const [uploadError, setUploadError] = useState<string | null>(null);
 
   const uploadImage = async (file: File, maxWidth = 1200, quality = 0.8): Promise<string | null> => {
-    // 🚀 FIXED ARCHITECTURE: Support standard web graphics, loopable background
-    // audio tracks, and short project demo/screen-recording video clips.
+    // 🚀 Supports standard web graphics, loopable background audio tracks,
+    // and short project demo/screen-recording video clips.
     const isImage = file.type.startsWith('image/');
     const isAudio = file.type.startsWith('audio/');
     const isVideo = file.type.startsWith('video/');
@@ -30,7 +31,7 @@ export const useImageUpload = () => {
       const cleanName = file.name.replace(/\.[^/.]+$/, "").replace(/[^a-zA-Z0-9]/g, "-");
 
       /* ==========================================================================
-         A. CONDITIONAL ENGESTION ROUTING FOR GRAPHICS VS SOUND VS VIDEO
+         A. CONDITIONAL INGESTION ROUTING FOR GRAPHICS VS SOUND VS VIDEO
          ========================================================================== */
       if (isImage) {
         // Run your lightweight browser canvas compression loop to protect your serverless limits
@@ -48,23 +49,18 @@ export const useImageUpload = () => {
       }
 
       /* ==========================================================================
-         B. UNIFIED CDN STREAM INGESTION LIFECYCLE
+         B. DIRECT-TO-BLOB CLIENT UPLOAD
+         The file goes straight from the browser to Blob storage — it never
+         passes through a Vercel serverless function body, so we're not bound
+         by the platform's ~4.5MB request body limit. /api/upload-token only
+         issues a short-lived, scoped upload token.
          ========================================================================== */
-      // Your backend proxy API route streams image, audio, and video payloads effortlessly
-      const response = await fetch('/api/upload-image', {
-        method: 'POST',
-        headers: {
-          'x-filename': filename,
-          'Content-Type': isImage ? 'image/webp' : (file.type || (isAudio ? 'audio/mpeg' : 'video/mp4')),
-        },
-        body: binaryPayload, // Streams the correct binary context straight up to Vercel Blob
+      const blobResult = await upload(filename, binaryPayload, {
+        access: 'public',
+        handleUploadUrl: '/api/upload-token',
+        contentType: isImage ? 'image/webp' : (file.type || (isAudio ? 'audio/mpeg' : 'video/mp4')),
       });
 
-      if (!response.ok) {
-        throw new Error(`Cloud storage proxy transmission failed: ${response.status}`);
-      }
-
-      const blobResult = await response.json();
       return blobResult.url; // Returns the public production-ready static cloud url string!
 
     } catch (error: any) {
