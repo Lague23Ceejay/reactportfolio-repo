@@ -246,7 +246,7 @@ export function AdminProjectsManager() {
                 </div>
               </div>
               {/* Grid 2: Description & Completion */}
-              <div className="grid sm:grid-cols-4 gap-4 items-start">
+              <div className="grid sm:grid-cols-5 gap-4 items-start">
                 <div className="sm:col-span-3 space-y-1">
                   <label className="text-[11px] font-mono text-zinc-500">
                     Repository Description Narrative Summary
@@ -276,6 +276,22 @@ export function AdminProjectsManager() {
                       className="accent-emerald-500 rounded"
                     />
                     Build Complete
+                  </label>
+                </div>
+
+                <div className="pt-6 flex h-full items-center">
+                  <label className="flex items-center gap-2 cursor-pointer select-none text-[11px] font-mono text-zinc-400 bg-zinc-900/50 p-3 rounded-xl border border-zinc-800 w-full hover:border-zinc-700 transition-colors">
+                    <input
+                      type="checkbox"
+                      checked={project.hidden ?? false}
+                      onChange={(e) =>
+                        updateDraft((d) => {
+                          d.projects[index].hidden = e.target.checked;
+                        })
+                      }
+                      className="accent-emerald-500 rounded"
+                    />
+                    Hide from portfolio
                   </label>
                 </div>
               </div>

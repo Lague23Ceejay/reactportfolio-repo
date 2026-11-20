@@ -44,6 +44,7 @@ export type Project = {
   deploymentUrl?: string;
   sourceCodeUrl?: string;
   featured?: boolean;
+  hidden?: boolean;
   frameworksArray?: string[];
 };
 

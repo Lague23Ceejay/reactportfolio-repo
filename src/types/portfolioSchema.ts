@@ -39,6 +39,7 @@ export const PortfolioSchema = z.object({
       githubUrl: z.string().optional(),
       sourceCodeUrl: z.string().optional(),
       featured: z.boolean().optional(),
+      hidden: z.boolean().optional(),
       deploymentUrl: z.string().optional(),
       frameworksArray: z.array(z.string()).optional(),
     })

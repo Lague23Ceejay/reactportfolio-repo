@@ -8,7 +8,8 @@ import { ProjectDetailModal } from './ProjectDetailModal';
 import type { Project } from '../../types/portfolio';
 
 export function Projects() {
-  const projects = usePortfolioStore((state) => state.data?.projects || []);
+  const allProjects = usePortfolioStore((state) => state.data?.projects || []);
+  const projects = allProjects.filter((project) => !project.hidden);
   const { currentDimension } = useThemeStore();
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
